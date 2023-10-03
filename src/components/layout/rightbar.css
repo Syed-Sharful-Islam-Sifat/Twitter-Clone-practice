@@ -1,0 +1,19 @@
+.rightbar-follow{
+    padding-top: 1rem;
+    padding-bottom: 1rem; 
+    padding-left: 1.5rem;
+    padding-right: 1.5rem; 
+}
+
+.following{
+    padding: 1rem; 
+    border-radius: 0.75rem; 
+    background-color: rgb(38,38,38);
+}
+
+.heading{
+font-size: 1.25rem;
+line-height: 1.75rem; 
+font-weight: 600; 
+color: #ffffff; 
+}

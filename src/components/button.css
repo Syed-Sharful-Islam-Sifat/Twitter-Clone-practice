@@ -1,0 +1,13 @@
+button{
+    cursor: pointer;
+     background-color: rgb(14 165 233);
+     padding: 10px;
+     border:none;
+    font-weight: 600;
+    border-radius: 35%;
+
+}
+
+.post-button{
+    margin: 5px;
+}

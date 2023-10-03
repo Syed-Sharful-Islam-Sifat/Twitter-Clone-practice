@@ -1,0 +1,47 @@
+.left-side-content{
+    position: fixed;
+}
+.sidebar-logo{
+    display: flex;
+    cursor: pointer;
+    padding: 1rem;
+    justify-content: center;
+    align-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 100%;
+}
+
+.sidebar-logo:hover{
+    background-color: rgb(38,38,38); 
+    opacity: 50%;
+}
+
+.sidebar-items{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+   
+}
+
+.item{
+    display: flex;
+  position: relative;
+  padding: 1rem;
+  gap:1rem;
+  align-items: center;
+  border-radius: 5%;
+  cursor: pointer;
+  gap:20px;
+  justify-content: center;
+}
+
+.item-paragraph{
+font-size: 1.2rem;
+line-height: 1.75rem; 
+color: #ffffff; 
+}
+
+.item:hover{
+    background-color: rgb(38,38,38);
+}

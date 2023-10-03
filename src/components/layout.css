@@ -1,0 +1,25 @@
+.mainscreen{
+    
+    height: 100%;
+    width: 100%;
+    position: absolute;
+
+}
+
+.grid-container{
+
+    display: grid;
+    grid-template-columns: 275px auto 350px;
+    height: 100%;
+    width: 100%;
+    border-right: 3px;
+}
+
+.right-sidebar-content{
+    position: fixed
+}
+
+.main-content{
+    border-left: 1px solid rgb(38 38 38);
+    border-right: 1px solid rgb(38 38 38);
+}

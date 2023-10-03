@@ -1,0 +1,12 @@
+.Image-container{
+position: relative; 
+border-radius:100%;
+transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+transition-duration: 300ms; 
+cursor: pointer; 
+background-color: white;
+}
+
+.Image-container:hover{
+    opacity: 0.9;
+}
