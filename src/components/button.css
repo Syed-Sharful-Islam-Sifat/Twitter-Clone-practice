@@ -11,3 +11,7 @@ button{
 .post-button{
     margin: 5px;
 }
+
+.post-button:hover{
+    opacity: 0.8;
+}

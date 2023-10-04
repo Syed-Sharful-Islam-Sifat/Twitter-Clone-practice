@@ -8,13 +8,12 @@ const postSchema = new mongoose.Schema({
        
     },
     contentType:{
-        type: String ,//
+        type: String ,
         enum:['post','comment','reply'],
         required: true
     },
     text:{
         type: String,
-        required:true
     },
 
     image:{
@@ -35,4 +34,5 @@ const postSchema = new mongoose.Schema({
 })
 
 const Post = mongoose.models.Post || mongoose.model('Post',postSchema);
+
 export default Post;

@@ -2,11 +2,39 @@ import React from 'react'
 import Avatar from './Avatar'
 import { useState } from 'react'
 import Button from './Button'
-const Form = ({placeholder}) => {
+import { toast } from 'react-toast'
+const Form = ({placeholder, fetchData}) => {
 
-    const [body,setBody] = useState(null);
+    const [postData,setPostData] = useState({
+      text:'',
+      contentType:'post'
+    })
+
+    const textChange = ((e)=>{
+       setPostData({
+        ...postData,
+        text: e.target.value
+       })
+    })
   const onSubmit = async()=>{
+    try{
 
+      const res = await fetch('api/posts',{
+       method: "POST",
+       headers:{
+         'Content-Type': 'application/json'
+       },
+       body: JSON.stringify(postData)
+      })
+      fetchData();
+     toast.success('Posted');
+     setPostData({
+      ...postData,
+      text: ''
+     })
+    }catch(error){
+      console.log(error)
+    }
   }
   return (
     <div className='Form-Container'>
@@ -17,13 +45,13 @@ const Form = ({placeholder}) => {
          </div>
 
          <div className='Form-text'>
-            <textarea className='text' placeholder={placeholder} onChange={(e)=>setBody(e.target.value)}>
+            <textarea className='text' placeholder={placeholder} onChange={textChange} value={postData.text}>
             
             </textarea>
 
             <hr className='hr'/>
             <div className='post-button'>
-              <Button label="Post" onClick={onSubmit} body={body}/>
+              <Button label="Post" onClick={onSubmit} body={postData.text}/>
             </div>
          </div>
        </div>

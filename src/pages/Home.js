@@ -1,35 +1,33 @@
-import Header from '@/components/Header'
-import { Head } from 'next/document'
-import React from 'react'
-import Form from '@/components/Form'
-import PostItem from '@/components/posts/PostItem'
-export async function getServerSideProps(context){
-  
-  const res = await fetch('http://localhost:3000/api/posts');
-  const data = await res.json();
-  
+import Header from "@/components/Header";
+import { Head } from "next/document";
+import React, { useEffect, useState } from "react";
+import Form from "@/components/Form";
+import PostItem from "@/components/posts/PostItem";
+const Home = () => {
+  const [posts, setPosts] = useState([]);
 
-  return {
-    props:{
-      posts:data
-    }
-  }
-  
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-}
-const Home = ({posts}) => {
- console.log('posts-->',posts)
-   return(
-     <>
-       <Header label = "Home"/>
-       <Form placeholder='What Is Happening?!'/>
-       {posts.map((post)=>(
-        <PostItem post = {post}/>
-       ))
+  const fetchData = async () => {
+    const res = await fetch("api/posts");
+    const data = await res.json();
+    setPosts(data);
+  };
 
-       }
-     </>
-   )
-}
 
-export default Home
+  return (
+    <>
+      <Header label="Home" />
+      <Form placeholder="What Is Happening?!" fetchData={fetchData} />
+      {posts?.map((post) => (
+        <div key={post._id}>
+          <PostItem post={post} />
+        </div>
+      ))}
+    </>
+  );
+};
+
+export default Home;

@@ -1,0 +1,81 @@
+.post-container{
+    border-bottom: 1px solid rgb(38 38 38);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition:  0.3s ease;
+}
+
+.post-container:hover{
+    background-color: rgb(23 23 23);
+}
+
+.user-profile{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap:0.5rem
+}
+
+.name{
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.name:hover{
+    text-decoration: underline;
+}
+
+.at-name{
+    color:rgb(115 115 115);
+    cursor: pointer;
+}
+
+.at-name:hover{
+    text-decoration: underline;
+
+}
+
+.time{
+
+    font-size: small;
+    background-color: rgb(115 115 115);
+}
+
+.text{
+    color: white;
+    margin-top: 0.25rem;
+    font-size: 1rem;
+    background-color: inherit;
+    
+}
+
+
+
+
+.icons{
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ margin-top: 0.75rem;
+ gap:5rem;
+ cursor: pointer;
+}
+
+.comment{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: rgb(115 115 115);
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.like{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color:rgb(115 115 115);
+    gap: 0.5rem;
+    cursor: pointer;
+}
