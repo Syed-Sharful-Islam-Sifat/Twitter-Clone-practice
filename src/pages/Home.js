@@ -8,6 +8,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchData();
+    console.log('useEffect ran')
   }, []);
 
   const fetchData = async () => {
@@ -16,14 +17,18 @@ const Home = () => {
     setPosts(data);
   };
 
+  const updatedPosts = (newPost)=>{
+    setPosts((prevPosts) => [newPost,...prevPosts])
+  }
+
 
   return (
     <>
       <Header label="Home" />
-      <Form placeholder="What Is Happening?!" fetchData={fetchData} />
+      <Form placeholder="What Is Happening?!" updatedPosts={updatedPosts} />
       {posts?.map((post) => (
         <div key={post._id}>
-          <PostItem post={post} />
+          <PostItem post={post} updatedPosts={updatedPosts}/>
         </div>
       ))}
     </>

@@ -3,7 +3,7 @@ import Avatar from './Avatar'
 import { useState } from 'react'
 import Button from './Button'
 import { toast } from 'react-toast'
-const Form = ({placeholder, fetchData}) => {
+const Form = ({placeholder,updatedPosts}) => {
 
     const [postData,setPostData] = useState({
       text:'',
@@ -26,8 +26,11 @@ const Form = ({placeholder, fetchData}) => {
        },
        body: JSON.stringify(postData)
       })
-      fetchData();
+     const data = await res.json();
+     console.log('data--->',data);
      toast.success('Posted');
+     updatedPosts(data);
+     
      setPostData({
       ...postData,
       text: ''

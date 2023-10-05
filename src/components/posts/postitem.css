@@ -79,3 +79,9 @@
     gap: 0.5rem;
     cursor: pointer;
 }
+
+.edit{
+    display: flex;
+    align-items: center;
+    color: rgb(115 115 115);
+}
