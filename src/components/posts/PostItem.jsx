@@ -6,10 +6,11 @@ import {
   AiOutlineHeart,
   AiOutlineMessage,
   AiOutlineEdit,
+  AiOutlineDelete
 } from "react-icons/ai";
 import { useEffect } from "react";
 import PostForm from "./PostForm";
-const PostItem = ({ post , updatedPosts}) => {
+const PostItem = ({ post , handleEdit}) => {
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -63,6 +64,9 @@ const PostItem = ({ post , updatedPosts}) => {
   const handleEditFormClick = async (e) => {
     e.stopPropagation();
   };
+  const onDelete =  async ()=>{
+    
+  }
   return (
     <div className="post-container">
       <Avatar />
@@ -90,6 +94,10 @@ const PostItem = ({ post , updatedPosts}) => {
         <div className="edit" onClick={onEdit}>
           <AiOutlineEdit size={20} />
         </div>
+
+        <div className="delete" onClick={onDelete}>
+
+        </div>
       </div>
 
       {edit ? (
@@ -101,7 +109,8 @@ const PostItem = ({ post , updatedPosts}) => {
             type={'edit'}
             contetType={'post'}
             postId={postId}
-            updatedPosts={updatedPosts}
+            onEdit={onEdit}
+            handleEdit={handleEdit}
           />
         </div>
       ) : null}

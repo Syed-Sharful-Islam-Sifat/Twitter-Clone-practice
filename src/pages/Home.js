@@ -20,6 +20,17 @@ const Home = () => {
   const updatedPosts = (newPost)=>{
     setPosts((prevPosts) => [newPost,...prevPosts])
   }
+  
+  const handleEdit = (updatedPost)=>{
+
+  setPosts((prevPosts)=> 
+  prevPosts.map((post)=>{
+    if(post._id===updatedPost._id)return updatedPost;
+    return post
+  })
+  )
+  }
+
 
 
   return (
@@ -28,7 +39,7 @@ const Home = () => {
       <Form placeholder="What Is Happening?!" updatedPosts={updatedPosts} />
       {posts?.map((post) => (
         <div key={post._id}>
-          <PostItem post={post} updatedPosts={updatedPosts}/>
+          <PostItem post={post} handleEdit={handleEdit}/>
         </div>
       ))}
     </>

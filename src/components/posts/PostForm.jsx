@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Avatar from "../Avatar";
 import Button from "../Button";
-const PostForm = ({ placeholder, postText , label , contentType, type,postId,updatedPosts}) => {
+const PostForm = ({ placeholder, postText , label , contentType, type,postId,fetchPosts,onEdit,handleEdit}) => {
   const [postData, setPostData] = useState(postText);
 
   const textChange = (e) => {
@@ -22,8 +22,9 @@ const PostForm = ({ placeholder, postText , label , contentType, type,postId,upd
         })
 
         const data = await res.json();
-
-        console.log('response',data);
+        console.log(data)
+        handleEdit(data);
+        onEdit();
     }
 
   }
