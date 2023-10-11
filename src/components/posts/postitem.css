@@ -1,11 +1,37 @@
-.post-container{
+.posts{
     border-bottom: 1px solid rgb(38 38 38);
     padding: 1.25rem;
     cursor: pointer;
     transition:  0.3s ease;
 }
 
-.post-container:hover{
+.posts:hover{
+    background-color: rgb(23 23 23);
+}
+
+.posts-comments{
+    border-bottom: 1px solid rgb(38 38 38);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition:  0.3s ease;
+    width: 90%;
+    margin-left: 30px;
+}
+
+.posts-comments:hover{
+    background-color: rgb(23 23 23);
+}
+
+.comments-reply{
+    border-bottom: 1px solid rgb(38 38 38);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition:  0.3s ease;
+    width: 80%;
+    margin-left: 70px;
+}
+
+.comments-reply:hover{
     background-color: rgb(23 23 23);
 }
 
@@ -84,4 +110,14 @@
     display: flex;
     align-items: center;
     color: rgb(115 115 115);
+}
+.delete{
+    display: flex;
+    align-items: center;
+    color: rgb(115 115 115);
+}
+
+.disabled{
+    opacity: 0.9;
+    pointer-events: none;
 }

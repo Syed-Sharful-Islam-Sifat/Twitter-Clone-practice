@@ -1,28 +1,45 @@
 import React, { useState } from "react";
 import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import {
   AiFillHeart,
   AiOutlineHeart,
   AiOutlineMessage,
   AiOutlineEdit,
-  AiOutlineDelete
+  AiOutlineDelete,
 } from "react-icons/ai";
 import { useEffect } from "react";
 import PostForm from "./PostForm";
-const PostItem = ({ post , handleEdit}) => {
+const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
+  const router = useRouter();
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
   const [edit, setEdit] = useState(false);
-  const postId = post._id;
+  const [comment, setComment] = useState(false);
+  const [reply, setReply] = useState(false);
+  const[commentReply,setCommentReply] = useState(false);
+  const [count, setCount] = useState(0);
+  const [postComments, setPostComments] = useState([]);
+
+  const postId = post?._id;
   useEffect(() => {
     fetchData();
     console.log("useEffect likes ran");
+    verifyPost();
+
   }, []);
+
+
+  const verifyPost = ()=>{
+    post?.comments?.map((comment)=>{
+      console.log('verify post',comment)
+    })
+  }
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`api/likes/${postId}`);
+      const res = await fetch(`http://localhost:3000/api/likes/${postId}`);
       const data = await res.json();
 
       setLikes(data.likesCount);
@@ -38,12 +55,13 @@ const PostItem = ({ post , handleEdit}) => {
 
   const { id } = session;
 
-  console.log("post likes", post.likeIds.length);
+
 
   const LikeIcons = hasLiked ? AiFillHeart : AiOutlineHeart;
   console.log("rendered");
-  const userLiked = async () => {
-    const res = await fetch("api/likes", {
+  const userLiked = async (e) => {
+    e.stopPropagation();
+    const res = await fetch("http://localhost:3000/api/likes", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -57,63 +75,156 @@ const PostItem = ({ post , handleEdit}) => {
     setHasLiked(data?.hasLiked);
   };
 
-  const onEdit = async (e) => {
+
+  const handleComment = (e) => {
+    e.stopPropagation();
+    setComment(!comment);
+    setEdit(false);
+  };
+
+  const onEdit = (e) => {
+    e.stopPropagation();
     setEdit(!edit);
+    setComment(false);
+  };
+
+  const makeEditFalse = () => {
+    setEdit(false);
+  };
+
+  const makeReplyFalse = () => {
+    setComment(false);
   };
 
   const handleEditFormClick = async (e) => {
     e.stopPropagation();
   };
-  const onDelete =  async ()=>{
-    
-  }
+   
+  useEffect(()=>{
+    console.log('commentReply reply',commentReply,reply);
+    console.log(post?.contentType)
+  },[reply,commentReply])
+  const handleReply = async (e) => {
+    console.log(post?.contentType)
+    if(post?.contentType==='post')setReply(!reply);
+    if(post?.contentType==='comment'){
+      setCommentReply(!commentReply);
+      setReply(true)
+    }
+    e.stopPropagation();
+  };
+  const onDelete = async () => {
+    try {
+      const res = await fetch(`api/posts/${postId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+      handleDelete(data);
+      console.log("deleted post", data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="post-container">
-      <Avatar />
-      <div>
-        <div className="user-profile">
-          <p className="name">{session?.user?.name}</p>
-          <span className="at-name">@{session?.user?.name}</span>
-          <span className="time">{post.createdAt}</span>
+      <div className={type}>
+        <Avatar />
+        <div>
+          <div className="user-profile">
+            <p className="name">{session?.user?.name}</p>
+            <span className="at-name">@{session?.user?.name}</span>
+            <span className="time">{post?.createdAt}</span>
+          </div>
         </div>
+
+        <div className="text">{post?.text}</div>
+
+        <div className="icons">
+          <div className="comment" onClick={handleComment}>
+            <AiOutlineMessage size={20} className={edit ? "" : "disabled"} />
+            <div className="commentsId" onClick={handleReply}>
+              <p>{post?.commentIds?.length}</p>
+            </div>
+          </div>
+
+          <div className="like" onClick={userLiked}>
+            <LikeIcons size={20} color={hasLiked ? "deeppink" : ""} />
+            <p>{likes}</p>
+          </div>
+
+          <div className="edit" onClick={onEdit}>
+            <AiOutlineEdit size={20} className={comment ? "" : "disabled"} />
+          </div>
+
+          <div className="delete" onClick={onDelete}>
+            <AiOutlineDelete size={20} />
+          </div>
+        </div>
+
+        {edit ? (
+          <div className="post-container" onClick={handleEditFormClick}>
+            <PostForm
+              placeholder={"Edit Your Post"}
+              postText={post?.text}
+              label={"Save"}
+              type={"edit"}
+              contetType={post?.contentType}
+              postId={postId}
+              makeEditFalse={makeEditFalse}
+              makeReplyFalse={makeReplyFalse}
+              handleEdit={handleEdit}
+              updatedPosts={updatedPosts}
+            />
+          </div>
+        ) : null}
+
+        {comment ? (
+          <div className="post-container" onClick={handleEditFormClick}>
+            <PostForm
+              placeholder={`Reply to @${session?.user?.name}`}
+              postText={""}
+              label={"Reply"}
+              type={"post"}
+              contentType={post.contentType}
+              postId={postId}
+              makeEditFalse={makeEditFalse}
+              makeReplyFalse={makeReplyFalse}
+              handleEdit={handleEdit}
+              updatedPosts={updatedPosts}
+            />
+          </div>
+        ) : null}
       </div>
-
-      <div className="text">{post.text}</div>
-
-      <div className="icons">
-        <div className="comment">
-          <AiOutlineMessage size={20} />
-          <p>0</p>
-        </div>
-
-        <div className="like" onClick={userLiked}>
-          <LikeIcons size={20} color={hasLiked ? "deeppink" : ""} />
-          <p>{likes}</p>
-        </div>
-
-        <div className="edit" onClick={onEdit}>
-          <AiOutlineEdit size={20} />
-        </div>
-
-        <div className="delete" onClick={onDelete}>
-
-        </div>
-      </div>
-
-      {edit ? (
-        <div className="post-container" onClick={handleEditFormClick}>
-          <PostForm
-            placeholder={"Edit Your Post"}
-            postText={post?.text}
-            label={"Save"}
-            type={'edit'}
-            contetType={'post'}
-            postId={postId}
-            onEdit={onEdit}
-            handleEdit={handleEdit}
-          />
-        </div>
-      ) : null}
+      {reply &&
+        post?.comments?.map((comment) => {
+          return (
+            <div key={comment._id}>
+              <PostItem
+                post={comment}
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
+                updatedPosts={updatedPosts}
+                type={"posts-comments"}
+              />
+              {reply &&
+                comment?.replies?.map((reply) => (
+                  <div key={reply._id}>
+                    <PostItem
+                      post={reply}
+                      handleDelete={handleDelete}
+                      handleEdit={handleEdit}
+                      updatedPosts={updatedPosts}
+                      type={"comments-reply"}
+                    />
+                  </div>
+                ))}
+            </div>
+          );
+        })}
     </div>
   );
 };

@@ -25,8 +25,14 @@ const postSchema = new mongoose.Schema({
       ref: 'User'
     }],
 
+    commentIds:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }],
+
     parentId:{
-        type:String
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
     }
     ,
 },{

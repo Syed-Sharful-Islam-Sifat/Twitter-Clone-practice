@@ -1,33 +1,76 @@
 import React, { useState } from "react";
 import Avatar from "../Avatar";
 import Button from "../Button";
-const PostForm = ({ placeholder, postText , label , contentType, type,postId,fetchPosts,onEdit,handleEdit}) => {
-  const [postData, setPostData] = useState(postText);
+const PostForm = ({
+  placeholder,
+  postText,
+  label,
+  contentType,
+  type,
+  postId,
+  fetchPosts,
+  makeEditFalse,
+  makeReplyFalse,
+  handleEdit,
+  updatedPosts
+}) => {
+  const [text,setText] = useState(postText);
 
   const textChange = (e) => {
-    setPostData(e.target.value);
+    setText(e.target.value);
   };
 
-  const onSubmit = async()=>{
+  const onSubmit = async () => {
+    console.log(contentType, postId, text);
 
-    console.log(type,postId,postData)
+    let parentId = postId;
 
-    if(type==='edit'){
-        const res = await fetch(`api/posts/${postId}`,{
-          method:'PATCH',
-          headers:{
-            'Content-Type':'application/json'
+    console.log('replying-->',contentType,parentId,text);
+
+    if (type === "edit") {
+      const res = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(text),
+      });
+
+      const data = await res.json();
+      console.log('edited',data.contentType)
+      
+      
+      console.log(data);
+      makeEditFalse();
+      handleEdit(data,data.contentType);
+      
+      
+    } else {
+
+        if(contentType==='post')contentType = 'comment'
+         else
+         contentType = 'reply'
+      try{
+        
+        const res = await fetch("http://localhost:3000/api/posts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(postData)
-        })
-
+          body: JSON.stringify({parentId,contentType,text}),
+        });
         const data = await res.json();
-        console.log(data)
-        handleEdit(data);
-        onEdit();
+        console.log('reply-->',data);
+        setText('')
+        makeReplyFalse();
+        updatedPosts(data,parentId)
+      }catch(error){
+
+      }
+    
     }
 
-  }
+  };
 
   return (
     <>
@@ -42,12 +85,12 @@ const PostForm = ({ placeholder, postText , label , contentType, type,postId,fet
               className="text"
               placeholder={placeholder}
               onChange={textChange}
-              value={postData}
+              value={text}
             ></textarea>
 
             <hr className="hr" />
             <div className="post-button">
-              <Button label={label} onClick={onSubmit} body={postData} />
+              <Button label={label} onClick={onSubmit} body={text} />
             </div>
           </div>
         </div>

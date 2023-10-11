@@ -6,6 +6,7 @@ import RegisterModal from '@/components/auth/RegisterModal';
 import LoginModal from '@/components/auth/LoginModal';
 import Header from '@/components/Header';
 import { useSession } from 'next-auth/react';
+
 export default function Home() {
 
   const[regisOpen,setRegisOpen] = useState(false)

@@ -16,15 +16,16 @@ const roboto = Roboto({
   weight:['400','700']
 })
 import Home from '@/pages/index'
+import { useRouter } from 'next/router'
 
 export default function App({ Component, pageProps }) {
  
-  
+  const router = useRouter();
  
   return (
 
     <SessionProvider session={pageProps.session}>
-      <main className={roboto.className}>
+      <main className={roboto.className} key = {router.asPath}>
         <Home/>
         <Layout>
          <Component {...pageProps} />
