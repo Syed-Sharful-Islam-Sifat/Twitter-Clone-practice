@@ -102,17 +102,20 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
    
   useEffect(()=>{
     console.log('commentReply reply',commentReply,reply);
-    console.log(post?.contentType)
+    console.log(post)
+    console.log(post?.commentIds);
   },[reply,commentReply])
-  const handleReply = async (e) => {
-    console.log(post?.contentType)
-    if(post?.contentType==='post')setReply(!reply);
-    if(post?.contentType==='comment'){
-      setCommentReply(!commentReply);
-      setReply(true)
-    }
+
+  const handlePostComment = (e) => {
     e.stopPropagation();
+    setReply(!reply);
+    console.log('on handleReply',post);
   };
+
+  const handlePostReply = (e)=>{
+    e.stopPropagation();
+    setCommentReply(!commentReply);
+  }
   const onDelete = async () => {
     try {
       const res = await fetch(`api/posts/${postId}`, {
@@ -144,12 +147,15 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
         <div className="text">{post?.text}</div>
 
         <div className="icons">
-          <div className="comment" onClick={handleComment}>
+          {post?.contentType!=='reply'?(
+            <div className="comment" onClick={handleComment}>
             <AiOutlineMessage size={20} className={edit ? "" : "disabled"} />
-            <div className="commentsId" onClick={handleReply}>
+            <div className="commentsId" onClick={post?.contentType==='post'? handlePostComment:handlePostReply}>
               <p>{post?.commentIds?.length}</p>
             </div>
           </div>
+          ):null}
+
 
           <div className="like" onClick={userLiked}>
             <LikeIcons size={20} color={hasLiked ? "deeppink" : ""} />
@@ -200,18 +206,22 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
         ) : null}
       </div>
       {reply &&
-        post?.comments?.map((comment) => {
+        post?.commentIds?.map((comment) => {
+          console.log('reply',post,comment)
           return (
             <div key={comment._id}>
+              {comment.contentType==='comment'?(
+                
               <PostItem
                 post={comment}
                 handleDelete={handleDelete}
                 handleEdit={handleEdit}
                 updatedPosts={updatedPosts}
                 type={"posts-comments"}
-              />
+              />):null}
+              
               {reply &&
-                comment?.replies?.map((reply) => (
+                comment.commentIds.map((reply) => (
                   <div key={reply._id}>
                     <PostItem
                       post={reply}

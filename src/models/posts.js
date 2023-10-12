@@ -30,6 +30,11 @@ const postSchema = new mongoose.Schema({
         ref: 'Post'
     }],
 
+    replyIds:[{
+      type:mongoose.Schema.Types.ObjectId,
+      ref: 'Post'
+    }],
+
     parentId:{
         type:mongoose.Schema.Types.ObjectId,
         ref: 'Post'

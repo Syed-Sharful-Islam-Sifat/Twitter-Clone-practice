@@ -9,24 +9,38 @@ export default async function handler(req,res){
           const postData = req.body;
 
           console.log(postData)
-          const post = await Post.findById(postId);
-          post.text = postData;
-          await post.save();
+          const post =  await Post.findById(postId)
 
-          return res.status(200).json(post);
+          post.text = postData;
+          await post.save();   
+          const updatedPost = await Post.findById(postId)
+                              .sort({createdAt:-1})
+                              .populate({
+                                path:"commentIds",
+                                model:"Post",
+                                options:{sort:{createdAt:-1}},
+                                populate:{
+                                  path: "commentIds",
+                                  model: "Post",
+                                  options:{sort:{createdAt:-1}}
+                                }
+
+                              })       
+          return res.status(200).json(updatedPost);
         }
 
         if(req.method==='DELETE'){
           await dbConnect();
           const {postId} = req.query;
           const deletePost = await Post.findById(postId);
-          
+          let mainPostId;
            if(deletePost.contentType==='reply'){
             const comment = await Post.findById(deletePost.parentId);
-            await comment.commentIds.pull(postId);
+            await comment.commentIds.pull(deletePost._id);
             await comment.save();
             const post = await Post.findById(comment.parentId);
-            post.commentIds.pull(comment._id);
+            post.commentIds.pull(deletePost._id);
+            mainPostId = post._id;
             await post.save();
            }
 
@@ -57,12 +71,11 @@ export default async function handler(req,res){
            }
 
            else{
+             
               const comments = await Post.find({parentId:deletePost._id});
-
               for(const comment of comments){
                   
-                const replies = Post.find({parentId:comment._id});
-
+                const replies = await Post.find({parentId:comment._id});
                 for(const reply of replies){
                    
                   await Post.findByIdAndDelete(reply._id);
@@ -72,10 +85,9 @@ export default async function handler(req,res){
                 await Post.findByIdAndDelete(comment._id);
               }
            }
-
         const deletedPost =   await Post.findByIdAndDelete(deletePost._id);
-          console.log(deletedPost)
-          return res.status(200).json(deletedPost)
+       
+          return res.status(200).json({deletedPost,mainPostId})
         }
 
         if(req.method==='GET'){

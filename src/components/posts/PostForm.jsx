@@ -63,7 +63,7 @@ const PostForm = ({
         console.log('reply-->',data);
         setText('')
         makeReplyFalse();
-        updatedPosts(data,parentId)
+        updatedPosts(data)
       }catch(error){
 
       }

@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         text,
         parentId
       });
-
+       let mainPostId;
       if(contentType!=='post'){
         const parentPost = await Post.findById(parentId);
 
@@ -32,39 +32,50 @@ export default async function handler(req, res) {
           const mainPost = await Post.findById({_id:parentPost.parentId});
           await mainPost.commentIds.push(post._id);
           await mainPost.save();
+          mainPostId = mainPost._id;
         }
       }
       const user = await User.findById(id);
 
       await user?.posts?.push(post?._id);
       await user.save();
-      return res.status(200).json(post);
+
+      const newPost = await Post.findById(post._id)
+                            .sort({createdAt:-1})
+                            .populate({
+                              path:"commentIds",
+                              model:"Post",
+                              options:{sort:{createdAt:-1}},
+                              populate:{
+                                path: "commentIds",
+                                model: "Post",
+                                options:{sort:{createdAt:-1}}
+                              }
+
+                            })
+      return res.status(200).json({newPost,parentId,mainPostId});
 
     }
 
     if (req.method === "GET") {
-      dbConnect();
-      const posts = await Post.find({contentType:'post'}).sort({ createdAt: -1 });
-      const allPosts = [];
+      await dbConnect();
 
-      const singlepost = [];
-      for(const post of posts){
-         
-        const comments = await Post.find({parentId:post._id}).sort({createdAt:-1});
-        const postWithComments = {...post.toObject(),comments:[]}
-      
-        for(const comment of comments){
-          const replies = await Post.find({parentId:comment._id}).sort({createdAt:-1});
-          const commentsWithReplies = {...comment.toObject(),replies:replies};
-          postWithComments.comments.push(commentsWithReplies);
-          
-        }
+      const posts = await Post.find({contentType:"post"})
+                    .sort({createdAt:-1})
+                    .populate({
+                      path:"commentIds",
+                      model:"Post",
+                      options:{sort:{createdAt:-1}},
+                      populate:{
+                        path: "commentIds",
+                        model: "Post",
+                        options:{sort:{createdAt:-1}}
+                      }
 
+                    })
       
-        allPosts.push(postWithComments);
-      //  console.log('allPosts',allPosts)
-      }
-      return res.status(200).json(allPosts);
+        console.log('allPosts',posts)
+      return res.status(200).json(posts);
     }
   } catch (error) {
     console.log(error);

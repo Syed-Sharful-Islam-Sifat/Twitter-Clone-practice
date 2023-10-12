@@ -6,16 +6,11 @@ export default async function handler(req, res) {
 
   if (req.method === 'PUT') {
     try {
-      // Fetch all existing documents
-      const posts = await Post.find();
-
-      // Update each document to populate the commentIds field
-      for (const post of posts) {
-        // You may need to customize this logic based on your data
-        // This is just a simple example
-        post.commentIds = [];
-        await post.save();
-      }
+     
+      await Post.updateMany(
+        {contentType:'comment'}, 
+        { $set: { replyIds: [] } } 
+      );
 
       return res.status(200).json({ message: 'Database updated successfully' });
     } catch (error) {

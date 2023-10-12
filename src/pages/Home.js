@@ -2,8 +2,9 @@ import Header from "@/components/Header";
 import { Head } from "next/document";
 import React, { useEffect, useState } from "react";
 import Form from "@/components/Form";
-import PostItem from "@/components/posts/PostItem";
+import PostFeed from "@/components/posts/PostFeed";
 import { BiSkipPrevious } from "react-icons/bi";
+import PostItem from "@/components/posts/PostItem";
 const Home = () => {
   const [posts, setPosts] = useState([]);
 
@@ -18,47 +19,60 @@ const Home = () => {
     setPosts(data);
   };
 
-  const updatedPosts = (newPost,parentId) => {
+  const updatedPosts = ({newPost,parentId,mainPostId}) => {
+
+    console.log('three',newPost,parentId,mainPostId);
    if(newPost.contentType==='post') setPosts((prevPosts) => [newPost, ...prevPosts]);
 
    else if(newPost.contentType==='comment'){
      setPosts((prevPosts)=>
       (prevPosts).map((post)=>{
         if(post._id===parentId){
-          const updatedPost = {...post};
+          const updatedPost = {
+            ...post,
+            commentIds:[newPost,...post.commentIds],
+          };
 
-          if(!updatedPost.comments)updatedPost.comments=[];
-
-          updatedPost.comments=[newPost,...updatedPost.comments]
           return updatedPost;
         }
 
-        else return post
+        else{
+          return post;
+        }
       })
      )
-   }else{
-      setPosts((prevPosts)=>
-        (prevPosts).map((post)=>{
-          const updatedPost = {...post};
-          if(!updatedPost.comments)updatedPost.comments=[];
 
-          updatedPost.comments = updatedPost.comments.map((comment)=>{
-            if(comment._id===parentId){
-              const updatedComment = {...comment};
-              if(!updatedComment.replies)updatedComment.replies = [];
-              updatedComment.replies = [newPost,...updatedComment.replies];
-              return updatedComment;
-            }else{
-              return comment
-            }
-          })
+     console.log('creating',posts,newPost)
+   }else {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        const updatedComments = post.commentIds.map((comment) => {
+          if (comment._id === parentId) {
+            const updatedReplies = [newPost, ...comment.commentIds];
+           
+            return { ...comment, commentIds: updatedReplies };
+          } else {
+            return comment;
+          }
+        });
 
-          return updatedPost;
-        })
-      )}
+        if(post._id===mainPostId){
+          return {...post,commentIds: [newPost,...updatedComments]};
+        }
+          
+        else
+        return { ...post, commentIds: updatedComments };
+        
+
+      })
+    );
+  }
+
+      console.log('Home.js',posts)
   };
 
   const handleEdit = (updatedPost,type) => {
+    console.log('on handle edit',updatedPost,type);
    setPosts((prevPosts)=>
     (prevPosts).map((post)=>{
         if(type==='post'){
@@ -68,55 +82,67 @@ const Home = () => {
         }
 
         else if(type=='comment'){
-          const updatedComments = post?.comments?.map((comment)=>{
+          const updatedComments = post?.commentIds?.map((comment)=>{
             if(comment._id===updatedPost._id)return updatedPost;
             return comment;
           })
 
-          return {...post,comments:updatedComments}
+          return {...post,commentIds:updatedComments}
         }
 
         else{
-          const updatedComments = post.comments.map((comment)=>{
-            const updatedReplies = comment.replies.map((reply)=>{
+          const updatedComments = post.commentIds.map((comment)=>{
+            const updatedReplies = comment.commentIds.map((reply)=>{
               if(reply._id===updatedPost._id)return updatedPost;
               return reply;
             })
-            return {...comment,replies:updatedReplies}
+            return {...comment,commentIds:updatedReplies}
           })
-
-          return {...post,comments:updatedComments}
+          
+          return {...post,commentIds:updatedComments}
         }
     })
    )
+
+   console.log('after update on edit',posts)
   };
 
-  const handleDelete = (deletedPost) => {
+  const handleDelete = ({deletedPost,mainPostId}) => {
    // console.log('deletedPost , parentId',deletedPost,parentId)
      setPosts((prevPosts)=>{
-         if(deletedPost.contentType==='post'){
+         if(deletedPost?.contentType==='post'){
           return prevPosts.filter((post)=>post?._id!==deletedPost?._id)
          }else{
            return prevPosts.map((post)=>{
-            if(deletedPost.contentType==='comment'){
+            if(deletedPost?.contentType==='comment'){
               if(post._id===deletedPost.parentId){
-                const updatedComments = post.comments.filter((comment)=>comment._id!==deletedPost._id)
-                return {...post,comments:updatedComments}
+                const updatedComments = post.commentIds.filter((comment)=>(comment._id!==deletedPost._id)&&(deletedPost._id!==comment.parentId))
+                console.log('comment delete',updatedComments);
+                return {...post,commentIds:updatedComments}
               }else{
                 return post;
               }
-            }else if (deletedPost.contentType === 'reply') {
-             
-              const updatedComments = post.comments.map((comment) => {
+            }else if (deletedPost?.contentType === 'reply') {
+              const updatedComments = post.commentIds.map((comment) => {
                 if (comment._id === deletedPost.parentId) {
-                  const updatedReplies = comment.replies.filter((reply) => reply._id !== deletedPost._id);
-                  return { ...comment, replies: updatedReplies };
+                  const updatedReplies = comment.commentIds.filter((reply) => reply._id !== deletedPost._id);
+                  return { ...comment, commentIds: updatedReplies };
                 } else {
                   return comment;
                 }
               });
-              return { ...post, comments: updatedComments };
+            
+              const updatedPost = {
+                ...post,
+                commentIds: updatedComments,
+              };
+            
+              // Filter out deletePost from post.commentIds
+              updatedPost.commentIds = updatedPost.commentIds.filter((comment) => comment._id !== deletedPost._id);
+            
+              return updatedPost;
             }
+            
            })
          }
      })
