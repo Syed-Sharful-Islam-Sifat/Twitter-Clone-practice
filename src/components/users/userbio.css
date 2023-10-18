@@ -1,0 +1,50 @@
+.bio-container{
+    border-bottom: 1px solid #000;
+    border-color: rgb(38 38 38);
+    padding-bottom: 1rem; 
+    
+    
+}
+.follow{
+display: flex; 
+padding: 0.5rem; 
+justify-content: flex-end;
+
+}
+
+.user-bio{
+display: flex;
+flex-direction: column;  
+gap: 1rem;  
+padding-left: 1rem;
+padding-right: 1rem; 
+margin-top: 2rem; 
+}
+
+.username{
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar{
+    display: flex; 
+margin-top: 1rem; 
+flex-direction: row; 
+gap: 0.5rem; 
+align-items: center; 
+}
+
+.follow-count{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap:0.5rem;
+}
+
+.following-number{
+    color:rgb(115 115 115);
+}
+
+.join-date{
+    color: rgb(115 115 115);
+}

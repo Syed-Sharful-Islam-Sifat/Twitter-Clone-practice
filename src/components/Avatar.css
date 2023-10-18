@@ -1,12 +1,25 @@
-.Image-container{
+.Image-container-big{
 position: relative; 
 border-radius:100%;
 transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 transition-duration: 300ms; 
 cursor: pointer; 
 background-color: white;
+height: 50px;
+width: 50px;
 }
 
-.Image-container:hover{
+.Image-container-small{
+    position: relative; 
+    border-radius:100%;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms; 
+    cursor: pointer; 
+    background-color: white;
+    height: 50px;
+    width: 50px;
+    }
+    
+.Image-container-big,.Image-container-small:hover{
     opacity: 0.9;
 }

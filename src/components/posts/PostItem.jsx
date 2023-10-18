@@ -21,12 +21,13 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
   const[commentReply,setCommentReply] = useState(false);
   const [count, setCount] = useState(0);
   const [postComments, setPostComments] = useState([]);
-
+  const[user,setUser] = useState();
   const postId = post?._id;
   useEffect(() => {
     fetchData();
     console.log("useEffect likes ran");
     verifyPost();
+    fetchUser();
 
   }, []);
 
@@ -37,6 +38,12 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
     })
   }
 
+  
+  const fetchUser = async ()=>{
+    const res = await fetch(`/api/users/${session.id}`);
+    const data = await res.json();
+    setUser(data);
+  }
   const fetchData = async () => {
     try {
       const res = await fetch(`http://localhost:3000/api/likes/${postId}`);
@@ -135,8 +142,8 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
   return (
     <div className="post-container">
       <div className={type}>
-        <Avatar />
-        <div>
+        <div className="user-profile-container">
+          <Avatar user={user} isLarge={false} profilePhoto={user?.profileImage}/>
           <div className="user-profile">
             <p className="name">{session?.user?.name}</p>
             <span className="at-name">@{session?.user?.name}</span>

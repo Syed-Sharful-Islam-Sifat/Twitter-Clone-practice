@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Avatar from './Avatar'
 import { useState } from 'react'
 import Button from './Button'
 import { toast } from 'react-toast'
+import { useSession } from 'next-auth/react'
 const Form = ({placeholder,updatedPosts}) => {
+
+    const [user,setUser] = useState();
 
     const [postData,setPostData] = useState({
       text:'',
@@ -16,6 +19,18 @@ const Form = ({placeholder,updatedPosts}) => {
         text: e.target.value
        })
     })
+
+    useEffect(()=>{
+    fetchUser();
+    },[])
+  
+    const {data:session} = useSession();
+
+  const fetchUser = async()=>{
+   const res = await fetch(`/api/users/${session.id}`);
+   const data = await res.json();
+   setUser(data);
+  }
   const onSubmit = async()=>{
     try{
 
@@ -43,8 +58,8 @@ const Form = ({placeholder,updatedPosts}) => {
     <div className='Form-Container'>
        <div className='Form-Elements'>
          
-         <div>
-            <Avatar/>
+         <div className='avatar'>
+            <Avatar user={user} isLarge={false} profilePhoto={user?.profileImage}/>
          </div>
 
          <div className='Form-text'>

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "../Avatar";
 import Button from "../Button";
+import { useSession } from "next-auth/react";
 const PostForm = ({
   placeholder,
   postText,
@@ -15,10 +16,25 @@ const PostForm = ({
   updatedPosts
 }) => {
   const [text,setText] = useState(postText);
-
+  const[user,setUser] = useState()
   const textChange = (e) => {
     setText(e.target.value);
   };
+
+  const {data:session} = useSession();
+
+  useEffect(()=>{
+     fetchUser();
+     console.log('on PostForm',user)
+  },[])
+
+  const fetchUser = async ()=>{
+    const res = await fetch(`/api/users/${session.id}`);
+
+    const data = await res.json();
+    setUser(data);
+    console.log('fetchUser',user)
+  }
 
   const onSubmit = async () => {
     console.log(contentType, postId, text);
@@ -77,7 +93,7 @@ const PostForm = ({
       <div className="Form-Container">
         <div className="Form-Elements">
           <div>
-            <Avatar />
+            <Avatar user={user} isLarge={false} profilePhoto={user?.profileImage}/>
           </div>
 
           <div className="Form-text">

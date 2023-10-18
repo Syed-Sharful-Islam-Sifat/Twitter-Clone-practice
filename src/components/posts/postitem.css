@@ -121,3 +121,9 @@
     opacity: 0.9;
     pointer-events: none;
 }
+.user-profile-container{
+ display: flex;
+ flex-direction: row;
+ gap: 1rem;
+ margin-bottom: 20px;
+}

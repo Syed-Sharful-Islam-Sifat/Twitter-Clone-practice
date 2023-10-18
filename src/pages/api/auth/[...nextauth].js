@@ -41,7 +41,9 @@ export const authOptions = {
             if(user){
                 return{
                     ...token,
-                    id:user._id
+                    id:user._id,
+                    profileImage:user.profileImage,
+                    coverPhoto: user.coverPhoto
                 }
             }
             return token
@@ -50,7 +52,9 @@ export const authOptions = {
             
             return{
                 ...session,
-                 id:token.id
+                 id:token.id,
+                 profileImage:token.profileImage,
+                 coverPhoto:token.coverPhoto
             };
             return session;
         }

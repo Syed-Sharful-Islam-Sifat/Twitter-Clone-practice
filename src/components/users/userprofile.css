@@ -1,0 +1,13 @@
+.user-image{
+    position: relative;
+    height: 11rem;
+    background-color: rgb(64 64 64);
+}
+
+.profile-image{
+position: absolute; 
+left: 1rem; 
+bottom: -4rem; 
+top: 9rem;
+
+}
