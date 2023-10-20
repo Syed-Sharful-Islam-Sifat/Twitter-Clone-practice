@@ -39,12 +39,35 @@ align-items: center;
     flex-direction: row;
     align-items: center;
     gap:0.5rem;
+    justify-self: start;
 }
 
 .following-number{
     color:rgb(115 115 115);
+    cursor: pointer;
 }
 
 .join-date{
     color: rgb(115 115 115);
+}
+
+.follow{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    left: 2rem;
+ 
+}
+
+.followers{
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+   
+
+}
+.followers-number{
+  color:rgb(115 115 115);
+  cursor: pointer;
+
 }

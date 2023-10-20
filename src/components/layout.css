@@ -22,4 +22,5 @@
 .main-content{
     border-left: 1px solid rgb(38 38 38);
     border-right: 1px solid rgb(38 38 38);
+    position: relative;
 }

@@ -5,24 +5,54 @@ import Button from "../Button";
 import { BiCalendar } from "react-icons/bi";
 import Modal from "../auth/Modal";
 import EditModal from "./EditModal";
+import { useRouter } from "next/router";
 const UserBio = ({ user  , handleCoverChange , handleProfileChange}) => {
   const { data: session } = useSession();
-  const [isFollowing, setIsFollowing] = useState(null);
+  const [isFollowing, setIsFollowing] = useState();
+  const[followCount,setFollowCount]  = useState(user?.followingIds?.length);
   const [editOpen, setEditOpen] = useState(false);
+  const[followers,setFollowers] = useState(0);
 
-
+  const router = useRouter();
   useEffect(() => {
     fetchFollow();
-  }, [isFollowing]);
+  }, []);
+
+  const showFollowing = async (e)=>{
+    e.stopPropagation()
+    router.push(`/following/${user._id}`);
+  }
+  const showFollowers = async (e)=>{
+    e.stopPropagation()
+    router.push(`/followers/${user._id}`);
+  }
 
   const fetchFollow = async () => {
-    const res = await fetch(`http://localhost:3000/api/follow/isFollowing/${user?._id}`);
+    const res = await fetch(`http://localhost:3000/api/follow/${user?._id}`);
     const data = await res.json();
+
+    const response = await  fetch(`http://localhost:3000/api/followers/${user?._id}`);
+
+    const users = await response.json();
     setIsFollowing(data);
+    setFollowers(users.length);
   };
 
-  const toggleFollow = () => {
-    setIsFollowing(!isFollowing);
+  const toggleFollow = async() => {
+    console.log('togglefollow ran');
+    const res = await fetch(`/api/follow/${user?._id}`,{
+      method: 'PATCH'
+    });
+    const data = await res.json();
+    
+    setFollowCount(data?.followCount)
+    setIsFollowing(data?.hasfollowed);
+
+    if(isFollowing)setFollowers(followers-1);
+
+    else
+       setFollowers(followers+1)
+
   };
   const createdAt = () => {
     if (!user?.createdAt) {
@@ -43,11 +73,7 @@ const UserBio = ({ user  , handleCoverChange , handleProfileChange}) => {
             <button onClick={() => setEditOpen(true)}>Edit</button>
           )
         ) : (
-          <Button
-            onClick={toggleFollow}
-            label={isFollowing ? "Unfollow" : "Follow"}
-            body={true}
-          />
+          <button onClick={toggleFollow}>{isFollowing?'Unfollow':'Follow'}</button>
         )}
       </div>
 
@@ -62,12 +88,12 @@ const UserBio = ({ user  , handleCoverChange , handleProfileChange}) => {
           <p className="join-date">Joined {createdAt()}</p>
         </div>
 
-        <div className="follow-count">
+        <div className="follow-count" onClick={showFollowing}>
           <p>{user?.followingIds?.length}</p>
-          <p className="following-number">Following</p>
+          <p className="following-number" onClick={(e)=>showFollowing}>Following</p>
 
-          <p>0</p>
-          <p className="following-number">Followers</p>
+          <p>{followers}</p>
+          <p className="following-number" onClick={showFollowers}>Followers</p>
         </div>
       </div>
     </div>

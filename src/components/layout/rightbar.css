@@ -24,12 +24,12 @@ color: #ffffff;
     flex-direction: row;
     gap:.5rem;
     margin-bottom: 10px;
+    cursor: pointer;
 }
 
 .user-profile{
     display: flex;
     flex-direction:column;
-  
 }
 
 .user-name{

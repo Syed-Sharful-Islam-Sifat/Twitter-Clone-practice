@@ -7,6 +7,10 @@ const postSchema = new mongoose.Schema({
         ref: 'User',
        
     },
+    name:{
+        type:String,
+        ref: 'User'
+    },
     contentType:{
         type: String ,
         enum:['post','comment','reply'],

@@ -145,8 +145,8 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
         <div className="user-profile-container">
           <Avatar user={user} isLarge={false} profilePhoto={user?.profileImage}/>
           <div className="user-profile">
-            <p className="name">{session?.user?.name}</p>
-            <span className="at-name">@{session?.user?.name}</span>
+            <p className="name">{post?.name}</p>
+            <span className="at-name">@{post?.name}</span>
             <span className="time">{post?.createdAt}</span>
           </div>
         </div>

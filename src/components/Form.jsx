@@ -7,11 +7,15 @@ import { useSession } from 'next-auth/react'
 const Form = ({placeholder,updatedPosts}) => {
 
     const [user,setUser] = useState();
-
+    
+    const {data:session} = useSession();
     const [postData,setPostData] = useState({
+      name:session.user.name,
       text:'',
       contentType:'post'
     })
+
+  
 
     const textChange = ((e)=>{
        setPostData({
@@ -24,7 +28,6 @@ const Form = ({placeholder,updatedPosts}) => {
     fetchUser();
     },[])
   
-    const {data:session} = useSession();
 
   const fetchUser = async()=>{
    const res = await fetch(`/api/users/${session.id}`);

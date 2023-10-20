@@ -2,6 +2,8 @@
     position: relative;
     height: 11rem;
     background-color: rgb(64 64 64);
+    display: flex;
+    justify-content: center;
 }
 
 .profile-image{

@@ -1,0 +1,13 @@
+.follow_container{
+    background-color: rgb(23,23,23);
+    width: 100%;
+}
+
+.item{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 10px;
+    align-items: center;
+    cursor: pointer;
+}
