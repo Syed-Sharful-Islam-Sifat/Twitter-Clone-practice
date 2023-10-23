@@ -18,32 +18,35 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
   const [edit, setEdit] = useState(false);
   const [comment, setComment] = useState(false);
   const [reply, setReply] = useState(false);
-  const[commentReply,setCommentReply] = useState(false);
+  const [commentReply, setCommentReply] = useState(false);
   const [count, setCount] = useState(0);
   const [postComments, setPostComments] = useState([]);
-  const[user,setUser] = useState();
+  const [user, setUser] = useState();
   const postId = post?._id;
+  const { data: session } = useSession();
+  if (post.contentType) {
+    console.log("sifat post", post);
+  }
   useEffect(() => {
     fetchData();
     console.log("useEffect likes ran");
     verifyPost();
     fetchUser();
-
   }, []);
 
+  const verifyPost = () => {
+    post?.comments?.map((comment) => {
+      console.log("verify post", comment);
+    });
+  };
 
-  const verifyPost = ()=>{
-    post?.comments?.map((comment)=>{
-      console.log('verify post',comment)
-    })
-  }
+  console.log("sessssssionid and useId", session.id, post.userId);
 
-  
-  const fetchUser = async ()=>{
+  const fetchUser = async () => {
     const res = await fetch(`/api/users/${session.id}`);
     const data = await res.json();
     setUser(data);
-  }
+  };
   const fetchData = async () => {
     try {
       const res = await fetch(`http://localhost:3000/api/likes/${postId}`);
@@ -56,13 +59,9 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
     }
   };
 
-  const { data: session } = useSession();
-
   console.log(session?.user);
 
   const { id } = session;
-
-
 
   const LikeIcons = hasLiked ? AiFillHeart : AiOutlineHeart;
   console.log("rendered");
@@ -81,7 +80,6 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
     setLikes(data?.likesCount);
     setHasLiked(data?.hasLiked);
   };
-
 
   const handleComment = (e) => {
     e.stopPropagation();
@@ -106,26 +104,26 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
   const handleEditFormClick = async (e) => {
     e.stopPropagation();
   };
-   
-  useEffect(()=>{
-    console.log('commentReply reply',commentReply,reply);
-    console.log(post)
+
+  useEffect(() => {
+    console.log("commentReply reply", commentReply, reply);
+    console.log(post);
     console.log(post?.commentIds);
-  },[reply,commentReply])
+  }, [reply, commentReply]);
 
   const handlePostComment = (e) => {
     e.stopPropagation();
     setReply(!reply);
-    console.log('on handleReply',post);
+    console.log("on handleReply", post);
   };
 
-  const handlePostReply = (e)=>{
+  const handlePostReply = (e) => {
     e.stopPropagation();
     setCommentReply(!commentReply);
-  }
+  };
   const onDelete = async () => {
     try {
-      const res = await fetch(`api/posts/${postId}`, {
+      const res = await fetch(`http://localhost:3000/api/posts/${postId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -143,7 +141,11 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
     <div className="post-container">
       <div className={type}>
         <div className="user-profile-container">
-          <Avatar user={user} isLarge={false} profilePhoto={user?.profileImage}/>
+          <Avatar
+            user={post.userId}
+            isLarge={false}
+            profilePhoto={post?.userId?.profileImage}
+          />
           <div className="user-profile">
             <p className="name">{post?.name}</p>
             <span className="at-name">@{post?.name}</span>
@@ -154,28 +156,38 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
         <div className="text">{post?.text}</div>
 
         <div className="icons">
-          {post?.contentType!=='reply'?(
+          {post?.contentType !== "reply" ? (
             <div className="comment" onClick={handleComment}>
-            <AiOutlineMessage size={20} className={edit ? "" : "disabled"} />
-            <div className="commentsId" onClick={post?.contentType==='post'? handlePostComment:handlePostReply}>
-              <p>{post?.commentIds?.length}</p>
+              <AiOutlineMessage size={20} className={edit ? "" : "disabled"} />
+              <div
+                className="commentsId"
+                onClick={
+                  post?.contentType === "post"
+                    ? handlePostComment
+                    : handlePostReply
+                }
+              >
+                <p>{post?.commentIds?.length}</p>
+              </div>
             </div>
-          </div>
-          ):null}
-
+          ) : null}
 
           <div className="like" onClick={userLiked}>
             <LikeIcons size={20} color={hasLiked ? "deeppink" : ""} />
             <p>{likes}</p>
           </div>
 
-          <div className="edit" onClick={onEdit}>
-            <AiOutlineEdit size={20} className={comment ? "" : "disabled"} />
-          </div>
+          {session.id === post.userId._id ? (
+            <div className="edit" onClick={onEdit}>
+              <AiOutlineEdit size={20} className={comment ? "" : "disabled"} />
+            </div>
+          ) : null}
 
-          <div className="delete" onClick={onDelete}>
-            <AiOutlineDelete size={20} />
-          </div>
+          {session.id === post.userId._id ? (
+            <div className="delete" onClick={onDelete}>
+              <AiOutlineDelete size={20} />
+            </div>
+          ) : null}
         </div>
 
         {edit ? (
@@ -185,6 +197,7 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
               postText={post?.text}
               label={"Save"}
               type={"edit"}
+              name={post?.name}
               contetType={post?.contentType}
               postId={postId}
               makeEditFalse={makeEditFalse}
@@ -198,7 +211,7 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
         {comment ? (
           <div className="post-container" onClick={handleEditFormClick}>
             <PostForm
-              placeholder={`Reply to @${session?.user?.name}`}
+              placeholder={`Reply to @${post?.name}`}
               postText={""}
               label={"Reply"}
               type={"post"}
@@ -214,19 +227,19 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
       </div>
       {reply &&
         post?.commentIds?.map((comment) => {
-          console.log('reply',post,comment)
+          console.log("reply", post, comment.userId);
           return (
             <div key={comment._id}>
-              {comment.contentType==='comment'?(
-                
-              <PostItem
-                post={comment}
-                handleDelete={handleDelete}
-                handleEdit={handleEdit}
-                updatedPosts={updatedPosts}
-                type={"posts-comments"}
-              />):null}
-              
+              {comment.contentType === "comment" ? (
+                <PostItem
+                  post={comment}
+                  handleDelete={handleDelete}
+                  handleEdit={handleEdit}
+                  updatedPosts={updatedPosts}
+                  type={"posts-comments"}
+                />
+              ) : null}
+
               {reply &&
                 comment.commentIds.map((reply) => (
                   <div key={reply._id}>

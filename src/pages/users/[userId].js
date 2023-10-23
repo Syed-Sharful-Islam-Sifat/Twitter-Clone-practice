@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import UserProfile from '@/components/users/UserProfile';
 import UserBio from '@/components/users/UserBio';
+import Home from '../Home';
 const User = () => {
    
     const router = useRouter();
@@ -34,6 +35,7 @@ const User = () => {
         <>
           <Header label={user?.name} />
           <UserProfile user={user}/>
+          <Home ownProfile={true} userId={userId}/>
         </>
        );
 }

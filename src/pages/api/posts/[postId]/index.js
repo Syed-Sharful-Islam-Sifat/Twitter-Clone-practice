@@ -3,11 +3,11 @@ import Post from "@/models/posts";
 export default async function handler(req,res){
   
     try{
-        if(req.method==='PATCH'){
+        if(req.method==='PUT'){
           dbConnect();
           const {postId} = req.query;
           const postData = req.body;
-
+          console.log('post dat',postData)
           console.log(postData)
           const post =  await Post.findById(postId)
 
@@ -16,14 +16,31 @@ export default async function handler(req,res){
           const updatedPost = await Post.findById(postId)
                               .sort({createdAt:-1})
                               .populate({
+                                path: 'userId',
+                                model: 'User'
+                              })
+                              .populate({
                                 path:"commentIds",
                                 model:"Post",
                                 options:{sort:{createdAt:-1}},
-                                populate:{
-                                  path: "commentIds",
-                                  model: "Post",
-                                  options:{sort:{createdAt:-1}}
-                                }
+                                populate: [
+                                  {
+                                    path: 'userId',
+                                    model: 'User'
+                                  },
+                                  {
+                                    path: 'commentIds',
+                                    model: 'Post',
+                                    options: { sort: { createdAt: -1 } },
+                                    populate: [
+                                      {
+                                        path: 'userId',
+                                        model: 'User'
+                                      }
+                                     
+                                    ]
+                                  }
+                                ]
 
                               })       
           return res.status(200).json(updatedPost);

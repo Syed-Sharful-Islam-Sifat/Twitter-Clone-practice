@@ -5,8 +5,11 @@ import Form from "@/components/Form";
 import PostFeed from "@/components/posts/PostFeed";
 import { BiSkipPrevious } from "react-icons/bi";
 import PostItem from "@/components/posts/PostItem";
-const Home = () => {
+import { useSession } from "next-auth/react";
+const Home = ({ownProfile,userId}) => {
   const [posts, setPosts] = useState([]);
+
+  const {data:session} = useSession();
 
   useEffect(() => {
     fetchData();
@@ -14,15 +17,26 @@ const Home = () => {
   }, []);
 
   const fetchData = async () => {
-    const res = await fetch("api/posts");
+
+    if(ownProfile){
+      const res = await fetch(`http://localhost:3000/api/users/posts/${userId}`);
+      const data = await res.json();
+      setPosts(data.posts);
+    }
+
+    else{
+    const res = await fetch(`http://localhost:3000/api/posts`);
     const data = await res.json();
-    console.log("data on homepage", data);
     setPosts(data.followedPosts);
+    console.log("data on homepage", data);
+   
+    }
   };
 
   const updatedPosts = ({ newPost, parentId, mainPostId }) => {
+
     console.log("three", newPost, parentId, mainPostId);
-    if (newPost.contentType === "post")
+    if (newPost.contentType === "post"&&ownProfile)
       setPosts((prevPosts) => [newPost, ...prevPosts]);
     else if (newPost.contentType === "comment") {
       setPosts((prevPosts) =>
@@ -146,8 +160,8 @@ const Home = () => {
 
   return (
     <>
-      <Header label="Home" />
-      <Form placeholder="What Is Happening?!" updatedPosts={updatedPosts} />
+      {!ownProfile?(<Header label="Home" />):null}
+      {!ownProfile?<Form placeholder="What Is Happening?!" updatedPosts={updatedPosts} />:null} 
       {posts
         ?.filter((post) => post.contentType === "post")
         .map((post) => (

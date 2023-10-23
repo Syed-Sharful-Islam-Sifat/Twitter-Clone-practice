@@ -4,6 +4,8 @@ import { useState } from 'react'
 import Button from './Button'
 import { toast } from 'react-toast'
 import { useSession } from 'next-auth/react'
+import { AiFillFileImage } from 'react-icons/ai'
+import PostImage from './posts/PostImage'
 const Form = ({placeholder,updatedPosts}) => {
 
     const [user,setUser] = useState();
@@ -12,11 +14,14 @@ const Form = ({placeholder,updatedPosts}) => {
     const [postData,setPostData] = useState({
       name:session.user.name,
       text:'',
-      contentType:'post'
+      contentType:'post',
+      Image: ''
     })
 
   
-
+    const onImageUpload = ()=>{
+      
+    }
     const textChange = ((e)=>{
        setPostData({
         ...postData,
@@ -71,9 +76,15 @@ const Form = ({placeholder,updatedPosts}) => {
             </textarea>
 
             <hr className='hr'/>
+            <div className='tweet-image-upload' onClick={onImageUpload}>
+              <PostImage/>
+            </div>
+
             <div className='post-button'>
               <Button label="Post" onClick={onSubmit} body={postData.text}/>
             </div>
+
+    
          </div>
        </div>
     </div>

@@ -61,16 +61,19 @@ const UserBio = ({ user  , handleCoverChange , handleProfileChange}) => {
 
     return format(new Date(user.createdAt), "MMMM yyyy");
   };
+  const handleEdit = ()=>{
+    setEditOpen(!editOpen)
+  }
 
   return (
     <div className="bio-container">
       <div className="follow">
         {session.id === user?._id ? (
           editOpen ? (
-              <EditModal user = {user} handleCoverChange={handleCoverChange} handleProfileChange={handleProfileChange}/>
+              <EditModal user = {user} handleCoverChange={handleCoverChange} handleProfileChange={handleProfileChange} handleEdit={handleEdit}/>
             
           ) : (
-            <button onClick={() => setEditOpen(true)}>Edit</button>
+            <button onClick={handleEdit}>Edit</button>
           )
         ) : (
           <button onClick={toggleFollow}>{isFollowing?'Unfollow':'Follow'}</button>

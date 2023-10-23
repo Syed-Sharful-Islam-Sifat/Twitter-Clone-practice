@@ -33,7 +33,7 @@ export default async function handler(req, res) {
       await fs.mkdir(path.join(process.cwd() + "/public", "/images"));
     }
     const result = await readFile(req, true);
-    let profileImage, coverPhoto;
+    let profileImage, coverPhoto,tweetPhoto;
     if (result?.files?.profile_photo) {
       profileImage = result.files.profile_photo[0]?.newFilename;
     }
@@ -42,7 +42,12 @@ export default async function handler(req, res) {
       coverPhoto = result.files.cover_photo[0]?.newFilename;
     }
 
-    console.log(profileImage, coverPhoto);
-    res.status(200).json({ profileImage, coverPhoto });
+    if(result?.files?.tweet_Photo){
+        tweetPhoto = result.files.tweet_Photo[0].newFilename;
+        return res.status(200).json({tweetPhoto})
+    }
+
+  
+   return res.status(200).json({ profileImage, coverPhoto });
   }
 }

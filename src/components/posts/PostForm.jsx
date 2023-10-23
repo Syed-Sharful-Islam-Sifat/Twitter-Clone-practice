@@ -6,6 +6,7 @@ const PostForm = ({
   placeholder,
   postText,
   label,
+  name,
   contentType,
   type,
   postId,
@@ -41,11 +42,9 @@ const PostForm = ({
 
     let parentId = postId;
 
-    console.log('replying-->',contentType,parentId,text);
-
     if (type === "edit") {
       const res = await fetch(`http://localhost:3000/api/posts/${postId}`, {
-        method: "PATCH",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -56,12 +55,16 @@ const PostForm = ({
       console.log('edited',data.contentType)
       
       
-      console.log(data);
+      console.log('editeeeeeeeeeeeeeeed data',data);
       makeEditFalse();
       handleEdit(data,data.contentType);
       
       
     } else {
+
+      const name = session?.user?.name;
+
+      console.log('on Postform',name)
 
         if(contentType==='post')contentType = 'comment'
          else
@@ -73,7 +76,7 @@ const PostForm = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({parentId,contentType,text}),
+          body: JSON.stringify({parentId,contentType,text,name}),
         });
         const data = await res.json();
         console.log('reply-->',data);

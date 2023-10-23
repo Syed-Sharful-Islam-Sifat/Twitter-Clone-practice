@@ -43,15 +43,33 @@ export default async function handler(req, res) {
       const newPost = await Post.findById(post._id)
         .sort({ createdAt: -1 })
         .populate({
-          path: "commentIds",
-          model: "Post",
-          options: { sort: { createdAt: -1 } },
-          populate: {
-            path: "commentIds",
-            model: "Post",
-            options: { sort: { createdAt: -1 } },
-          },
-        });
+          path: 'userId',
+          model: 'User'
+        })
+        .populate({
+          path:"commentIds",
+          model:"Post",
+          options:{sort:{createdAt:-1}},
+          populate: [
+            {
+              path: 'userId',
+              model: 'User'
+            },
+            {
+              path: 'commentIds',
+              model: 'Post',
+              options: { sort: { createdAt: -1 } },
+              populate: [
+                {
+                  path: 'userId',
+                  model: 'User'
+                }
+               
+              ]
+            }
+          ]
+
+        })
       return res.status(200).json({ newPost, parentId, mainPostId });
     }
 
@@ -64,39 +82,41 @@ export default async function handler(req, res) {
 
       const followingIds = user.followingIds;
 
-      const posts = await Post.find({contentType:'post'})
-        .sort({ createdAt: -1 })
-        .populate({
-          path: "commentIds",
-          model: "Post",
-          options: { sort: { createdAt: -1 } },
-          populate: {
-            path: "commentIds",
-            model: "Post",
-            options: { sort: { createdAt: -1 } },
-          },
-        })
-
-
+  
       const followedPosts = await Post.find({
            userId: { $in: followingIds },
            contentType: 'post'
       })
         .sort({ createdAt: -1 })
         .populate({
+          path: 'userId',
+          model: 'User'
+        })
+        .populate({
           path: "commentIds",
           model: "Post",
           options: { sort: { createdAt: -1 } },
-          populate: {
-            path: "commentIds",
-            model: "Post",
-            options: { sort: { createdAt: -1 } },
-          },
+          populate: [
+            {
+              path: 'userId',
+              model: 'User'
+            },
+            {
+              path: 'commentIds',
+              model: 'Post',
+              options: { sort: { createdAt: -1 } },
+              populate: [
+                {
+                  path: 'userId',
+                  model: 'User'
+                }
+                // Add more population as needed for deeper nesting
+              ]
+            }
+          ]
         })
-       
-
-      console.log("allPosts", posts);
-      return res.status(200).json({posts,followedPosts});
+  
+      return res.status(200).json({followedPosts});
     }
   } catch (error) {
     console.log(error);
