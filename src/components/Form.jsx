@@ -9,19 +9,89 @@ import PostImage from './posts/PostImage'
 const Form = ({placeholder,updatedPosts}) => {
 
     const [user,setUser] = useState();
+
+    const [tweetFile,setTweetFile] = useState(null);
     
     const {data:session} = useSession();
     const [postData,setPostData] = useState({
       name:session.user.name,
       text:'',
       contentType:'post',
-      Image: ''
+      image: ''
     })
 
   
-    const onImageUpload = ()=>{
-      
+    const onSubmit = async (e) => {
+    
+      e.preventDefault();
+
+      try{
+         const formData = new FormData();
+
+         if(tweetFile){
+            formData.append('tweet_photo',tweetFile);
+         }
+         
+         const res = await fetch('http://localhost:3000/api/upload',{
+            method: 'POST',
+            body: formData
+         })
+
+         
+         
+         
+         if(res.ok){
+           const imageFiles = await res.json();
+           const updatedData =  {
+             data: imageFiles
+           }
+           
+           console.log('imageFiles--------------------->',imageFiles);
+
+           setPostData({
+            ...postData,
+            image: imageFiles.tweetPhoto
+           })
+
+           const response = await fetch('api/posts',{
+            method: 'POST',
+            headers:{
+              'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(postData)
+           })
+
+           const data = await response.json();
+           updatedPosts(data);
+         }
+
+      }catch(error){
+        
+      }
+  };
+
+  useEffect(()=>{
+    console.log('rendered form page',tweetFile)
+  },[tweetFile])
+
+  const onCancel = (event)=>{
+    setTweetFile(null);
+   
+  }
+
+  const handleTweetFile = (event)=>{
+
+    console.log( 'on form',event)
+    if(event.target.files){
+     const file = event.target.files[0];
+     console.log('file----->',file)
+     setTweetFile(file);
+     
     }
+
+    event.target.value=''
+  }
     const textChange = ((e)=>{
        setPostData({
         ...postData,
@@ -39,29 +109,29 @@ const Form = ({placeholder,updatedPosts}) => {
    const data = await res.json();
    setUser(data);
   }
-  const onSubmit = async()=>{
-    try{
+  // const onSubmit = async()=>{
+  //   try{
 
-      const res = await fetch('api/posts',{
-       method: "POST",
-       headers:{
-         'Content-Type': 'application/json'
-       },
-       body: JSON.stringify(postData)
-      })
-     const data = await res.json();
-     console.log('data--->',data);
-     toast.success('Posted');
-     updatedPosts(data);
+  //     const res = await fetch('api/posts',{
+  //      method: "POST",
+  //      headers:{
+  //        'Content-Type': 'application/json'
+  //      },
+  //      body: JSON.stringify(postData)
+  //     })
+  //    const data = await res.json();
+  //    console.log('data--->',data);
+  //    toast.success('Posted');
+  //    updatedPosts(data);
      
-     setPostData({
-      ...postData,
-      text: ''
-     })
-    }catch(error){
-      console.log(error)
-    }
-  }
+  //    setPostData({
+  //     ...postData,
+  //     text: ''
+  //    })
+  //   }catch(error){
+  //     console.log(error)
+  //   }
+  // }
   return (
     <div className='Form-Container'>
        <div className='Form-Elements'>
@@ -76,8 +146,8 @@ const Form = ({placeholder,updatedPosts}) => {
             </textarea>
 
             <hr className='hr'/>
-            <div className='tweet-image-upload' onClick={onImageUpload}>
-              <PostImage/>
+            <div className='tweet-image-upload'>
+              <PostImage handleTweetFile={handleTweetFile} tweetFile={tweetFile} onCancel={onCancel}/>
             </div>
 
             <div className='post-button'>

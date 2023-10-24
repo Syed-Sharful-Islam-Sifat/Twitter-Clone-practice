@@ -42,8 +42,9 @@ export default async function handler(req, res) {
       coverPhoto = result.files.cover_photo[0]?.newFilename;
     }
 
-    if(result?.files?.tweet_Photo){
-        tweetPhoto = result.files.tweet_Photo[0].newFilename;
+    console.log('result.files------>',result.files.tweet_photo)
+    if(result?.files?.tweet_photo){
+        tweetPhoto = result.files.tweet_photo[0].newFilename;
         return res.status(200).json({tweetPhoto})
     }
 

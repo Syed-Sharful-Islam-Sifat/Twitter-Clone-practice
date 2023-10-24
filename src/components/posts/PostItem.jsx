@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import {
   AiFillHeart,
   AiOutlineHeart,
@@ -154,6 +155,12 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
         </div>
 
         <div className="text">{post?.text}</div>
+
+        <div className="image">
+          {post?.image?(
+            <Image src = {`/images/${post?.image}`} width={200} height={200}/>
+          ):null}
+        </div>
 
         <div className="icons">
           {post?.contentType !== "reply" ? (

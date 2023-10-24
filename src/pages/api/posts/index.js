@@ -12,14 +12,15 @@ export default async function handler(req, res) {
 
       const { id } = session;
 
-      const { parentId, name ,contentType, text } = req.body;
+      const { parentId, name ,contentType, text , image } = req.body;
       console.log('on posts api',parentId,name,contentType,text);
       const post = await Post.create({
         userId: id,
         name,
         contentType,
         text,
-        parentId,
+        image,
+        parentId
       });
       let mainPostId;
       if (contentType !== "post") {

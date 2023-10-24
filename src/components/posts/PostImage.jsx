@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '../auth/Modal';
-import styles from '@/components/users/editmodal.module.css';
+import styles from '@/components/posts/postimage.module.css'
+const PostImage = ({user , handlePostImage , handleTweetFile,tweetFile , onCancel}) => {
 
-const PostImage = ({user , handlePostImage}) => {
 
-         const [tweetFile,setTweetFile] = useState();
   const onSubmit = async (e) => {
-     /// handle profile photo
+    
       e.preventDefault();
 
       try{
@@ -62,13 +61,9 @@ const PostImage = ({user , handlePostImage}) => {
               tweetFile?
               tweetFile.name:'Upload an Image'
              }
-            <input type="file" accept="image/*" onChange={({target})=>{
-                 if(target.files){
-                    const file = target.files[0];
-                    setTweetFile(file)
-                 }
-            }} />
+            <input type="file" accept="image/*" onChange={(event)=>handleTweetFile(event)} />
           </label>
+          {tweetFile?(<button className={styles.cancel_button} onClick={onCancel}>Cancel</button>):null}
         </div>
       </form>
     </div>
