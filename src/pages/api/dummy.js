@@ -12,9 +12,10 @@ export default async function handler(req, res) {
       for (const post of posts) {
         const user = await User.findById(post.userId);
 
-        if (!post.name) {
-          // Update the post's name using updateOne
-          await Post.updateOne({ _id: post._id }, { $set: { name: user.name } });
+        if (!post.retweetIds) {
+       
+           post.retweetIds = [];
+          await post.save();
         }
       }
 

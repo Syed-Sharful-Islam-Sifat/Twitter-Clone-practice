@@ -73,6 +73,7 @@
     margin-top: 0.25rem;
     font-size: 1rem;
     background-color: inherit;
+    padding-bottom: 20px;
     
 }
 
@@ -127,3 +128,39 @@
  gap: 1rem;
  margin-bottom: 20px;
 }
+.image-edit{
+    display: flex;
+    justify-content: center;
+}
+.image-file {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 5px 0;
+    width: 30%;
+
+  }
+  
+  .image-file span {
+    flex-grow: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: black;
+  }
+  
+  .image-file button {
+    background: none;
+    border: none;
+    color: #f00; /* Red color for the remove button */
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+  }
+
+  .re-tweet{
+    color:  rgb(115 115 115);
+  }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { AiOutlineRetweet } from "react-icons/ai";
 import Image from "next/image";
 import {
   AiFillHeart,
@@ -60,7 +61,14 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
     }
   };
 
-  console.log(session?.user);
+  const handleRetweet = async()=>{
+     
+    const res = await fetch(`http://localhost:3000/api/retweet/${postId}`,{
+      method: 'PUT'
+    })
+  }
+
+  console.log("post on PostItem", post);
 
   const { id } = session;
 
@@ -157,9 +165,21 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
         <div className="text">{post?.text}</div>
 
         <div className="image">
-          {post?.image?(
-            <Image src = {`/images/${post?.image}`} width={200} height={200}/>
-          ):null}
+          {post?.image ? (
+            <Image
+              src={`/images/${post?.image}`}
+              alt="tweet image"
+              style={{ objectFit: "cover" }}
+              width={
+                post.contentType === "post"
+                  ? 800
+                  : post.contentType === "comment"
+                  ? 700
+                  : 600
+              }
+              height={300}
+            />
+          ) : null}
         </div>
 
         <div className="icons">
@@ -195,6 +215,11 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
               <AiOutlineDelete size={20} />
             </div>
           ) : null}
+          {session.id!==post.userId._id?(
+            <div className="re-tweet" onClick={handleRetweet}>
+             <AiOutlineRetweet size={20}/>
+            </div>
+          ):null}
         </div>
 
         {edit ? (
@@ -211,6 +236,7 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
               makeReplyFalse={makeReplyFalse}
               handleEdit={handleEdit}
               updatedPosts={updatedPosts}
+              imageFile = {post?.image}
             />
           </div>
         ) : null}

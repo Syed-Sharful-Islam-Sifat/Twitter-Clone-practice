@@ -6,13 +6,16 @@ export default async function handler(req,res){
         if(req.method==='PUT'){
           dbConnect();
           const {postId} = req.query;
-          const postData = req.body;
-          console.log('post dat',postData)
-          console.log(postData)
+          const {text,image} = req.body;
+          console.log('post data',req.body)
+          
           const post =  await Post.findById(postId)
 
-          post.text = postData;
-          await post.save();   
+          post.text = text
+          post.image = image;
+          console.log(image)
+          await post.save(); 
+          console.log(post)  
           const updatedPost = await Post.findById(postId)
                               .sort({createdAt:-1})
                               .populate({

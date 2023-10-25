@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Avatar from "../Avatar";
 import Button from "../Button";
 import { useSession } from "next-auth/react";
+import PostImage from "./PostImage";
 const PostForm = ({
   placeholder,
   postText,
@@ -14,81 +15,182 @@ const PostForm = ({
   makeEditFalse,
   makeReplyFalse,
   handleEdit,
-  updatedPosts
+  updatedPosts,
+  imageFile,
 }) => {
-  const [text,setText] = useState(postText);
-  const[user,setUser] = useState()
+  const [text, setText] = useState(postText);
+  const [user, setUser] = useState();
+  const [tweetFile, setTweetFile] = useState(null);
+  const [edtImage, setEditImage] = useState(imageFile);
+  const { data: session } = useSession();
+  const [postData, setPostData] = useState({
+    name: session.user.name,
+    text: "",
+    contentType: contentType,
+    parentId: postId,
+    image: "",
+  });
   const textChange = (e) => {
     setText(e.target.value);
+    setPostData({
+      ...postData,
+      text: e.target.value,
+    });
   };
 
-  const {data:session} = useSession();
+  useEffect(() => {
+    fetchUser();
+    console.log("on PostForm", user);
 
-  useEffect(()=>{
-     fetchUser();
-     console.log('on PostForm',user)
-  },[])
+    if (contentType === "post") {
+      setPostData({
+        ...postData,
+        contentType: "comment",
+      });
+    } else {
+      setPostData({
+        ...postData,
+        contentType: "reply",
+      });
+    }
 
-  const fetchUser = async ()=>{
+    if(type==='edit'){
+      setPostData({
+        ...postData,
+        text: postText
+      })
+    }
+  }, []);
+
+  const fetchUser = async () => {
     const res = await fetch(`/api/users/${session.id}`);
 
     const data = await res.json();
     setUser(data);
-    console.log('fetchUser',user)
-  }
+    console.log("fetchUser", user);
+  };
 
-  const onSubmit = async () => {
+  const imageRemove = async () => {
+    setEditImage(null);
+    const res = await fetch(`/api/posts/${postId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({...postData , image:null}),
+    });
+
+    const data = await res.json();
+    handleEdit(data, data.contentType);
+  };
+
+  const onCancel = () => {
+    setTweetFile(null);
+  };
+
+  const handleTweetFile = (event) => {
+    console.log("on form", event);
+    if (event.target.files) {
+      const file = event.target.files[0];
+      console.log("file----->", file);
+      setTweetFile(file);
+    }
+
+    event.target.value = "";
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
     console.log(contentType, postId, text);
 
     let parentId = postId;
 
     if (type === "edit") {
-      const res = await fetch(`http://localhost:3000/api/posts/${postId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(text),
-      });
 
-      const data = await res.json();
-      console.log('edited',data.contentType)
-      
-      
-      console.log('editeeeeeeeeeeeeeeed data',data);
-      makeEditFalse();
-      handleEdit(data,data.contentType);
-      
-      
-    } else {
+      try {
+        const formData = new FormData();
 
-      const name = session?.user?.name;
+        if (tweetFile) {
+          formData.append("tweet_photo", tweetFile);
+        }
 
-      console.log('on Postform',name)
-
-        if(contentType==='post')contentType = 'comment'
-         else
-         contentType = 'reply'
-      try{
-        
-        const res = await fetch("http://localhost:3000/api/posts", {
+        const res = await fetch("http://localhost:3000/api/upload", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({parentId,contentType,text,name}),
+          body: formData,
         });
-        const data = await res.json();
-        console.log('reply-->',data);
-        setText('')
-        makeReplyFalse();
-        updatedPosts(data)
-      }catch(error){
 
-      }
-    
+        if (res.ok) {
+          const imageFiles = await res.json();
+          const updatedData = {
+            data: imageFiles,
+          };
+
+          const response = await fetch(`/api/posts/${postId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+
+           
+            body: JSON.stringify({...postData,image:imageFiles.tweetPhoto}),
+          });
+
+          const data = await response.json();
+          console.log(
+            "imageFiles--------------------->",
+            imageFiles.tweetPhoto
+          );
+          makeEditFalse();
+          handleEdit(data,data.contentType);
+        }
+      } catch (error) {}
+
+
+    } else {
+      try {
+        const formData = new FormData();
+
+        if (tweetFile) {
+          formData.append("tweet_photo", tweetFile);
+        }
+
+        const res = await fetch("http://localhost:3000/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (res.ok) {
+          const imageFiles = await res.json();
+          const updatedData = {
+            data: imageFiles,
+          };
+
+          console.log(
+            "imageFiles--------------------->",
+            imageFiles.tweetPhoto
+          );
+
+          console.log("postData on postForm", postData);
+
+          const response = await fetch("api/posts", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify({
+              ...postData,
+              image: imageFiles.tweetPhoto,
+            }),
+          });
+
+          const data = await response.json();
+          updatedPosts(data);
+          makeReplyFalse()
+        }
+      } catch (error) {}
     }
-
   };
 
   return (
@@ -96,7 +198,11 @@ const PostForm = ({
       <div className="Form-Container">
         <div className="Form-Elements">
           <div>
-            <Avatar user={user} isLarge={false} profilePhoto={user?.profileImage}/>
+            <Avatar
+              user={user}
+              isLarge={false}
+              profilePhoto={user?.profileImage}
+            />
           </div>
 
           <div className="Form-text">
@@ -108,6 +214,23 @@ const PostForm = ({
             ></textarea>
 
             <hr className="hr" />
+            <div className="tweet-image-upload">
+              {type === "edit" ? (
+                <div className="image-edit">
+                  {edtImage && (
+                    <div className="image-file">
+                      <span className="image-file">{edtImage}</span>
+                      <button onClick={imageRemove}>Remove</button>
+                    </div>
+                  )}
+                </div>
+              ) : null}
+              <PostImage
+                handleTweetFile={handleTweetFile}
+                tweetFile={tweetFile}
+                onCancel={onCancel}
+              />
+            </div>
             <div className="post-button">
               <Button label={label} onClick={onSubmit} body={text} />
             </div>

@@ -20,6 +20,13 @@ const Form = ({placeholder,updatedPosts}) => {
       image: ''
     })
 
+    useEffect(()=>{
+      console.log('rendered postForm.jsx',postData)
+    },[postData])
+    
+    useEffect(()=>{
+     console.log('rendered on Form.jsx',postData)
+    },[postData])
   
     const onSubmit = async (e) => {
     
@@ -48,10 +55,7 @@ const Form = ({placeholder,updatedPosts}) => {
            
            console.log('imageFiles--------------------->',imageFiles);
 
-           setPostData({
-            ...postData,
-            image: imageFiles.tweetPhoto
-           })
+          console.log('postData on Form.jsx',postData)
 
            const response = await fetch('api/posts',{
             method: 'POST',
@@ -59,11 +63,22 @@ const Form = ({placeholder,updatedPosts}) => {
               'Content-Type': 'application/json'
             },
 
-            body: JSON.stringify(postData)
+            body: JSON.stringify({
+              ...postData,
+              image: imageFiles.tweetPhoto
+            })
            })
 
            const data = await response.json();
            updatedPosts(data);
+           
+           setTweetFile(null);
+           setPostData({
+            ...postData,
+            text: '',
+            image:''
+           })
+           
          }
 
       }catch(error){

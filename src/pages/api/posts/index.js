@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       const { id } = session;
 
       const { parentId, name ,contentType, text , image } = req.body;
-      console.log('on posts api',parentId,name,contentType,text);
+      console.log('on posts api',req.body,parentId,name,contentType,text,image);
       const post = await Post.create({
         userId: id,
         name,

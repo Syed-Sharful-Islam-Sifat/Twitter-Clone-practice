@@ -79,7 +79,8 @@ const Home = ({ownProfile,userId}) => {
   };
 
   const handleEdit = (updatedPost, type) => {
-    console.log("on handle edit", updatedPost, type);
+    
+   
     setPosts((prevPosts) =>
       prevPosts.map((post) => {
         if (type === "post") {
@@ -88,7 +89,9 @@ const Home = ({ownProfile,userId}) => {
           return post;
         } else if (type == "comment") {
           const updatedComments = post?.commentIds?.map((comment) => {
-            if (comment._id === updatedPost._id) return updatedPost;
+            if (comment._id === updatedPost._id){
+              return updatedPost;
+            }
             return comment;
           });
 
