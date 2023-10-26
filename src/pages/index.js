@@ -6,15 +6,21 @@ import RegisterModal from '@/components/auth/RegisterModal';
 import LoginModal from '@/components/auth/LoginModal';
 import Header from '@/components/Header';
 import { useSession } from 'next-auth/react';
-
+import { useRouter } from 'next/router';
 export default function Home() {
 
   const[regisOpen,setRegisOpen] = useState(false)
   const[logisOpen,setLogisOpen] = useState(false)
-   
+   const router = useRouter();
   const {data:session}  = useSession();
 
   console.log(session);
+
+  if(session){
+    if (router.pathname === '/') {
+      router.push('/Home');
+    }
+  }
 
 
   return (

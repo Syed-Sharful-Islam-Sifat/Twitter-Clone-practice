@@ -12,9 +12,9 @@ export default async function handler(req, res) {
       for (const post of posts) {
         const user = await User.findById(post.userId);
 
-        if (!post.retweetIds) {
+        if (!post.retweetId) {
        
-           post.retweetIds = [];
+           post.retweetId = {}
           await post.save();
         }
       }

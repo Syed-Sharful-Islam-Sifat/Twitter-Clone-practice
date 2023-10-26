@@ -64,8 +64,10 @@
 
 .time{
 
-    font-size: small;
-    background-color: rgb(115 115 115);
+    font-size: 1rem;
+    background-color: none;
+    color: rgb(115 115 115);
+
 }
 
 .text{
@@ -77,7 +79,10 @@
     
 }
 
-
+.user-profile-container{
+    display: flex;
+    flex-direction: column;
+}
 
 
 .icons{
@@ -124,7 +129,7 @@
 }
 .user-profile-container{
  display: flex;
- flex-direction: row;
+ flex-direction: column;
  gap: 1rem;
  margin-bottom: 20px;
 }
@@ -163,4 +168,23 @@
 
   .re-tweet{
     color:  rgb(115 115 115);
+  }
+
+  .retweet{
+    color: green;
+   
+  }
+
+  .user-profile-container
+
+  .repost-p{
+   color: rgb(115 115 115);
+   padding: 10px;
+   font-weight: bold;
+   font-size: 0.8rem;
+  }
+
+  .avatar-bio{
+    display: flex;
+    gap: 1rem
   }

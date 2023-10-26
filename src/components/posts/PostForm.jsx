@@ -28,7 +28,7 @@ const PostForm = ({
     text: "",
     contentType: contentType,
     parentId: postId,
-    image: "",
+    image: imageFile,
   });
   const textChange = (e) => {
     setText(e.target.value);
@@ -133,7 +133,7 @@ const PostForm = ({
             },
 
            
-            body: JSON.stringify({...postData,image:imageFiles.tweetPhoto}),
+            body: JSON.stringify({...postData,image:imageFile||imageFiles.tweetPhoto}),
           });
 
           const data = await response.json();
@@ -144,7 +144,9 @@ const PostForm = ({
           makeEditFalse();
           handleEdit(data,data.contentType);
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error)
+      }
 
 
     } else {

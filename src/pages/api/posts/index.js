@@ -12,15 +12,16 @@ export default async function handler(req, res) {
 
       const { id } = session;
 
-      const { parentId, name ,contentType, text , image } = req.body;
-      console.log('on posts api',req.body,parentId,name,contentType,text,image);
+      const { parentId, name ,contentType, text , image ,retweetId} = req.body;
+      console.log('on posts api',req.body,parentId,name,contentType,text,image,retweetId);
       const post = await Post.create({
         userId: id,
         name,
         contentType,
         text,
         image,
-        parentId
+        parentId,
+        retweetId
       });
       let mainPostId;
       if (contentType !== "post") {
@@ -70,6 +71,9 @@ export default async function handler(req, res) {
             }
           ]
 
+        }).populate({
+          path: 'retweetId',
+          model: 'User',
         })
       return res.status(200).json({ newPost, parentId, mainPostId });
     }
@@ -115,7 +119,13 @@ export default async function handler(req, res) {
               ]
             }
           ]
+        }).populate({
+          path: 'retweetId',
+          model:'User',
+         
         })
+
+        console.log('followedPosts',followedPosts)
   
       return res.status(200).json({followedPosts});
     }

@@ -21,6 +21,7 @@ const Home = ({ownProfile,userId}) => {
     if(ownProfile){
       const res = await fetch(`http://localhost:3000/api/users/posts/${userId}`);
       const data = await res.json();
+      console.log('ownProfile posts-------------------------------------------------->',data.posts)
       setPosts(data.posts);
     }
 
@@ -175,6 +176,8 @@ const Home = ({ownProfile,userId}) => {
               updatedPosts={updatedPosts}
               handleDelete={handleDelete}
               type={"posts"}
+             
+              ownProfile = {ownProfile}
             />
           </div>
         ))}

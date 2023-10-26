@@ -4,6 +4,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { AiOutlineRetweet } from "react-icons/ai";
 import Image from "next/image";
+import { retweet } from "@/libs/actions/retweetActions";
+import format from "date-fns/format";
 import {
   AiFillHeart,
   AiOutlineHeart,
@@ -13,7 +15,15 @@ import {
 } from "react-icons/ai";
 import { useEffect } from "react";
 import PostForm from "./PostForm";
-const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
+const PostItem = ({
+  post,
+  handleEdit,
+  updatedPosts,
+  handleDelete,
+  type,
+  isRetweeted,
+  ownProfile,
+}) => {
   const router = useRouter();
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
@@ -26,8 +36,8 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
   const [user, setUser] = useState();
   const postId = post?._id;
   const { data: session } = useSession();
-  if (post.contentType) {
-    console.log("sifat post", post);
+  if (post.retweetId) {
+    console.log("reTweet Item------->", post.retweetId._id);
   }
   useEffect(() => {
     fetchData();
@@ -61,12 +71,9 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
     }
   };
 
-  const handleRetweet = async()=>{
-     
-    const res = await fetch(`http://localhost:3000/api/retweet/${postId}`,{
-      method: 'PUT'
-    })
-  }
+  const handleRetweet = async () => {
+    const data = await retweet(postId, session.user.name);
+  };
 
   console.log("post on PostItem", post);
 
@@ -114,6 +121,14 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
     e.stopPropagation();
   };
 
+  const createdAt = () => {
+    if (!post?.createdAt) {
+      return null;
+    }
+
+    return format(new Date(post.createdAt), "dd MMMM yyyy");
+  };
+
   useEffect(() => {
     console.log("commentReply reply", commentReply, reply);
     console.log(post);
@@ -150,15 +165,37 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
     <div className="post-container">
       <div className={type}>
         <div className="user-profile-container">
-          <Avatar
-            user={post.userId}
-            isLarge={false}
-            profilePhoto={post?.userId?.profileImage}
-          />
-          <div className="user-profile">
-            <p className="name">{post?.name}</p>
-            <span className="at-name">@{post?.name}</span>
-            <span className="time">{post?.createdAt}</span>
+          {ownProfile && post.retweetId ? (
+            <div className="repost-p">
+              <p>You reposted</p>
+            </div>
+          ) : post.retweetId ? (
+            <div className="repost-p">
+              <p>{post.name} reposted this</p>
+            </div>
+          ) : null}
+
+          <div className="avatar-bio">
+            <Avatar
+              user={post?.retweetId?post?.retweetId:post.userId}
+              isLarge={false}
+              profilePhoto={
+                post.retweetId
+                  ? post.retweetId.profileImage
+                  : post?.userId?.profileImage
+              }
+            />
+            <div className="user-profile">
+              <p className="name">
+                { post.retweetId
+                  ? post?.retweetId.name
+                  : post.name}
+              </p>
+              <span className="at-name">
+                @{post.retweetId ? post?.retweetId.name : post.name}
+              </span>
+              <p className="time">{createdAt()}</p>
+            </div>
           </div>
         </div>
 
@@ -215,11 +252,14 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
               <AiOutlineDelete size={20} />
             </div>
           ) : null}
-          {session.id!==post.userId._id?(
+          {session.id !== post.userId._id ? (
             <div className="re-tweet" onClick={handleRetweet}>
-             <AiOutlineRetweet size={20}/>
+              <AiOutlineRetweet
+                size={20}
+                className={!ownProfile&&post.retweetId===session.id ? "retweet" : ""}
+              />
             </div>
-          ):null}
+          ) : null}
         </div>
 
         {edit ? (
@@ -236,7 +276,7 @@ const PostItem = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
               makeReplyFalse={makeReplyFalse}
               handleEdit={handleEdit}
               updatedPosts={updatedPosts}
-              imageFile = {post?.image}
+              imageFile={post?.image}
             />
           </div>
         ) : null}
