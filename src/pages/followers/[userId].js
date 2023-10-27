@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import { useRouter } from "next/router"
 import { useState, useEffect } from "react";
 import FollowItem from "@/components/follow/FollowItem";
+import Layout from "@/components/Layout";
 const Followers = ()=>{
    
     const router = useRouter();
@@ -25,6 +26,7 @@ const Followers = ()=>{
 
     return(
         <div>
+        <Layout>
             <Header label={"Followers"}/>
             {
                 usersFollowers?.map((user)=>{
@@ -36,6 +38,7 @@ const Followers = ()=>{
                   )
                 })
             }
+        </Layout>
         </div>
     )
 

@@ -1,6 +1,7 @@
 import User from "@/models/users";
 import bcrypt from "bcrypt"
 import { dbConnect } from "@/config/db";
+import { sendEmail } from "@/libs/services/mailService";
 
 export default async function handler(req, res) {
   
@@ -34,8 +35,12 @@ export default async function handler(req, res) {
             })
     
     
-    
-            return res.status(201).json({message:'User Registered Successfully'})
+            await sendEmail(
+              "Twitter Verification Email",
+              email,
+              "Please Verify your Email through the link provided"
+            )
+            return res.status(201).json({message:'Please check your email to verify'})
     
         }catch(err){
           return res.status(500).json({error:err.message})

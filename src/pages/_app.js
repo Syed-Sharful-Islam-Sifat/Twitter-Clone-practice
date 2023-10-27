@@ -13,30 +13,32 @@ import { SessionProvider } from 'next-auth/react'
 import Layout from '@/components/Layout'
 import {Roboto} from '@next/font/google'
 import { useSession } from 'next-auth/react'
+import Home from '@/pages/index.js'
 const roboto = Roboto({
   subsets:['latin'],
   weight:['400','700']
 })
-import Home from '@/pages/index'
+
 import { useRouter } from 'next/router'
+import Verification from './verification'
+
 
 export default function App({ Component, pageProps }) {
 
  
   const router = useRouter();
- 
   
   return (
+    
 
     <SessionProvider session={pageProps.session}>
       <main className={roboto.className} key = {router.asPath}>
-        <Home/>
-        <Layout>
-         <Component {...pageProps} />
-        </Layout>
+         <Component {...pageProps} /> 
       </main>
     </SessionProvider>
      
   
   )
 }
+
+

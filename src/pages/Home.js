@@ -6,6 +6,7 @@ import PostFeed from "@/components/posts/PostFeed";
 import { BiSkipPrevious } from "react-icons/bi";
 import PostItem from "@/components/posts/PostItem";
 import { useSession } from "next-auth/react";
+import Layout from "@/components/Layout";
 const Home = ({ownProfile,userId}) => {
   const [posts, setPosts] = useState([]);
 
@@ -162,25 +163,39 @@ const Home = ({ownProfile,userId}) => {
     });
   };
 
+
+  const PostFeed =()=> 
+  <div>
+  {!ownProfile ? <Header label="Home" /> : null}
+  {!ownProfile ? <Form placeholder="What Is Happening?!" updatedPosts={updatedPosts} /> : null}
+  {posts
+    ?.filter((post) => post.contentType === "post")
+    .map((post) => (
+      <div key={post?._id}>
+        <PostItem
+          post={post}
+          handleEdit={handleEdit}
+          updatedPosts={updatedPosts}
+          handleDelete={handleDelete}
+          type={"posts"}
+          ownProfile={ownProfile}
+        />
+      </div>
+    ))}
+</div>
+
+
   return (
     <>
-      {!ownProfile?(<Header label="Home" />):null}
-      {!ownProfile?<Form placeholder="What Is Happening?!" updatedPosts={updatedPosts} />:null} 
-      {posts
-        ?.filter((post) => post.contentType === "post")
-        .map((post) => (
-          <div key={post?._id}>
-            <PostItem
-              post={post}
-              handleEdit={handleEdit}
-              updatedPosts={updatedPosts}
-              handleDelete={handleDelete}
-              type={"posts"}
-             
-              ownProfile = {ownProfile}
-            />
-          </div>
-        ))}
+    {ownProfile?(
+       
+       <PostFeed/>
+    ):(
+       <Layout>
+         <PostFeed/>
+       </Layout>
+    )}
+     
     </>
   );
 };

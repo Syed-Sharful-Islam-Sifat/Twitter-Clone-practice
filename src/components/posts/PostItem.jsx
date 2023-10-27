@@ -241,13 +241,13 @@ const PostItem = ({
             <p>{likes}</p>
           </div>
 
-          {session.id === post.userId._id ? (
+          {session.id === post.userId._id &&!post.retweetId? (
             <div className="edit" onClick={onEdit}>
               <AiOutlineEdit size={20} className={comment ? "" : "disabled"} />
             </div>
           ) : null}
 
-          {session.id === post.userId._id ? (
+          {session.id === post.userId._id ?(
             <div className="delete" onClick={onDelete}>
               <AiOutlineDelete size={20} />
             </div>

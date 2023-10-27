@@ -8,7 +8,7 @@ import Header from '@/components/Header';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 export default function Home() {
-
+   console.log('Home page')
   const[regisOpen,setRegisOpen] = useState(false)
   const[logisOpen,setLogisOpen] = useState(false)
    const router = useRouter();

@@ -1,7 +1,9 @@
 "use client"
 import React from 'react'
 import { useState } from 'react';
-import styles from '@/styles/modals.module.css'
+import styles from '@/components/auth/modals.module.css'
+import { Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 const RegisterModal = () => {
 
     const [formData, setFormData] = useState({
@@ -30,6 +32,11 @@ const RegisterModal = () => {
             })
         
             const data = await response.json();
+           
+
+            if(response.ok){
+              toast.success(data?.message)
+            }
             console.log(data)
         }catch(err){
             console.log(err)
@@ -38,7 +45,7 @@ const RegisterModal = () => {
   return (
 
     <div>
-
+         <div><Toaster/></div>
         <h1 className={styles.heading}>Create your account</h1>
 
     <form onSubmit={handleSubmit} className={styles.formContainer}>

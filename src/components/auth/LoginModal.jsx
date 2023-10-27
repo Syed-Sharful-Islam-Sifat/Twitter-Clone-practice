@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
-import styles from '@/styles/modals.module.css'; // Import styles and assign to the 'styles' object
+import styles from '@/components/auth/modals.module.css'; // Import styles and assign to the 'styles' object
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

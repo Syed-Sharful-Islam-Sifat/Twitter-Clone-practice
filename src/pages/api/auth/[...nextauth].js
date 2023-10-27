@@ -42,6 +42,7 @@ export const authOptions = {
                 return{
                     ...token,
                     id:user._id,
+                    isVerified: user.isVerified,
                     profileImage:user.profileImage,
                     coverPhoto: user.coverPhoto
                 }
@@ -53,6 +54,7 @@ export const authOptions = {
             return{
                 ...session,
                  id:token.id,
+                 isVerified: token.isVerified,
                  profileImage:token.profileImage,
                  coverPhoto:token.coverPhoto
             };
