@@ -1,15 +1,19 @@
-import React, { useState } from "react";
-import { signIn } from "next-auth/react";
+import React, { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import styles from '@/components/auth/modals.module.css'; // Import styles and assign to the 'styles' object
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Toaster,toast } from "react-hot-toast";
 
 const LoginModal = () => {
 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [pressed,setPressed] = useState(false);
+  const {data: session} = useSession();
 
+ 
   const handleEmailChange = (e) => {
 
     setEmail(e.target.value);
@@ -27,7 +31,8 @@ const LoginModal = () => {
             redirect:false
         })
 
-        console.log(data?.error);
+        console.log('data-->',data?.error);
+        toast.error(data?.error)
 
     }catch(err){
       console.log(err.message)
@@ -35,6 +40,9 @@ const LoginModal = () => {
   }
 
   return (
+    <>
+
+    <div><Toaster/></div>
     <div>
       <h1 className={styles.heading}>Sign in to X</h1> 
       <form onSubmit={handleSubmit} className={styles.formContainer}> 
@@ -65,6 +73,7 @@ const LoginModal = () => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 

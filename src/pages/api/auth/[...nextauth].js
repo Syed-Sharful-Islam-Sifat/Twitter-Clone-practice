@@ -26,9 +26,13 @@ export const authOptions = {
                         throw new Error('Invalid Credentials')
                     }
 
+                    if(!user.isVerified){
+                        throw new Error('Please verify your email first')
+                    }
+
                     return user
                 }catch(err){
-                    throw new Error('Something went wrong')
+                    throw new Error(err)
                 }
             }
         })
@@ -65,9 +69,9 @@ export const authOptions = {
     session:{
         strategy: "jwt"
     },
-    jwt:{
-        secret: process.env.NEXTAUTH_JWT_SECRET
-    },
+    // jwt:{
+    //     secret: process.env.NEXTAUTH_JWT_SECRET
+    // },
     secret: process.env.NEXTAUTH_SECRET
 }
 

@@ -87,7 +87,7 @@ const UserBio = ({ user  , handleCoverChange , handleProfileChange}) => {
         </div>
 
         <div className="calendar">
-          <BiCalendar size={24} />
+          <BiCalendar size={24} style={{ color: 'gray' }}/>
           <p className="join-date">Joined {createdAt()}</p>
         </div>
 

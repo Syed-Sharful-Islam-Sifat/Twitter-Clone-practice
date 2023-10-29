@@ -125,7 +125,7 @@ export default async function handler(req, res) {
          
         })
 
-        console.log('followedPosts',followedPosts)
+       // console.log('followedPosts',followedPosts)
   
       return res.status(200).json({followedPosts});
     }
