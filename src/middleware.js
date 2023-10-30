@@ -7,10 +7,10 @@ import { NextResponse } from "next/server";
 export default withAuth(
 async  function middleware (req) {
     const {token} = req.nextauth;
-
+   
     console.log(req.nextUrl.pathname); 
     
-    if(!token||!token.isVerified){
+    if(!token){
         if(req.nextUrl.pathname!=='/') 
         return NextResponse.redirect(new URL('/', req.url))
     }

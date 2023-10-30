@@ -1,8 +1,9 @@
 .modalOverlay{
-    width: 40%;
+    width: 100%;
     background-color: black;
     color: white;
-    height: 500px;
+    height:10%;
+   
 }
 
 .modal{

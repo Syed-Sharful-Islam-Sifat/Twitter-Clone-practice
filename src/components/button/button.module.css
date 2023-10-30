@@ -1,4 +1,4 @@
-button{
+.button{
     cursor: pointer;
      background-color: rgb(14 165 233);
      padding: 10px;
@@ -8,10 +8,10 @@ button{
 
 }
 
-.post-button{
+.post_button{
     margin: 5px;
 }
 
-.post-button:hover{
+.post_button:hover{
     opacity: 0.8;
 }

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import styles from '@/components/auth/modals.module.css'; // Import styles and assign to the 'styles' object
-import Link from "next/link";
+ // Import styles and assign to the 'styles' objectimport Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Toaster,toast } from "react-hot-toast";
-
+import styles from '@/components/auth/registermodal/registermodal.module.css'
 const LoginModal = () => {
 
 
@@ -31,8 +30,10 @@ const LoginModal = () => {
             redirect:false
         })
 
-        console.log('data-->',data?.error);
+        if(data?.error)
         toast.error(data?.error)
+        else
+           toast.success('Successfully Logged in')
 
     }catch(err){
       console.log(err.message)
@@ -43,7 +44,7 @@ const LoginModal = () => {
     <>
 
     <div><Toaster/></div>
-    <div>
+    <div className={styles.register_modal}>
       <h1 className={styles.heading}>Sign in to X</h1> 
       <form onSubmit={handleSubmit} className={styles.formContainer}> 
         <div className={styles.formGroup}> 

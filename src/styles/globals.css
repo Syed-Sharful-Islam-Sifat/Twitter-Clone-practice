@@ -131,3 +131,68 @@ body{
   font-size: 16px;
   text-decoration: underline;
 }
+
+.sign-in-btn{
+
+}
+
+.register-btn{
+  background-color: skyblue
+}
+
+.auth{
+  
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  position: absolute;
+  width: 100%;
+}
+
+.tweet-icon-container{
+  background-color: #1d9bf0;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.tweet-icon{
+  color: #fff;
+  font-size: 200px;
+}
+
+.auth-second-part{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  
+}
+
+.invitation-heading{
+   margin-top: 50px;
+} 
+.register-btn,.sign-in-btn{
+  background-color: #1d9bf0;
+  padding: 20px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-style: none;
+}
+
+.register-btn:hover{
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.sign-in-btn:hover{
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.auth-reg{
+
+  width: 50%;
+  height: 50%;
+}
+

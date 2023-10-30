@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import format from "date-fns/format";
 import { useSession } from "next-auth/react";
-import Button from "../Button";
+import Button from "../button/Button";
 import { BiCalendar } from "react-icons/bi";
 import Modal from "../auth/Modal";
 import EditModal from "./EditModal";

@@ -1,0 +1,28 @@
+.github_container{
+
+    display: flex;
+    background-color: white;
+    width: 15%;
+    border-radius: 20%;
+    margin-left: 10%;
+}
+
+.git_button{
+    background-color: white;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    border: none;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.github_p{
+     color: black;
+     font-weight: bold;
+}
+
+.git_button:hover{
+    opacity: 0.8;
+    cursor: pointer;
+}

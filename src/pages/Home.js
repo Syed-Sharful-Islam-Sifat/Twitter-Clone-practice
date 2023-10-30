@@ -10,12 +10,12 @@ import Layout from "@/components/Layout";
 const Home = ({ownProfile,userId}) => {
   const [posts, setPosts] = useState([]);
 
-  const {data:session} = useSession();
-
   useEffect(() => {
     fetchData();
     console.log("useEffect ran");
   }, []);
+
+
 
   const fetchData = async () => {
 

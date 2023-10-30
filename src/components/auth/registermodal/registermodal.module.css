@@ -1,0 +1,37 @@
+.register_modal{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    padding: 30px;
+    border: 1px solid gray;
+}
+
+.formContainer{
+
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+    justify-content: center;
+    overflow: hidden;
+
+}
+
+.inputField {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: black;
+    border-style: 3px snow;
+    color: aliceblue;
+  }
+
+.signup{
+    background-color: #1d9bf0;
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-style: none;
+}

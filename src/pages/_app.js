@@ -5,7 +5,7 @@ import '@/components/layout/rightbar.css'
 import '@/components/header.css'
 import '@/components/Form.css'
 import '@/components/Avatar.css'
-import '@/components/button.css'
+
 import '@/components/posts/postitem.css'
 import '@/components/users/userprofile.css'
 import '@/components/users/userbio.css'

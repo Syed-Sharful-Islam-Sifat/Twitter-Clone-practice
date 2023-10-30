@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Avatar from "../Avatar";
-import Button from "../Button";
+import Button from "../button/Button";
 import { useSession } from "next-auth/react";
 import PostImage from "./PostImage";
 const PostForm = ({

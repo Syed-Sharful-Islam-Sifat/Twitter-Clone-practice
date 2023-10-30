@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Avatar from './Avatar'
 import { useState } from 'react'
-import Button from './Button'
+import Button from './button/Button'
 import { toast } from 'react-toast'
 import { useSession } from 'next-auth/react'
 import { AiFillFileImage } from 'react-icons/ai'
