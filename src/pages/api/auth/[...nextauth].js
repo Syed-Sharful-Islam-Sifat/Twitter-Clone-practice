@@ -69,10 +69,11 @@ export const authOptions = {
 
                     
                     await newUser.save();
-                    user = newUser
-                    console.log(newUser);
-                    console.log(user,newUser)
-                    return true;
+                 return   user = {
+                     ...user,
+                     _id: newUser._id,
+                     isVerified: newUser.isVerified
+                    }
                    
                   }
                 }
@@ -85,15 +86,19 @@ export const authOptions = {
 
         async jwt({token,session,user}){
 
+            
+           await dbConnect();
+
+        const newUser = await User.findOne({email:user?.email});
             try{
 
                 if(user){
                     return{
                         ...token,
-                        id:user?._id,
-                        isVerified: user?.isVerified,
-                        profileImage:user?.profileImage,
-                        coverPhoto: user?.coverPhoto
+                        id:newUser?._id,
+                        isVerified: newUser?.isVerified,
+                        profileImage:newUser?.profileImage,
+                        coverPhoto: newUser?.coverPhoto
                     }
                 }
             }catch(error){
@@ -103,7 +108,7 @@ export const authOptions = {
             return token
         },
         async session({token,session}){
-            console.log('session on callback',token,session) 
+            
             return{
                 ...session,
                 id:token.id,
