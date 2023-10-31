@@ -5,7 +5,7 @@ export default function GithubLogin() {
   return (
     <div>
      
-        <button className={styles.git_button} onClick={()=>signIn()}>
+        <button className={styles.git_button} onClick={()=>signIn("github", {callbackUrl: 'http://localhost:3000/Home'})}>
           <div className={styles.github_icon}>
             <AiFillGithub size={24} style={{color: 'black'}}/>
           </div>

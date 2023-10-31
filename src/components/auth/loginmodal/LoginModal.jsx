@@ -27,6 +27,7 @@ const LoginModal = () => {
         const data = await signIn('credentials',{
             email,
             password,
+            callbackUrl: 'http://localhost:3000/Home',
             redirect:false
         })
 

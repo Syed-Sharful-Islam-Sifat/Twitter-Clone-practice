@@ -3,6 +3,7 @@ import Avatar from "../Avatar";
 import Button from "../button/Button";
 import { useSession } from "next-auth/react";
 import PostImage from "./PostImage";
+import { Toaster , toast } from "react-hot-toast";
 const PostForm = ({
   placeholder,
   postText,
@@ -188,15 +189,18 @@ const PostForm = ({
           });
 
           const data = await response.json();
+          toast.success('Posted')
           updatedPosts(data);
           makeReplyFalse()
         }
+
       } catch (error) {}
     }
   };
 
   return (
     <>
+      <div><Toaster/></div>
       <div className="Form-Container">
         <div className="Form-Elements">
           <div>

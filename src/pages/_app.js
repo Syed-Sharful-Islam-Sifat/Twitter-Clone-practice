@@ -8,7 +8,6 @@ import '@/components/Avatar.css'
 
 import '@/components/posts/postitem.css'
 import '@/components/users/userprofile.css'
-import '@/components/users/userbio.css'
 import { SessionProvider } from 'next-auth/react'
 import Layout from '@/components/Layout'
 import {Roboto} from '@next/font/google'

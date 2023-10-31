@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Avatar from "../Avatar";
 import { useEffect, useState } from "react";
-import UserBio from "./UserBio";
+import UserBio from "./userbio/UserBio";
 const UserProfile = ({ user }) => {
 
   if(!user)return <h1>Loading...</h1>

@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import UserProfile from "@/components/users/UserProfile";
-import UserBio from "@/components/users/UserBio";
+import UserBio from "@/components/users/userbio/UserBio";
 import Home from "../Home";
 import Layout from "@/components/Layout";
 const User = () => {

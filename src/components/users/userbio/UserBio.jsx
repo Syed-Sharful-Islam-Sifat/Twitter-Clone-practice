@@ -1,11 +1,12 @@
 import React, { useMemo, useState, useEffect } from "react";
 import format from "date-fns/format";
 import { useSession } from "next-auth/react";
-import Button from "../button/Button";
+import Button from "../../button/Button";
 import { BiCalendar } from "react-icons/bi";
-import Modal from "../auth/Modal";
-import EditModal from "./EditModal";
+import Modal from "../../auth/Modal";
+import EditModal from "../EditModal";
 import { useRouter } from "next/router";
+import styles from '@/components/users/userbio/userbio.module.css'
 const UserBio = ({ user  , handleCoverChange , handleProfileChange}) => {
   const { data: session } = useSession();
   const [isFollowing, setIsFollowing] = useState();
@@ -66,37 +67,37 @@ const UserBio = ({ user  , handleCoverChange , handleProfileChange}) => {
   }
 
   return (
-    <div className="bio-container">
-      <div className="follow">
+    <div className={styles.bio_container}>
+      <div className={styles.follow}>
         {session.id === user?._id ? (
           editOpen ? (
               <EditModal user = {user} handleCoverChange={handleCoverChange} handleProfileChange={handleProfileChange} handleEdit={handleEdit}/>
             
           ) : (
-            <button onClick={handleEdit}>Edit</button>
+            <button onClick={handleEdit} className={styles.edit_btn}>Edit</button>
           )
         ) : (
-          <button onClick={toggleFollow}>{isFollowing?'Unfollow':'Follow'}</button>
+          <button onClick={toggleFollow} className={styles.follow_btn}>{isFollowing?'Unfollow':'Follow'}</button>
         )}
       </div>
 
-      <div className="user-bio">
-        <div className="username">
-          <p className="name">{user?.name}</p>
+      <div className={styles.user_bio}>
+        <div className={styles.username}>
+          <p className={styles.name}>{user?.name}</p>
           <p className="at-name">@{user?.name}</p>
         </div>
 
-        <div className="calendar">
+        <div className={styles.calendar}>
           <BiCalendar size={24} style={{ color: 'gray' }}/>
-          <p className="join-date">Joined {createdAt()}</p>
+          <p className={styles.join_date}>Joined {createdAt()}</p>
         </div>
 
-        <div className="follow-count" onClick={showFollowing}>
+        <div className={styles.follow_count} onClick={showFollowing}>
           <p>{user?.followingIds?.length}</p>
-          <p className="following-number" onClick={(e)=>showFollowing}>Following</p>
+          <p className={styles.following_number} onClick={(e)=>showFollowing}>Following</p>
 
           <p>{followers}</p>
-          <p className="following-number" onClick={showFollowers}>Followers</p>
+          <p className={styles.following_number} onClick={showFollowers}>Followers</p>
         </div>
       </div>
     </div>

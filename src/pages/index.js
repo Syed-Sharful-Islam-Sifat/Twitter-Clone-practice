@@ -28,6 +28,7 @@ export default function Home() {
 
   return (
     <>
+     
       <div className="auth">
         <div className="tweet-icon-container">
           <AiOutlineTwitter className="tweet-icon" />

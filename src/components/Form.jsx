@@ -2,10 +2,10 @@ import React, { useEffect } from 'react'
 import Avatar from './Avatar'
 import { useState } from 'react'
 import Button from './button/Button'
-import { toast } from 'react-toast'
 import { useSession } from 'next-auth/react'
 import { AiFillFileImage } from 'react-icons/ai'
 import PostImage from './posts/PostImage'
+import { Toaster , toast} from 'react-hot-toast'
 const Form = ({placeholder,updatedPosts}) => {
 
     const [user,setUser] = useState();
@@ -71,6 +71,7 @@ const Form = ({placeholder,updatedPosts}) => {
 
            const data = await response.json();
            updatedPosts(data);
+           toast.success('Posted');
            
            setTweetFile(null);
            setPostData({
@@ -124,30 +125,10 @@ const Form = ({placeholder,updatedPosts}) => {
    const data = await res.json();
    setUser(data);
   }
-  // const onSubmit = async()=>{
-  //   try{
-
-  //     const res = await fetch('api/posts',{
-  //      method: "POST",
-  //      headers:{
-  //        'Content-Type': 'application/json'
-  //      },
-  //      body: JSON.stringify(postData)
-  //     })
-  //    const data = await res.json();
-  //    console.log('data--->',data);
-  //    toast.success('Posted');
-  //    updatedPosts(data);
-     
-  //    setPostData({
-  //     ...postData,
-  //     text: ''
-  //    })
-  //   }catch(error){
-  //     console.log(error)
-  //   }
-  // }
+  
   return (
+    <>
+     <div><Toaster/></div> 
     <div className='Form-Container'>
        <div className='Form-Elements'>
          
@@ -173,6 +154,7 @@ const Form = ({placeholder,updatedPosts}) => {
          </div>
        </div>
     </div>
+    </>
   )
 }
 

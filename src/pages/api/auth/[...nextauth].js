@@ -52,11 +52,11 @@ export const authOptions = {
             const {name,email} = user
     
             try {
-               await dbConnect()
-                const userExists = await User.findOne({ email: email });
-                console.log('userExists', userExists);
-              
+                
                 if (account.type === 'oauth') {
+                    await dbConnect()
+                     const userExists = await User.findOne({ email: email });
+                     console.log('userExists', userExists);
                   if (!userExists) {
                     // User doesn't exist in your database, you can choose to create the user here
                     // Example: const newUser = await User.create({ name, email, ...otherFields });
@@ -87,9 +87,15 @@ export const authOptions = {
         async jwt({token,session,user}){
 
             
-           await dbConnect();
+            
+            console.log('token session user',token,session,user);
+            let newUser = user;
+            if(!user?.isVerified){
+               await dbConnect();
+             
+                newUser = await User.findOne({email:user?.email});
+           }
 
-        const newUser = await User.findOne({email:user?.email});
             try{
 
                 if(user){
@@ -125,6 +131,8 @@ export const authOptions = {
     },
     
     secret: process.env.NEXTAUTH_SECRET,
+   
+  
     // jwt:{
     //     secret: process.env.NEXTAUTH_JWT_SECRET
     // },
