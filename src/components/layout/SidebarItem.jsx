@@ -20,6 +20,10 @@ const SidebarItem = ({href,label,Icon}) => {
       router.push('/Home')
     }
 
+    if(label==='Messages'){
+      router.push('/messages');
+    }
+
     if(label==='Logout'){
 
       console.log('logout clicked',label)

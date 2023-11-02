@@ -24,4 +24,4 @@ async  function middleware (req) {
   }
 )
 
-export const config = {matcher:['/Home/:path*','/users/:path*']}
+export const config = {matcher:['/Home/:path*','/users/:path*','/messages']}

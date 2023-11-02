@@ -2,6 +2,7 @@ import React from 'react'
 import {BsHouseAddFill}  from 'react-icons/bs'
 import {FaUser}  from 'react-icons/fa'
 import {BiLogOut} from 'react-icons/bi'
+import { AiOutlineInbox } from 'react-icons/ai'
 import SidebarLogo from './SidebarLogo'
 import SidebarItem from './SidebarItem'
 import { signOut } from 'next-auth/react'
@@ -17,6 +18,10 @@ const Sidebar = () => {
       label: 'Profile',
       href: '/user/123',
       icon: FaUser
+    },{
+      label: 'Messages',
+      href: '/messages',
+      icon: AiOutlineInbox
     }
   ]
   return (
