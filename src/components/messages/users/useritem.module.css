@@ -1,0 +1,46 @@
+.main_container{
+
+    position: relative;
+    width: 100%;
+    display: flex;
+    gap: 2rem;
+    
+}
+
+.profile_container{
+    display: flex;
+    width: 80%;
+    justify-self: center;
+    margin-bottom: 15px;
+    margin-left: 10%;
+    margin-top: 10px;
+    background-color: rgb(22, 24, 28);
+    padding: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    gap: 1rem
+}
+
+.profile_container:hover{
+    opacity: 0.8;
+}
+
+.profile{
+    display: flex;
+    align-items: center;
+    gap:0.5rem
+}
+
+.username{
+font-size: 0.875rem;
+line-height: 1.25rem; 
+font-weight: 600; 
+color: #ffffff; 
+}
+
+
+.at_username{
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    color: rgb(163 163 163);
+}

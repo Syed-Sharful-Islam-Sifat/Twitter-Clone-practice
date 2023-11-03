@@ -1,0 +1,16 @@
+.profile-container{
+    
+}
+.profile{
+    display: flex;
+    padding: 20px;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.profile_name{
+font-size: 0.875rem;
+line-height: 1.25rem; 
+font-weight: 600; 
+color: #ffffff; 
+}

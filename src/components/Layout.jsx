@@ -2,7 +2,8 @@ import React from 'react'
 import Sidebar from './layout/Sidebar'
 import { useSession } from 'next-auth/react';
 import Rightbar from './layout/Rightbar';
-const Layout = ({children}) => {
+import MessageLayout from './messages/message-container/messageLayout';
+const Layout = ({children, currentRoute, messageBox,user}) => {
 
 
   const {data:session} = useSession();
@@ -25,7 +26,13 @@ const Layout = ({children}) => {
 
          <div className='right-sidebar'>
             <div className='right-sidebar-content'>
-             <Rightbar/>
+              {currentRoute ==='Messages'?(
+                !messageBox?(
+                  <h3>Please Select an User to start a converstation</h3>
+                ):(
+                  <MessageLayout user={user}/>
+                )
+              ):<Rightbar/>}
             </div>
          </div>
 

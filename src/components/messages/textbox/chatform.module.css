@@ -1,0 +1,35 @@
+.main_container{
+  width: 100vw;
+}
+
+.chatForm{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 20px;
+    background-color: black; 
+    border-top: 1px solid rgb(38 38 38);
+    position: relative;
+
+}
+
+.text{
+    flex: 0.38; /* Take up the remaining space in the row */
+    padding: 10px; /* Add padding for spacing inside the textarea */
+    border-radius: 4px; /* Add rounded corners if desired */
+    background-color: black;
+    border-style: none;
+    height: 100%;
+    position: absolute;
+    resize: none;
+    width: 35%;
+
+}
+
+.text:focus {
+    outline: none; /* Remove the default focus outline if desired */
+  }
+  .text::placeholder {
+    font-size: 20px; /* Set the font size you want */
+    justify-self: center;
+  }
