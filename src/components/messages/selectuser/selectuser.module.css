@@ -1,0 +1,13 @@
+.main_container{
+   grid-column: span 3;
+}
+
+.notify{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-left: 55%;
+    color: rgb(135, 167, 235)
+}

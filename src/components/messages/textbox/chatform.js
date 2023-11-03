@@ -8,7 +8,7 @@ const ChatForm  = ()=>{
      <div className={styles.chatForm}>
       <textarea className={styles.text} placeholder='Type messages'>
       </textarea>
-      <div>
+      <div className={styles.send_icon}>
           <AiOutlineSend size={24}/>
       </div>
      </div>
