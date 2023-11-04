@@ -1,12 +1,13 @@
 import Message from "@/models/messages";
 import { dbConnect } from "@/config/db";
 
-export default async function getAllMessages(req,res){
+export  async function getAllMessages(req,res){
    
    try{
 
-     dbConnect();
+     await dbConnect();
      const allMessages = await Message.find();
+     console.log('allMessages on getMessageServices',allMessages)
      return allMessages;
 
    }catch(error){
@@ -14,44 +15,62 @@ export default async function getAllMessages(req,res){
    }
 }
 
-export default async function sendNewMessage(req,res){
+export  async function createMessage(req,res){
+   try{
+      await dbConnect();
+     const {firstUserId,secondUserId} = req.body;
+       const message = await Message.create({
+        firstUserId,
+        secondUserId
+       })
+
+       return message;
+   }catch(error){
+     console.log('error on message create service',error)
+   }
+}
+
+export  async function sendNewMessage(req,res){
 
 
     try{
-        const {payload} = req.query;
+        const {messageId,senderId,receiverId,text} = req.body;
+
+        console.log('new messages on getMessageServices',messageId,senderId,receiverId,text)
 
         await dbConnect();
     
-        if(!payload._id){
-          
-          const message =   await Message.create({
-                _id: payload._id,
-                senderId: payload.senderId,
-                messages:[
-                    {
-                        text: payload.text,
-                        image:payload.image
-                    }
-                ]
-            })
+            const mainMessage = await Message.findById(messageId);
 
-            return res.status(200).json(message);
-        }else{
-
-            const mainMessage = await Message.findById(payload._id);
+            if(!mainMessage){
+               throw new Error('No Message exists')
+            }
 
             mainMessage.messages.push({
-                senderId: payload.senderId,
-                receiverId: payload.receiverId,
-                text: payload.text,
-                image: payload.image
-            })
+                senderId,
+                receiverId,
+                text,
+              })
 
-            return res.status(200).json(mainMessage);
-        }
+            await mainMessage.save();  
+
+            return mainMessage;
+        
     }catch(error){
       console.log('error',error);
     }
 
 
+}
+
+export  async function getSingleMessage(req,res){
+  try{
+     await dbConnect();
+    const {messageId} = req.query;
+     console.log('req.body on getSingleMessage',req.query)
+      const message = await Message.findById(messageId);
+      return message;
+  }catch(error){
+    console.log('error on single message get service',error)
+  }
 }

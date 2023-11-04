@@ -1,4 +1,4 @@
-import getAllMessages from "@/libs/services/getMessageServices";
+import { createMessage, getAllMessages } from "@/libs/services/getMessageServices";
 export default async function handler(req,res){
     
     try{
@@ -19,8 +19,9 @@ export default async function handler(req,res){
             
             try{
 
-                const messages = await getAllMessages(req,res);
-                return res.status(200).json(messages);
+                const message = await createMessage(req,res);
+
+                return res.status(200).json(message)
 
             }catch(error){
                console.log('error on message api index.js',error);

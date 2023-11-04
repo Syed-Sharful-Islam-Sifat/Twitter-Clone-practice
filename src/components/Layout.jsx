@@ -4,12 +4,18 @@ import { useSession } from 'next-auth/react';
 import Rightbar from './layout/Rightbar';
 import MessageLayout from './messages/message-container/messageLayout';
 import SelectUser from './messages/selectuser/selectuser';
-const Layout = ({children, currentRoute, messageBox,user}) => {
+import SingleMessage from './messages/single-message/single-message';
+import { useActionDispatcher } from '@/hooks/use-action-dispatcher';
+const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
 
 
   const {data:session} = useSession();
-
   
+  const [state,dispatch] = useActionDispatcher({
+    message:{
+
+    }
+  })
 
   return (
     <>
@@ -31,7 +37,9 @@ const Layout = ({children, currentRoute, messageBox,user}) => {
                 !messageBox?(
                   <SelectUser/>
                 ):(
-                  <MessageLayout user={user}/>
+                  <MessageLayout user={user} messageId={messageId}>
+                    <SingleMessage messageId={messageId} dispatch={dispatch} state={state}/>
+                  </MessageLayout>
                 )
               ):<Rightbar/>}
             </div>

@@ -2,7 +2,8 @@ import styles from '@/components/messages/message-container/messageLayout.module
 import ProfileBar from '../profile/profilebar'
 import ChatForm from '../textbox/chatform'
 
-const MessageLayout = ({children,user})=>{
+const MessageLayout = ({children,user,messageId})=>{
+
     return (
         <div className={styles.main_container}>
            <div className={styles.grid_container}>
@@ -15,7 +16,7 @@ const MessageLayout = ({children,user})=>{
                </div>
 
                <div className={styles.form_container}>
-                  <ChatForm/>
+                  <ChatForm messageId={messageId} userId={user._id}/>
                </div>
            </div>
         </div>
