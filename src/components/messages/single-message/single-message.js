@@ -1,20 +1,20 @@
 import { useActionDispatcher } from "@/hooks/use-action-dispatcher"
-import messageActions from "@/libs/actions/message-actions"
+import messageActions from "@/libs/actions/single-message-actions"
 import { useEffect } from "react"
 import styles from '@/components/messages/single-message/single-message.module.css'
-const SingleMessage = ({messageId,dispatch,state})=>{
+const SingleMessage = ({state})=>{
+
+  if(!state.message.messages)return <h2>Loading...</h2>
 
   useEffect(()=>{
-    dispatch(messageActions.GET_SINGLE_MESSAGE,{messageId});
-  },[])
-
-  //console.log('state on single-message.js',state,messageId)
+   console.log('useEffect ran of SingleMessage.js ',state)
+  },[state])
 
   return(
     <div>
-        {state.message.messages?.map((singleMessage)=>{
+        {state.message.messages.map((singleMessage,i)=>{
             return(
-                <div>
+                <div key={i} className={styles.messageContainer}>
                    <p className={styles.text}>{singleMessage.text}</p>
                 </div>
             )

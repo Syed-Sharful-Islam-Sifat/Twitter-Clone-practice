@@ -54,7 +54,14 @@ export  async function sendNewMessage(req,res){
 
             await mainMessage.save();  
 
-            return mainMessage;
+            const lastMessage = {
+              senderId,
+              receiverId,
+              text
+            }
+
+
+            return lastMessage;
         
     }catch(error){
       console.log('error',error);

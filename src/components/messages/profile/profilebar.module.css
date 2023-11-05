@@ -12,3 +12,6 @@ line-height: 1.25rem;
 font-weight: 600; 
 color: #ffffff; 
 }
+.profile_container{
+    position: fixed;
+}

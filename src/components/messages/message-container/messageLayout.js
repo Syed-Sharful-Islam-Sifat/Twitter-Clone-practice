@@ -1,9 +1,11 @@
 import styles from '@/components/messages/message-container/messageLayout.module.css'
 import ProfileBar from '../profile/profilebar'
 import ChatForm from '../textbox/chatform'
-
-const MessageLayout = ({children,user,messageId})=>{
-
+import { useActionDispatcher } from '@/hooks/use-action-dispatcher'
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
+const MessageLayout = ({children,user,messageId,onChange,handleClick,text})=>{
+    
     return (
         <div className={styles.main_container}>
            <div className={styles.grid_container}>
@@ -16,7 +18,7 @@ const MessageLayout = ({children,user,messageId})=>{
                </div>
 
                <div className={styles.form_container}>
-                  <ChatForm messageId={messageId} userId={user._id}/>
+                  <ChatForm messageId={messageId} userId={user._id} onChange={onChange} handleClick={handleClick} text={text}/>
                </div>
            </div>
         </div>
