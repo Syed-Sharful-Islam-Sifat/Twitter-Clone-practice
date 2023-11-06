@@ -59,8 +59,8 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
           {children}
          </div>
 
-         <div className='right-sidebar'>
-            <div className='right-sidebar-content'>
+         <div className={user?'':'right-sidebar'}>
+            <div className={currentRoute==='Messages'&&!messageBox?'right-sidebar-content-message':'right-sidebar-content'}>
               {currentRoute ==='Messages'?(
                 !messageBox?(
                   <SelectUser/>

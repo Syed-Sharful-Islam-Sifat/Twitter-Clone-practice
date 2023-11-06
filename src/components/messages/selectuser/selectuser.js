@@ -5,7 +5,7 @@ const SelectUser = ()=>{
     return(
        <div className={styles.main_container}>
          <div className={styles.notify}>
-           <p>Select an user to send Message</p>
+           <p>Select an user to send message</p>
          </div>
        </div>
     )

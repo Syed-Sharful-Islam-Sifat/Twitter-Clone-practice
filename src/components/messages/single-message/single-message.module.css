@@ -1,3 +1,63 @@
-.text{
+.textOwner{
     color: white;
+    background-color: skyblue;
+    padding: 10px;
+   
+    overflow-wrap: break-word;
+    border-radius: 15px;
+    margin-bottom: 5px;
+    max-width: 150px;
+    margin-left: 60%;
 }
+
+.textOther{
+    color: white;
+    background-color:  rgb(64 64 64);
+    padding: 10px;
+    display: inline-block;
+    overflow-wrap: break-word;
+    border-radius: 15px;
+    margin-bottom: 5px;
+    max-width: 150px;
+    
+}
+.messageContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+   margin-left: 10px;
+   overflow-y: scroll;
+   position: relative;
+   max-height: 72vh;
+ 
+   width: 100%;    
+}
+
+.textContainer{
+    display: flex;
+}
+
+.messageContainer::-webkit-scrollbar {
+    width: 10px; /* Set the width of the scrollbar */
+  }
+  
+  /* Style the scrollbar thumb (the draggable part) */
+  .messageContainer::-webkit-scrollbar-thumb {
+    background: #ccc; /* Set the background color of the thumb */
+    border-radius: 5px; /* Add rounded corners to the thumb */
+  }
+  
+  /* Style the scrollbar track when the mouse is over it */
+  .message_container::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
+  
+  /* Style the scrollbar track (background) */
+  .message_container::-webkit-scrollbar-track {
+    background: #f0f0f0; /* Set the background color of the track */
+  }
+  
+  /* Style the scrollbar track when the mouse is over it */
+  .message_container::-webkit-scrollbar-track:hover {
+    background: #e0e0e0;
+  }

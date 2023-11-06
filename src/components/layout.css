@@ -19,11 +19,25 @@
 
 .right-sidebar-content{
     position: fixed;
-    display: flex;
+    display: fixed;
     height: 100%;
+    justify-self: center;
+  
+   
+}
+.right-sidebar-content-message{
+    position: fixed;
+    display: fixed;
+    height: 100%;
+    width: 500px ;
     justify-self: center;
    
 }
+
+.right-sidebar{
+    position: relative;
+}
+
 
 .main-content{
     border-left: 1px solid rgb(38 38 38);

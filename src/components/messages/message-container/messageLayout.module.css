@@ -1,10 +1,10 @@
 .main_container{
  
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     border-top: 1px solid rgb(38 38 38);
     border-bottom: 1px solid rgb(38 38 38);
-    position: relative;
+    display: flex;
 }
 
 .grid_container{
@@ -12,4 +12,40 @@
     grid-template-rows: 75px auto 90px;
     width: 100%;
     height: 100%;
+  
 }
+
+.message_container{
+   
+    display: flex;
+    align-items: flex-end;
+    width: 130%;
+    height: 100%;
+    position: relative;
+    
+}
+
+.message_container::-webkit-scrollbar {
+    width: 10px; /* Set the width of the scrollbar */
+  }
+  
+  /* Style the scrollbar thumb (the draggable part) */
+  .message_container::-webkit-scrollbar-thumb {
+    background: #ccc; /* Set the background color of the thumb */
+    border-radius: 5px; /* Add rounded corners to the thumb */
+  }
+  
+  /* Style the scrollbar track when the mouse is over it */
+  .message_container::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
+  
+  /* Style the scrollbar track (background) */
+  .message_container::-webkit-scrollbar-track {
+    background: #f0f0f0; /* Set the background color of the track */
+  }
+  
+  /* Style the scrollbar track when the mouse is over it */
+  .message_container::-webkit-scrollbar-track:hover {
+    background: #e0e0e0;
+  }

@@ -3,11 +3,11 @@
 }
 
 .notify{
+    
     display: flex;
-    height: 100%;
-    width: 100%;
-    align-items: center;
     justify-content: center;
-    margin-left: 55%;
-    color: rgb(135, 167, 235)
+    align-items: center;
+    color: skyblue;
+    height: 100vh;
+  
 }
