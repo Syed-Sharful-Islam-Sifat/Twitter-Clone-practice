@@ -9,7 +9,7 @@ export default async function handler(req,res){
         const user  = await User.findById(userId);
     
         const usersFollowers = await User.find({followingIds:userId});
-        console.log('usersFollowing',usersFollowers)
+      
     
         return res.status(200).json(usersFollowers);
     }

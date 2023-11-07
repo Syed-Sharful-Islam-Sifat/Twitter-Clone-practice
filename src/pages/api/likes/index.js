@@ -13,7 +13,7 @@ export default async function handler(req,res){
         let hasLiked = 0;
 
         const post = await Post.findById(postId);
-       console.log('likeIds',post.likeIds);
+    
         if(post.likeIds.includes(id)){
             post.likeIds.pull(id);
             hasLiked = 0;

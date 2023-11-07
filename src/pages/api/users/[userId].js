@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         }
 
         await user.save();
-        console.log('profile pic---.',user)
+       
         return res.status(200).json(user);
       } catch (error) {
         return res.status(500).json({ error: "Server error" });

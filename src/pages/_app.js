@@ -13,6 +13,7 @@ import Layout from '@/components/Layout'
 import {Roboto} from '@next/font/google'
 import { useSession } from 'next-auth/react'
 import Home from '@/pages/index.js'
+import { SocketProvider } from '@/providers/socketProvider'
 const roboto = Roboto({
   subsets:['latin'],
   weight:['400','700']
@@ -31,9 +32,12 @@ export default function App({ Component, pageProps }) {
     
 
     <SessionProvider session={pageProps.session}>
+      <SocketProvider>
       <main className={roboto.className} key = {router.asPath}>
          <Component {...pageProps} /> 
       </main>
+      </SocketProvider>
+    
     </SessionProvider>
      
   

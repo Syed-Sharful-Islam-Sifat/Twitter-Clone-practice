@@ -56,7 +56,7 @@ export const authOptions = {
                 if (account.type === 'oauth') {
                     await dbConnect()
                      const userExists = await User.findOne({ email: email });
-                     console.log('userExists', userExists);
+                    
                   if (!userExists) {
                     // User doesn't exist in your database, you can choose to create the user here
                     // Example: const newUser = await User.create({ name, email, ...otherFields });
@@ -88,7 +88,7 @@ export const authOptions = {
 
             
             
-            console.log('token session user',token,session,user);
+           
             let newUser = user;
             if(!user?.isVerified){
                await dbConnect();

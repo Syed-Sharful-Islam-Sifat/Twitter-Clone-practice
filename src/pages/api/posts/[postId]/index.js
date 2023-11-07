@@ -70,8 +70,7 @@ export default async function handler(req,res){
             const replies = await Post.find({parentId:deletePost._id});
            
             const post = await Post.findById(deletePost.parentId)
-            console.log('commentIds---->',post.commentIds)
-            console.log('likeIds--->',post.likeIds)
+           
            // const result = await post.commentIds.pull(deletePost._id);
 
             //console.log(result)
@@ -81,8 +80,7 @@ export default async function handler(req,res){
               await Post.findByIdAndDelete(reply._id);
               await post.save();
               
-              console.log('reply',reply);
-              console.log('comments',post.commentIds.length);
+            
               
             }
 

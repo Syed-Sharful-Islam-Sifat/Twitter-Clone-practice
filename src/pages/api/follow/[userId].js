@@ -11,7 +11,7 @@ export default async function handler(req,res){
         const {userId} = req.query;
         const session = await getServerSession(req,res,authOptions);
        
-        console.log('session on follow api',session);
+       
 
         const user = await User.findById(session.id);
         const present = await user.followingIds.includes(userId);

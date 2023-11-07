@@ -17,7 +17,7 @@ export default async function handler(req,res){
        if(typeof postId!=='string')throw new Error('No Post found');
         if(req.method==='GET'){
           const post = await Post.findById(postId);
-          console.log('id postId',id,postId)
+         
           if(post.likeIds.includes(id)){
               hasLiked = 1;
           }

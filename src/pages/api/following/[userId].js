@@ -14,9 +14,7 @@ export default async function handler(req,res){
     const usersNotFollowing = await User.find({
         _id:{$nin:mainUser.followingIds, $ne:session?.id}
     })
-    
-    console.log('notfollowing',usersNotFollowing);
-    console.log('usersFollowing',usersFollowing)
+
 
     return res.status(200).json({usersFollowing,usersNotFollowing});
 }
