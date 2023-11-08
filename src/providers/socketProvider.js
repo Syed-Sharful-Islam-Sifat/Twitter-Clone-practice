@@ -24,6 +24,12 @@ export const SocketProvider = ({ children }) => {
     
   }
 
+  useEffect(()=>{
+    if(socket&&session){
+    socket.emit('setup',session)
+    }
+  },[socket,session])
+
   return (
     <SocketContext.Provider value={socket}>
       {children}

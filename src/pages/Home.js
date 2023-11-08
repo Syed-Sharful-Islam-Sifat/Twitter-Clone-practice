@@ -22,7 +22,7 @@ const Home = ({ownProfile,userId}) => {
     if(ownProfile){
       const res = await fetch(`http://localhost:3000/api/users/posts/${userId}`);
       const data = await res.json();
-      console.log('ownProfile posts-------------------------------------------------->',data.posts)
+    
       setPosts(data.posts);
     }
 
@@ -30,7 +30,7 @@ const Home = ({ownProfile,userId}) => {
     const res = await fetch(`http://localhost:3000/api/posts`);
     const data = await res.json();
     setPosts(data.followedPosts);
-    console.log("data on homepage", data);
+   
    
     }
   };

@@ -15,7 +15,7 @@ export default async function handler(req,res){
 
         const user = await User.findById(session.id);
         const present = await user.followingIds.includes(userId);
-        console.log('present',present)
+      
         return res.status(200).json(present);
       }
 

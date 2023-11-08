@@ -32,11 +32,12 @@ export default function App({ Component, pageProps }) {
     
 
     <SessionProvider session={pageProps.session}>
-      <SocketProvider>
+     <SocketProvider>
       <main className={roboto.className} key = {router.asPath}>
          <Component {...pageProps} /> 
       </main>
-      </SocketProvider>
+     </SocketProvider>
+    
     
     </SessionProvider>
      

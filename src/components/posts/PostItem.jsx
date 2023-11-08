@@ -37,22 +37,22 @@ const PostItem = ({
   const postId = post?._id;
   const { data: session } = useSession();
   if (post.retweetId) {
-    console.log("reTweet Item------->", post.retweetId._id);
+ 
   }
   useEffect(() => {
     fetchData();
-    console.log("useEffect likes ran");
+  
     verifyPost();
     fetchUser();
   }, []);
 
   const verifyPost = () => {
     post?.comments?.map((comment) => {
-      console.log("verify post", comment);
+    
     });
   };
 
-  console.log("sessssssionid and useId", session.id, post.userId);
+ 
 
   const fetchUser = async () => {
     const res = await fetch(`/api/users/${session.id}`);
@@ -75,12 +75,12 @@ const PostItem = ({
     const data = await retweet(postId, session.user.name);
   };
 
-  console.log("post on PostItem", post);
+
 
   const { id } = session;
 
   const LikeIcons = hasLiked ? AiFillHeart : AiOutlineHeart;
-  console.log("rendered");
+
   const userLiked = async (e) => {
     e.stopPropagation();
     const res = await fetch("http://localhost:3000/api/likes", {
@@ -92,7 +92,7 @@ const PostItem = ({
     });
 
     const data = await res.json();
-    console.log(data);
+  
     setLikes(data?.likesCount);
     setHasLiked(data?.hasLiked);
   };
@@ -130,15 +130,13 @@ const PostItem = ({
   };
 
   useEffect(() => {
-    console.log("commentReply reply", commentReply, reply);
-    console.log(post);
-    console.log(post?.commentIds);
+
   }, [reply, commentReply]);
 
   const handlePostComment = (e) => {
     e.stopPropagation();
     setReply(!reply);
-    console.log("on handleReply", post);
+   
   };
 
   const handlePostReply = (e) => {

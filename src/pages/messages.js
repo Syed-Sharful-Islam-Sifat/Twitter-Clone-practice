@@ -59,7 +59,7 @@ const Messages = () => {
       <Header label={'Messages'} />
       {users.map((user) => {
         return (
-          <div onClick={() => handleClick(user)}>
+          <div onClick={() => handleClick(user)} key={user._id}>
             <UsersItem user={user} />
           </div>
         )

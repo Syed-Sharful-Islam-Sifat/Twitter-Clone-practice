@@ -8,24 +8,51 @@ import SingleMessage from './messages/single-message/single-message';
 import messageActions from '@/libs/actions/single-message-actions';
 import { useSingleMessageActionDispatcher } from '@/hooks/use-singlemessage-dispatcher';
 import SingleMessageActions from '@/libs/actions/single-message-actions';
+import { useSocket } from '@/providers/socketProvider';
 const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
+  
 
   const {data:session} = useSession();
-  
+  const socket = useSocket();
    
     const[state,dispatch] = useSingleMessageActionDispatcher({
       message:{
+
          messages:[
           
          ]
       }
     })
 
+    const [sendingMessage,setSendindMessage] = useState({
+      senderId:null,
+      receiverId: null,
+      text:null
+    })
+
     useEffect(()=>{
        console.log('useEffect ran of Layout.jsx file',messageId)
-      if(messageId)
+      if(messageId){
       dispatch(SingleMessageActions.GET_SINGLE_MESSAGE,{messageId})
+      socket.emit('join_chat',messageId)
+    }
     },[messageId])
+
+    useEffect(()=>{
+      socket.on("message received",(newMessage,mainMessageId)=>{
+        if(messageId!==mainMessageId){
+          // give notifications
+        }else{
+          console.log('useEffect ran on for message received',)
+           dispatch(SingleMessageActions.SEND_MESSAGE,{messageId,
+            senderId: newMessage.senderId,
+            receiverId: newMessage.receiverId,
+            text:newMessage.text
+            
+           })
+        }
+      })
+    },[])
      
     const [text,setText] = useState('');
 
@@ -40,7 +67,14 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
        text:text
       })
 
-      console.log('after sending message current state',state)
+     
+
+      console.log('after sending message current state',state,state.message._id);
+      socket.emit("new_message",{
+        senderId:session.id,
+        receiverId: user._id,
+        text:text
+      },state.message._id)
       setText('')
      }
 

@@ -1,9 +1,17 @@
 import { io } from "socket.io-client";
-let socket
-export async function fetchSocket(){
+
+const ENDPOINT = "http://localhost:3000";
+export async function fetchSocket() {
+   let socket
+   
    if(!socket){
-    await fetch('/api/socket');
-    socket = io();
-   }
-    return socket;
+        await fetch('/api/socket')
+        socket =  io();
+        console.log('socket ',socket)
+        socket.on('connect', () => {
+            console.log('user gets connected');
+          })
+    }
+
+  return socket;
 }

@@ -7,13 +7,13 @@ export default async function handler(req,res){
     try{
         
         const session = await getServerSession(req,res,authOptions);
-        console.log(session)
+       
         const {id} = session;
  
         dbConnect();
        const {postId} = req.query;
        let hasLiked = 0;
-       console.log(postId)
+      
        if(typeof postId!=='string')throw new Error('No Post found');
         if(req.method==='GET'){
           const post = await Post.findById(postId);

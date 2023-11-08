@@ -26,13 +26,13 @@ const PostFeed = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
   const postId = post?._id;
   useEffect(() => {
     fetchData();
-    console.log("useEffect likes ran");
-    verifyPost();
+   
+   
   }, []);
 
   const verifyPost = () => {
     post?.comments?.map((comment) => {
-      console.log("verify post", comment);
+
     });
   };
 
@@ -50,12 +50,12 @@ const PostFeed = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
 
   const { data: session } = useSession();
 
-  console.log(session?.user);
+
 
   const { id } = session;
 
   const LikeIcons = hasLiked ? AiFillHeart : AiOutlineHeart;
-  console.log("rendered");
+
   const userLiked = async (e) => {
     e.stopPropagation();
     const res = await fetch("http://localhost:3000/api/likes", {
@@ -67,7 +67,7 @@ const PostFeed = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
     });
 
     const data = await res.json();
-    console.log(data);
+  
     setLikes(data?.likesCount);
     setHasLiked(data?.hasLiked);
   };
@@ -97,9 +97,7 @@ const PostFeed = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
   };
 
   useEffect(() => {
-    console.log("commentReply reply", commentReply, reply);
-    console.log(post?.contentType);
-    console.log(post);
+ 
   }, [reply, commentReply]);
 
   const handleReply = (e) => {

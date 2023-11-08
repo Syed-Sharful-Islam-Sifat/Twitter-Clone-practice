@@ -8,7 +8,7 @@ export default async function handler(req,res){
      if(req.method==='PATCH'){
         
         const {id,postId} = req.body;
-        console.log('ids-->',id,postId);
+     
 
         let hasLiked = 0;
 

@@ -7,7 +7,7 @@ export  async function getAllMessages(req,res){
 
      await dbConnect();
      const allMessages = await Message.find();
-     console.log('allMessages on getMessageServices',allMessages)
+    
      return allMessages;
 
    }catch(error){

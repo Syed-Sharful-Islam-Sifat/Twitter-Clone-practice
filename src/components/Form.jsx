@@ -21,11 +21,11 @@ const Form = ({placeholder,updatedPosts}) => {
     })
 
     useEffect(()=>{
-      console.log('rendered postForm.jsx',postData)
+
     },[postData])
     
     useEffect(()=>{
-     console.log('rendered on Form.jsx',postData)
+
     },[postData])
   
     const onSubmit = async (e) => {
@@ -53,9 +53,9 @@ const Form = ({placeholder,updatedPosts}) => {
              data: imageFiles
            }
            
-           console.log('imageFiles--------------------->',imageFiles);
+          
 
-          console.log('postData on Form.jsx',postData)
+        
 
            const response = await fetch('api/posts',{
             method: 'POST',
@@ -88,7 +88,7 @@ const Form = ({placeholder,updatedPosts}) => {
   };
 
   useEffect(()=>{
-    console.log('rendered form page',tweetFile)
+ 
   },[tweetFile])
 
   const onCancel = (event)=>{
