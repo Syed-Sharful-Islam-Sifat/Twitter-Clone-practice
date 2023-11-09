@@ -1,5 +1,7 @@
 import Message from "@/models/messages";
 import { dbConnect } from "@/config/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 export  async function getAllMessages(req,res){
    
@@ -79,5 +81,27 @@ export  async function getSingleMessage(req,res){
       return message;
   }catch(error){
     console.log('error on single message get service',error)
+  }
+}
+
+export async function getNotifications(req,res,session){
+
+  try {
+   
+    await dbConnect();
+
+  
+
+    const users = await Message.distinct('messages.senderId', {
+      $and: [
+        { 'messages.receiverId': session.id },
+        { 'messages.seen': false }
+      ],
+    });
+    console.log("session and unSeenMessagesUsers",session, users);
+
+    return users;
+  } catch (error) {
+    console.log(error);
   }
 }

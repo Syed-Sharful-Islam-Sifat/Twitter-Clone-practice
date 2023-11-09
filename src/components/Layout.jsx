@@ -13,15 +13,19 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
   
 
   const {data:session} = useSession();
+  const[send,setSend] = useState(false)
   const socket = useSocket();
+  
    
     const[state,dispatch] = useSingleMessageActionDispatcher({
       message:{
 
          messages:[
           
-         ]
-      }
+         ],
+
+        },
+      socket
     })
 
     const [sendingMessage,setSendindMessage] = useState({
@@ -38,21 +42,20 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
     }
     },[messageId])
 
+  
     useEffect(()=>{
+
       socket.on("message received",(newMessage,mainMessageId)=>{
         if(messageId!==mainMessageId){
           // give notifications
         }else{
           console.log('useEffect ran on for message received',)
-           dispatch(SingleMessageActions.SEND_MESSAGE,{messageId,
-            senderId: newMessage.senderId,
-            receiverId: newMessage.receiverId,
-            text:newMessage.text
-            
-           })
+          dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY,newMessage)
         }
       })
-    },[])
+    
+    setSend(false);
+    })
      
     const [text,setText] = useState('');
 
@@ -60,7 +63,8 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
        setText(e.target.value);
      }
      const handleClick = async()=>{
-       
+    
+      setSend(true)
     await  dispatch(messageActions.SEND_MESSAGE,{messageId,
        senderId: session.id,
        receiverId: user._id,

@@ -16,6 +16,9 @@ const Messages = () => {
   const [state, dispatch] = useActionDispatcher({
     allMessages: [
        
+    ],
+    notifications:[
+
     ]
   })
 
@@ -27,8 +30,8 @@ const Messages = () => {
   const handleClick = async (user) => {
    
     const isPresent = state.allMessages.filter((message) =>
-      (message.firstUserId == session.id && message.secondUserId == user._id) ||
-      (message.firstUserId == user._id && message.secondUserId == session.id));    
+      (message.firstUserId === session.id && message.secondUserId === user._id) ||
+      (message.firstUserId === user._id && message.secondUserId === session.id));    
      
       console.log('isPresent on message.js file',isPresent);
      if(!isPresent.length){

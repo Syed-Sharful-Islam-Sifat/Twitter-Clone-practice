@@ -42,6 +42,12 @@ line-height: 1.75rem;
 color: #ffffff; 
 }
 
+.item-paragraph-green{
+    font-size: 1.2rem;
+line-height: 1.75rem; 
+color: green; 
+}
+
 .item:hover{
     background-color: rgb(38,38,38);
 }

@@ -6,6 +6,7 @@ import { AiOutlineInbox } from 'react-icons/ai'
 import SidebarLogo from './SidebarLogo'
 import SidebarItem from './SidebarItem'
 import { signOut } from 'next-auth/react'
+import { useEffect } from 'react'
 const Sidebar = () => {
 
   const items = [
@@ -29,7 +30,7 @@ const Sidebar = () => {
       <SidebarLogo/>
 
       {items.map((item)=>{
-       return <SidebarItem key = {item.href} label={item.label} Icon={item.icon}/>
+       return <SidebarItem key = {item.href} label={item.label} Icon={item.icon} />
       })}
 
       <SidebarItem label="Logout" Icon={BiLogOut}/>

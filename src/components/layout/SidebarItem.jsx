@@ -37,7 +37,7 @@ const SidebarItem = ({href,label,Icon}) => {
     <div className='sidebar-items'onClick={handleClick}>
       <div className='item'>
         <Icon size={24} color='white'/>
-        <p className='item-paragraph'>{label}</p>
+        <p className={label==='Messages'?'item-paragraph-green':'item-paragraph'}>{label}</p>
       </div>
     </div>
   )
