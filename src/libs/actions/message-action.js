@@ -3,9 +3,9 @@ const messageActions = {
         const res = await fetch('/api/messages');
 
         const data = await res.json();
+      
        return prev =>({...prev,allMessages:data})
     },
-
 
     ADD_MESSAGE: async(payload,state,dispatch)=>{
        return{

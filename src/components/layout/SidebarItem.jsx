@@ -1,8 +1,19 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
+import { useNotificationDispatcher } from '@/hooks/use-notification-dispatcher';
+import { useEffect } from 'react';
+import notificationActions from '@/libs/actions/notificationActions';
+import { NotificationContext } from '@/providers/notificationProvider';
 const SidebarItem = ({href,label,Icon}) => {
+
+  const [state,dispatch] = useContext(NotificationContext)
+
+
+  useEffect(()=>{
+    dispatch(notificationActions.GET_USERS)
+  },[])
 
   console.log(label)  
   

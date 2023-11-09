@@ -1,17 +1,11 @@
 import Avatar from "@/components/Avatar";
 import styles from "@/components/messages/users/useritem.module.css";
+import { useNotificationDispatcher } from "@/hooks/use-notification-dispatcher";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 const UserItem = ({ user }) => {
   const { data: session } = useSession();
-
-  const [state,dispatch] = useNotificationDispatcher({
-    users:[]
-  })
-
-  useEffect(()=>{
-    dispatch(notificationActions.GET_USERS);
-  },[])
+ 
 
   console.log("user on userItem", user);
 
@@ -26,10 +20,6 @@ const UserItem = ({ user }) => {
           />
           <p className={styles.username}>{user.name}</p>
           <p className={styles.at_username}>@{user.name}</p>
-
-          {state.users.includes(user._id)?(
-             <p className={styles.notify}>sent new messages</p>
-          ):null}
         </div>
       </div>
     </div>

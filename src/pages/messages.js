@@ -17,13 +17,12 @@ const Messages = () => {
     allMessages: [
        
     ],
-    notifications:[
-
-    ]
+    
   })
 
   useEffect(() => {
-    dispatch(messageActions.GET_MESSAGES)
+    dispatch(messageActions.GET_MESSAGES);
+    
   }, [messageId])
  
   console.log('state on message.js',state.allMessages)
@@ -58,7 +57,7 @@ const Messages = () => {
   if (!users) return <h1>Loading...</h1>
 
   return (
-    <Layout currentRoute={'Messages'} messageBox={messageBox} user={singleUser} messageId = {messageId}>
+    <Layout currentRoute={'Messages'} messageBox={messageBox} user={singleUser} messageId = {messageId} >
       <Header label={'Messages'} />
       {users.map((user) => {
         return (

@@ -21,6 +21,7 @@ const roboto = Roboto({
 
 import { useRouter } from 'next/router'
 import Verification from './verification'
+import { NotificationProvider } from '@/providers/notificationProvider'
 
 
 export default function App({ Component, pageProps }) {
@@ -31,11 +32,13 @@ export default function App({ Component, pageProps }) {
   return (
     
 
-    <SessionProvider session={pageProps.session}>
+   <SessionProvider session={pageProps.session}>
      <SocketProvider>
+      <NotificationProvider>
       <main className={roboto.className} key = {router.asPath}>
          <Component {...pageProps} /> 
       </main>
+      </NotificationProvider>
      </SocketProvider>
     
     

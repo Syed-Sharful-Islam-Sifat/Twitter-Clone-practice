@@ -3,14 +3,15 @@ import { dbConnect } from "@/config/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
-export  async function getAllMessages(req,res){
+export  async function getAllMessages(req,res,session){
    
    try{
 
      await dbConnect();
+
      const allMessages = await Message.find();
-    
-     return allMessages;
+
+    return allMessages
 
    }catch(error){
      console.log('error on getMessages service',error);

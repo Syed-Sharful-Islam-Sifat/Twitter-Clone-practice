@@ -1,4 +1,6 @@
 import { createMessage, getAllMessages } from "@/libs/services/getMessageServices";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 export default async function handler(req,res){
     
     try{
@@ -6,8 +8,8 @@ export default async function handler(req,res){
         if(req.method==='GET'){
             
             try{
-
-                const messages = await getAllMessages(req,res);
+                const session = await getServerSession(req,res,authOptions);
+                const messages = await getAllMessages(req,res,session.id);
                 return res.status(200).json(messages);
 
             }catch(error){
