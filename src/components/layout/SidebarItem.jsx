@@ -2,19 +2,11 @@ import React, { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
-import { useNotificationDispatcher } from '@/hooks/use-notification-dispatcher';
 import { useEffect } from 'react';
-import notificationActions from '@/libs/actions/notificationActions';
-import { NotificationContext } from '@/providers/notificationProvider';
+
 const SidebarItem = ({href,label,Icon}) => {
 
-  const [notifyState,dispatchNotify] = useContext(NotificationContext);
-
-
-  useEffect(()=>{
-    dispatchNotify(notificationActions.GET_NOTIFICATIONS);
-  },[])
-
+  
   console.log(label)  
   
   const router = useRouter();
@@ -48,7 +40,7 @@ const SidebarItem = ({href,label,Icon}) => {
     <div className='sidebar-items'onClick={handleClick}>
       <div className='item'>
         <Icon size={24} color='white'/>
-        <p className={label==='Messages'&&notifyState.notifications.length?'item-paragraph-green':'item-paragraph'}>{label}</p>
+        <p className='item-paragraph'>{label}</p>
       </div>
     </div>
   )

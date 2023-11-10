@@ -30,6 +30,7 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
       socket
     })
 
+  
     const [sendingMessage,setSendindMessage] = useState({
       senderId:null,
       receiverId: null,
@@ -54,8 +55,9 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
     useEffect(()=>{
 
       socket.on("message received",(newMessage)=>{
+        console.log('newMessage.id and messageId',newMessage.id,messageId,state)
         if(newMessage.id!==messageId){
-          console.log('newMessage.id and messageId',newMessage.id,messageId,state)
+          // dispatchNotify(notificationActions.GIVE_NOTIFICATIONS,newMessage.senderId)
           
         }else{
           
