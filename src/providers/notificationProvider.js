@@ -4,12 +4,12 @@ import { createContext } from "react"
 export const NotificationContext = createContext();
 export const NotificationProvider = ({children})=>{
 
-    const[state,dispatch] = useNotificationDispatcher({
+    const[notifyState,dispatchNotify] = useNotificationDispatcher({
         notifications:[]
     })
 
     return(
-        <NotificationContext.Provider value = {[state,dispatch]}>
+        <NotificationContext.Provider value = {[notifyState,dispatchNotify]}>
             {children}
         </NotificationContext.Provider>
     )

@@ -6,7 +6,7 @@ import { useActionDispatcher } from '@/hooks/use-action-dispatcher'
 import { useSession } from 'next-auth/react'
 const ChatForm  = ({messageId,userId,onChange,handleClick,text})=>{
 
-  console.log('text value on chatform',text)
+ 
     return(
 
    <div className={styles.main_container}>

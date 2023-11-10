@@ -26,9 +26,14 @@ const SocketHandler = async (req, res) => {
           console.log(`user joined room ${room}`)
       })
 
-      socket.on("new_message",(newMessage,mainMessageId)=>{
-        socket.in(newMessage.receiverId).emit("message received",newMessage,mainMessageId)
-        console.log('newMessage and mainMessageId on new_message socket',newMessage,mainMessageId)
+      socket.on('leave_chat', (room) => {
+        socket.leave(room);
+        console.log(`user left room ${room}`);
+      });
+
+      socket.on("new_message",(newMessage)=>{
+        socket.in(newMessage.id).emit("message received",newMessage)
+        console.log('newMessage and mainMessageId on new_message socket',newMessage)
       })
      })
 

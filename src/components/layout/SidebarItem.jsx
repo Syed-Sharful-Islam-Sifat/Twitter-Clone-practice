@@ -8,11 +8,11 @@ import notificationActions from '@/libs/actions/notificationActions';
 import { NotificationContext } from '@/providers/notificationProvider';
 const SidebarItem = ({href,label,Icon}) => {
 
-  const [state,dispatch] = useContext(NotificationContext)
+  const [notifyState,dispatchNotify] = useContext(NotificationContext);
 
 
   useEffect(()=>{
-    dispatch(notificationActions.GET_USERS)
+    dispatchNotify(notificationActions.GET_NOTIFICATIONS);
   },[])
 
   console.log(label)  
@@ -48,7 +48,7 @@ const SidebarItem = ({href,label,Icon}) => {
     <div className='sidebar-items'onClick={handleClick}>
       <div className='item'>
         <Icon size={24} color='white'/>
-        <p className={label==='Messages'?'item-paragraph-green':'item-paragraph'}>{label}</p>
+        <p className={label==='Messages'&&notifyState.notifications.length?'item-paragraph-green':'item-paragraph'}>{label}</p>
       </div>
     </div>
   )

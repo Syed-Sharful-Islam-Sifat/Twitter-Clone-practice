@@ -44,3 +44,8 @@ color: #ffffff;
     line-height: 1.25rem; 
     color: rgb(163 163 163);
 }
+
+.notification{
+    color: green;
+    font-weight: bold;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react'
+import React, { useContext, useEffect,useState } from 'react'
 import Sidebar from './layout/Sidebar'
 import { useSession } from 'next-auth/react';
 import Rightbar from './layout/Rightbar';
@@ -9,6 +9,8 @@ import messageActions from '@/libs/actions/single-message-actions';
 import { useSingleMessageActionDispatcher } from '@/hooks/use-singlemessage-dispatcher';
 import SingleMessageActions from '@/libs/actions/single-message-actions';
 import { useSocket } from '@/providers/socketProvider';
+import { NotificationContext } from '@/providers/notificationProvider';
+import notificationActions from '@/libs/actions/notificationActions';
 const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
   
 
@@ -40,17 +42,24 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
       dispatch(SingleMessageActions.GET_SINGLE_MESSAGE,{messageId})
       socket.emit('join_chat',messageId)
     }
-    },[messageId])
+
+    return () => {
+      if (messageId) {
+        socket.emit('leave_chat', messageId);
+      }
+    };
+    },[messageId,socket])
 
   
     useEffect(()=>{
 
-      socket.on("message received",(newMessage,mainMessageId)=>{
-        if(messageId!==mainMessageId){
-          // give notifications
+      socket.on("message received",(newMessage)=>{
+        if(newMessage.id!==messageId){
+          console.log('newMessage.id and messageId',newMessage.id,messageId,state)
+          
         }else{
-          console.log('useEffect ran on for message received',)
-          dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY,newMessage)
+          
+          dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY,{newMessage,messageId})
         }
       })
     
@@ -77,8 +86,9 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
       socket.emit("new_message",{
         senderId:session.id,
         receiverId: user._id,
-        text:text
-      },state.message._id)
+        text:text,
+        id:state.message._id
+      })
       setText('')
      }
 

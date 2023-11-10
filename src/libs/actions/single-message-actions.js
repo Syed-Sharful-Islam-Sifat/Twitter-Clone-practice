@@ -32,13 +32,17 @@ const SingleMessageActions = {
 
       console.log('payload on UPDATE_MESSAGE_HISTORY',payload);
 
+      if(payload.messageId!==payload.newMessage.id)return{
+        ...state
+      }
+
       return{
         ...state,
         message:{
           ...state.message,
           messages:[
             ...state.message.messages,
-            payload
+            payload.newMessage
           ]
         }
       }
