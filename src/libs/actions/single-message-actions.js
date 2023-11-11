@@ -22,7 +22,11 @@ const SingleMessageActions = {
           messages:[
             ...state.message.messages,
              data
-          ]
+          ],
+        },
+        lastMessage:{
+          seen: false,
+          user:data.senderId
         }
       }
 
@@ -44,6 +48,10 @@ const SingleMessageActions = {
             ...state.message.messages,
             payload.newMessage
           ]
+        },
+        lastMessage:{
+          seen:true,
+          user:payload.newMessage.senderId
         }
       }
     },
@@ -54,9 +62,28 @@ const SingleMessageActions = {
       
       return {
         ...state,
-        message:data
+        message:data,
+        lastMessage:{
+         seen:true,
+         user:null
+        }
       }
     },
+
+    GIVE_NOTIFICATION:async(payload,state,dispatch)=>{
+      console.log('payload on GIVE_NOTIFICATION',state);
+    
+      return {
+        ...state,
+        message:{
+          ...state.message,
+        },
+        lastMessage:{
+          seen:false,
+          user: payload.senderId
+        }
+      }
+    }
 
     
 }

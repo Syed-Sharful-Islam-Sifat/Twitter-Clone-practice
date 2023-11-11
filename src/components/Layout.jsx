@@ -11,6 +11,7 @@ import SingleMessageActions from '@/libs/actions/single-message-actions';
 import { useSocket } from '@/providers/socketProvider';
 import { NotificationContext } from '@/providers/notificationProvider';
 import notificationActions from '@/libs/actions/notificationActions';
+import { useMessage } from '@/providers/messageProvider';
 const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
   
 
@@ -19,17 +20,8 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
   const socket = useSocket();
   
    
-    const[state,dispatch] = useSingleMessageActionDispatcher({
-      message:{
-
-         messages:[
-          
-         ],
-
-        },
-      socket
-    })
-
+    const[state,dispatch] = useMessage();
+    const[notifyState,dispatchNotify] = useContext(NotificationContext);
   
     const [sendingMessage,setSendindMessage] = useState({
       senderId:null,
@@ -38,11 +30,17 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
     })
 
     useEffect(()=>{
+      if(messageId)
+      dispatch(SingleMessageActions.GET_SINGLE_MESSAGE,{messageId})
+    },[user])
+
+    useEffect(()=>{
        console.log('useEffect ran of Layout.jsx file',messageId)
       if(messageId){
-      dispatch(SingleMessageActions.GET_SINGLE_MESSAGE,{messageId})
       socket.emit('join_chat',messageId)
     }
+
+    console.log('state on layout',state);
 
     return () => {
       if (messageId) {
@@ -53,19 +51,23 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
 
   
     useEffect(()=>{
-
+      let messageReceived = false
       socket.on("message received",(newMessage)=>{
+        messageReceived = true;
         console.log('newMessage.id and messageId',newMessage.id,messageId,state)
-        if(newMessage.id!==messageId){
-          // dispatchNotify(notificationActions.GIVE_NOTIFICATIONS,newMessage.senderId)
-          
-        }else{
-          
+
           dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY,{newMessage,messageId})
+        
+      })
+
+      socket.on("notification",(newMessage)=>{
+    
+        if(!messageReceived&&!notifyState.notifications.includes(newMessage.senderId)){
+          dispatchNotify(notificationActions.GIVE_NOTIFICATIONS,newMessage)
         }
+        
       })
     
-    setSend(false);
     })
      
     const [text,setText] = useState('');
@@ -90,6 +92,14 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
         receiverId: user._id,
         text:text,
         id:state.message._id
+      },(acknowledgement)=>{
+        if(acknowledgement.success){
+           console.log('successfull')
+        } 
+
+        else{
+          console.log(acknowledgement.error)
+        }
       })
       setText('')
      }

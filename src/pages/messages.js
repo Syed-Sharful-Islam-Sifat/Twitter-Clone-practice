@@ -1,11 +1,13 @@
 import Header from "@/components/Header";
 import Layout from "@/components/Layout"
 import UsersItem from "@/components/messages/users/usersItem";
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import MessageLayout from "@/components/messages/message-container/messageLayout";
 import { useActionDispatcher } from "@/hooks/use-action-dispatcher";
 import { useSession } from "next-auth/react";
 import messageActions from "@/libs/actions/message-action";
+import { NotificationContext } from "@/providers/notificationProvider";
+import notificationActions from "@/libs/actions/notificationActions";
 const Messages = () => {
 
   const [users, setUsers] = useState();
@@ -19,6 +21,8 @@ const Messages = () => {
     ],
     
   })
+
+  const[notifyState,dispatchNotify] = useContext(NotificationContext);
 
   useEffect(() => {
     dispatch(messageActions.GET_MESSAGES);
@@ -40,7 +44,8 @@ const Messages = () => {
     setMessageBox(true);
     setSingleUser(user);
     if(isPresent.length)
-    setMessageId(isPresent[0]._id)
+    setMessageId(isPresent[0]._id);
+    dispatchNotify(notificationActions.DELETE_NOTIFICATIONS,user._id)
   }
   useEffect(() => {
     fetchUsers();

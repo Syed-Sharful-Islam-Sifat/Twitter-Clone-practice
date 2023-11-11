@@ -8,6 +8,7 @@ const notificationActions = {
     DELETE_NOTIFICATIONS: async(payload,state,dispatch)=>{
         
         const updatedNotifications = state.notifications.filter((notification)=>notification!==payload)
+        console.log('DELETE notification',payload)
         return{
             ...state,
             notifications:updatedNotifications
@@ -21,7 +22,7 @@ const notificationActions = {
             ...state,
             notifications:[
                 ...state.notifications,
-                payload.newMessage.senderId
+                payload.senderId
             ]
         }
     },

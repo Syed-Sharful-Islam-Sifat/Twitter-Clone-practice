@@ -10,41 +10,46 @@ import '@/components/posts/postitem.css'
 import '@/components/users/userprofile.css'
 import { SessionProvider } from 'next-auth/react'
 import Layout from '@/components/Layout'
-import {Roboto} from '@next/font/google'
+import { Roboto } from '@next/font/google'
 import { useSession } from 'next-auth/react'
 import Home from '@/pages/index.js'
 import { SocketProvider } from '@/providers/socketProvider'
+import { MessageProvider } from '@/providers/messageProvider'
 const roboto = Roboto({
-  subsets:['latin'],
-  weight:['400','700']
+  subsets: ['latin'],
+  weight: ['400', '700']
 })
 
 import { useRouter } from 'next/router'
 import Verification from './verification'
+import { NotificationProvider } from '@/providers/notificationProvider'
 
 
 
 export default function App({ Component, pageProps }) {
 
- 
-  const router = useRouter();
-  
-  return (
-    
 
-   <SessionProvider session={pageProps.session}>
-     <SocketProvider>
-      
-      <main className={roboto.className} key = {router.asPath}>
-         <Component {...pageProps} /> 
-      </main>
-    
-     </SocketProvider>
-    
-    
+  const router = useRouter();
+
+  return (
+
+
+    <SessionProvider session={pageProps.session}>
+      <SocketProvider>
+        <MessageProvider>
+          <NotificationProvider>
+          <main className={roboto.className} key={router.asPath}>
+            <Component {...pageProps} />
+          </main>
+          </NotificationProvider>
+        </MessageProvider>
+
+      </SocketProvider>
+
+
     </SessionProvider>
-     
-  
+
+
   )
 }
 
