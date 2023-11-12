@@ -30,6 +30,11 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
     })
 
     useEffect(()=>{
+      if(session&&user)
+      dispatchNotify(notificationActions.DELETE_NOTIFICATIONS,{sessionId:session.id,userId:user._id})
+    },[])
+
+    useEffect(()=>{
       if(messageId)
       dispatch(SingleMessageActions.GET_SINGLE_MESSAGE,{messageId})
     },[user])
@@ -54,20 +59,8 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
       let messageReceived = false
       socket.on("message received",(newMessage)=>{
         messageReceived = true;
-        console.log('newMessage.id and messageId',newMessage.id,messageId,state)
-
           dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY,{newMessage,messageId})
-        
       })
-
-      socket.on("notification",(newMessage)=>{
-    
-        if(!messageReceived&&!notifyState.notifications.includes(newMessage.senderId)){
-          dispatchNotify(notificationActions.GIVE_NOTIFICATIONS,newMessage)
-        }
-        
-      })
-    
     })
      
     const [text,setText] = useState('');
@@ -92,15 +85,10 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
         receiverId: user._id,
         text:text,
         id:state.message._id
-      },(acknowledgement)=>{
-        if(acknowledgement.success){
-           console.log('successfull')
-        } 
-
-        else{
-          console.log(acknowledgement.error)
-        }
       })
+
+      dispatchNotify(notificationActions.GIVE_NOTIFICATIONS,{senderId:session.id,receiverId:user._id})
+
       setText('')
      }
 

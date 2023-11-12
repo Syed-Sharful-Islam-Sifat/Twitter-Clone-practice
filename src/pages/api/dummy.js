@@ -7,15 +7,15 @@ export default async function handler(req, res) {
 
   if (req.method === 'PUT') {
     try {
-      const posts = await Post.find();
+      const users = await User.find();
 
-      for (const post of posts) {
-        const user = await User.findById(post.userId);
+      for (const user of users) {
+    
 
-        if (!post.retweetId) {
+        if (!user.notifications) {
        
-           post.retweetId = {}
-          await post.save();
+           user.notifications = []
+          await user.save();
         }
       }
 

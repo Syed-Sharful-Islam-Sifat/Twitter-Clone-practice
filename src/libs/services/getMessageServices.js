@@ -2,6 +2,7 @@ import Message from "@/models/messages";
 import { dbConnect } from "@/config/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import User from "@/models/users";
 
 export  async function getAllMessages(req,res,session){
    
@@ -90,18 +91,45 @@ export async function getNotifications(req,res,session){
   try {
    
     await dbConnect();
+    const user = await User.findById(session.id);
+    console.log('user on getnotification',user)
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
+export async function updateNotifications(req,res,session,payload){
+
+  try {
+   
+    await dbConnect();
+    const user = await User.findById(payload.receiverId);
+    console.log('user and payload on updateNotification',user,payload);
+    if(!user.notifications.includes(payload.senderId)){
+        user.notifications.push(payload.senderId);
+        await user.save();
+    }
   
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-    const users = await Message.distinct('messages.senderId', {
-      $and: [
-        { 'messages.receiverId': session.id },
-        { 'messages.seen': false }
-      ],
-    });
-    console.log("session and unSeenMessagesUsers",session, users);
+export async function deleteNotifications(req,res,session,payload){
 
-    return users;
+  try {
+    console.log('on deleteNotification',payload)
+    await dbConnect();
+    const user = await User.findById(payload.sessionId);
+    if(user.notifications.includes(payload.userId)){
+        user.notifications.pull(payload.userId);
+        await user.save();
+    }
+
+    console.log('after deleteeeeeeeeeeeeeeeeee',user)
+    return user;
   } catch (error) {
     console.log(error);
   }

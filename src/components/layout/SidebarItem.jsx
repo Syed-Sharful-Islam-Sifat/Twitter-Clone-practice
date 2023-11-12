@@ -3,14 +3,22 @@ import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
 import { useEffect } from 'react';
+import { NotificationContext } from '@/providers/notificationProvider';
+import notificationActions from '@/libs/actions/notificationActions';
 
 const SidebarItem = ({href,label,Icon}) => {
 
-  
-  console.log(label)  
+  const[notifyState,dispatchNotify] = useContext(NotificationContext);
+
+  const {data:session} = useSession();
+  useEffect(()=>{
+    dispatchNotify(notificationActions.GET_NOTIFICATIONS,session.id)
+   },[])
+
+   console.log('state on sidebar',notifyState)
   
   const router = useRouter();
-  const {data: session} = useSession();
+ 
 
   const handleClick = ()=>{
     if(label==='Profile'){
@@ -41,6 +49,9 @@ const SidebarItem = ({href,label,Icon}) => {
       <div className='item'>
         <Icon size={24} color='white'/>
         <p className='item-paragraph'>{label}</p>
+        {label==='Messages'&&notifyState.notifications.length?(
+          <p className='notification'  style={{ backgroundColor: 'Green', borderRadius:'50%',color:'White',padding:'3px'}}>{notifyState.notifications.length}</p>
+        ):(null)}
       </div>
     </div>
   )

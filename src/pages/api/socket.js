@@ -32,9 +32,14 @@ const SocketHandler = async (req, res) => {
       });
 
       socket.on("new_message",(newMessage)=>{ 
-        socket.in(newMessage.id).emit("message received",newMessage)
-        socket.in(newMessage.receiverId).emit("notification",newMessage);
+        io.to(newMessage.id).emit("message received",newMessage)
+      
         console.log('newMessage and mainMessageId on new_message socket',newMessage)
+      })
+
+      socket.on("notification",(newMessage)=>{
+        io.to(newMessage.receiverId).emit("notification received",newMessage);
+        console.log("notification on socket",newMessage);
       })
      })
 

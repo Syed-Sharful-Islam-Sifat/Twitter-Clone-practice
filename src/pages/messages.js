@@ -45,7 +45,8 @@ const Messages = () => {
     setSingleUser(user);
     if(isPresent.length)
     setMessageId(isPresent[0]._id);
-    dispatchNotify(notificationActions.DELETE_NOTIFICATIONS,user._id)
+
+    dispatchNotify(notificationActions.DELETE_NOTIFICATIONS,{sessionId:session.id,userId:user._id})
   }
   useEffect(() => {
     fetchUsers();

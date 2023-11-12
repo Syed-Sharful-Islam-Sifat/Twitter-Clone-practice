@@ -1,30 +1,39 @@
 const notificationActions = {
     GET_NOTIFICATIONS: async(payload,state,dispatch)=>{
+
+        const res = await fetch('/api/messages/notifications');
+
+        const data = await res.json();
        return{
-        ...state
+        ...state,
+        notifications:[
+           ...data
+        ]
        }
     },
 
     DELETE_NOTIFICATIONS: async(payload,state,dispatch)=>{
-        
-        const updatedNotifications = state.notifications.filter((notification)=>notification!==payload)
-        console.log('DELETE notification',payload)
-        return{
-            ...state,
-            notifications:updatedNotifications
-        }
-    },
-    GIVE_NOTIFICATIONS: async(payload,state,dispatch)=>{
+        console.log('DELETE_NOTIFICATION',payload)
+        const res = await fetch('/api/messages/notifications',{
+            method:'DELETE',
+            headers: {
+                "Content-Type": "application/json",
+              },
+            body: JSON.stringify(payload)
+        })
 
-        console.log('payload on GIVE_NOTIFICATIONS',payload,state)
-       
-        return{
-            ...state,
-            notifications:[
-                ...state.notifications,
-                payload.senderId
-            ]
-        }
+        dispatch(notificationActions.GET_NOTIFICATIONS,payload.sessionId)
+        
+    },
+    GIVE_NOTIFICATIONS: async(payload,state,session,dispatch)=>{
+        console.log('payload on GIVE_NOTIFICATIONS',payload)
+        const res = await fetch('api/messages/notifications',{
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+              },
+            body: JSON.stringify(payload)
+        })
     },
 
 
