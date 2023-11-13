@@ -56,16 +56,27 @@ export  async function sendNewMessage(req,res){
                 text,
               })
 
+              mainMessage.lastMessage ={
+                seen: 'pending',
+                userId:senderId
+              }
+
             await mainMessage.save();  
 
-            const lastMessage = {
+            const latestMessage = {
               senderId,
               receiverId,
-              text
+              text,
+
+              lastMessage:{
+                seen: mainMessage.lastMessage.seen,
+                userId: mainMessage.lastMessage.senderId
+              }
+
             }
 
 
-            return lastMessage;
+            return latestMessage;
         
     }catch(error){
       console.log('error',error);

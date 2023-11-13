@@ -4,6 +4,7 @@ const notificationActions = {
         const res = await fetch('/api/messages/notifications');
 
         const data = await res.json();
+        console.log('data',data)
        return{
         ...state,
         notifications:[
@@ -22,7 +23,7 @@ const notificationActions = {
             body: JSON.stringify(payload)
         })
 
-        dispatch(notificationActions.GET_NOTIFICATIONS,payload.sessionId)
+        dispatch(notificationActions.GET_NOTIFICATIONS)
         
     },
     GIVE_NOTIFICATIONS: async(payload,state,session,dispatch)=>{
@@ -34,6 +35,18 @@ const notificationActions = {
               },
             body: JSON.stringify(payload)
         })
+
+        const data = await res.json();
+
+        return{
+            ...state,
+            notifications:[
+                ...state.notifications,
+                ...data.notifications
+            ]
+        }
+
+        console.log('data on GIVE_NOTIFICATION',data)
     },
 
 

@@ -30,6 +30,7 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
     })
 
     useEffect(()=>{
+    
       if(session&&user)
       dispatchNotify(notificationActions.DELETE_NOTIFICATIONS,{sessionId:session.id,userId:user._id})
     },[])
@@ -56,12 +57,34 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
 
   
     useEffect(()=>{
-      let messageReceived = false
-      socket.on("message received",(newMessage)=>{
+      let messageReceived = false;
+      const handleMessageReceived = (newMessage) => {
         messageReceived = true;
-          dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY,{newMessage,messageId})
-      })
-    })
+        dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY, { newMessage, messageId });
+      };
+    
+      const handleNotificationReceived = (newMessage) => {
+        if (!messageReceived) {
+          dispatchNotify(notificationActions.GIVE_NOTIFICATIONS, { senderId: newMessage.senderId, receiverId: newMessage.receiverId });
+        }
+      };
+      
+      // const handleSeenUnSeen = (newMessage)=>{
+      //   if(!messageReceived){
+      //     dispatch(SingleMessageActions.GIVE_NOTIFICATION)
+      //   }
+      // }
+
+    
+      socket.on("message received", handleMessageReceived);
+      socket.on("notification received", handleNotificationReceived);
+      socket.on("seen unseen features",handleSeenUnSeen)
+    
+      return () => {
+        socket.off("message received", handleMessageReceived);
+        socket.off("notification received", handleNotificationReceived);
+      };
+    },[socket, dispatch, dispatchNotify, messageId])
      
     const [text,setText] = useState('');
 
@@ -87,7 +110,12 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
         id:state.message._id
       })
 
-      dispatchNotify(notificationActions.GIVE_NOTIFICATIONS,{senderId:session.id,receiverId:user._id})
+      socket.emit("notification",{
+        senderId:session.id,
+        receiverId: user._id,
+        text:text,
+        id:state.message._id
+      })
 
       setText('')
      }

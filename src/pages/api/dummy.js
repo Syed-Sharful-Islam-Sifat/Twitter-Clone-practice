@@ -1,22 +1,28 @@
 import { dbConnect } from '@/config/db';
-import Post from '@/models/posts';
-import User from '@/models/users';
-
+import Message from '@/models/messages';
 export default async function handler(req, res) {
   await dbConnect();
 
   if (req.method === 'PUT') {
     try {
-      const users = await User.find();
+      const messages = await Message.find();
 
-      for (const user of users) {
-    
+      for (const message of messages) {
 
-        if (!user.notifications) {
-       
-           user.notifications = []
-          await user.save();
+        if(!message.lastMessage&&message.messages.length){
+
+          const lastIndex = message.messages.length;
+
+          const senderId = message.messages[lastIndex].senderId;
+        
+          message.lastMessage = {
+             seen:'pending',
+             userId: senderId
+             
+          }
         }
+
+        await message.save();
       }
 
       return res.status(200).json({ message: 'Database updated successfully' });

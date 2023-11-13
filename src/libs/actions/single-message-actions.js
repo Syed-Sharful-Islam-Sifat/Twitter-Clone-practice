@@ -25,8 +25,8 @@ const SingleMessageActions = {
           ],
         },
         lastMessage:{
-          seen: false,
-          user:data.senderId
+          seen: data.lastMessage.seen,
+          userId:data.senderId
         }
       }
 
@@ -35,7 +35,7 @@ const SingleMessageActions = {
     UPDATE_MESSAGE_HISTORY: async(payload,state,dispatch)=>{
 
       console.log('payload on UPDATE_MESSAGE_HISTORY',payload);
-
+      const res = await fetch('api/messages/')
       if(payload.messageId!==payload.newMessage.id)return{
         ...state
       }
@@ -51,10 +51,11 @@ const SingleMessageActions = {
         },
         lastMessage:{
           seen:true,
-          user:payload.newMessage.senderId
+          userId:payload.newMessage.senderId
         }
       }
     },
+    
     GET_SINGLE_MESSAGE:async(payload,state,dispatch)=>{
       console.log('payload on GET_SINGLE_MESSAGE action',payload)
       const res = await fetch(`/api/messages/${payload.messageId}`);
@@ -65,7 +66,7 @@ const SingleMessageActions = {
         message:data,
         lastMessage:{
          seen:true,
-         user:null
+         userId:data.lastMessage.userId
         }
       }
     },

@@ -33,9 +33,18 @@ const messageSchema = new mongoose.Schema({
     }
     
   ],
-  notifications:[
-    
-  ]
+  lastMessage:{
+    seen:{
+       type: String,
+       enum: ['true', 'false', 'pending'],
+       default: 'pending'
+    },
+
+    userId:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  }
 },
 {
   timeStamps:true
