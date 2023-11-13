@@ -57,7 +57,7 @@ export  async function sendNewMessage(req,res){
               })
 
               mainMessage.lastMessage ={
-                seen: 'pending',
+                seen: 'false',
                 userId:senderId
               }
 
@@ -103,7 +103,7 @@ export async function getNotifications(req,res,session){
    
     await dbConnect();
     const user = await User.findById(session.id);
-    console.log('user on getnotification',user)
+   
     return user;
   } catch (error) {
     console.log(error);
@@ -116,7 +116,7 @@ export async function updateNotifications(req,res,session,payload){
    
     await dbConnect();
     const user = await User.findById(payload.receiverId);
-    console.log('user and payload on updateNotification',user,payload);
+   
     if(!user.notifications.includes(payload.senderId)){
         user.notifications.push(payload.senderId);
         await user.save();
@@ -131,7 +131,7 @@ export async function updateNotifications(req,res,session,payload){
 export async function deleteNotifications(req,res,session,payload){
 
   try {
-    console.log('on deleteNotification',payload)
+   
     await dbConnect();
     const user = await User.findById(payload.sessionId);
     if(user.notifications.includes(payload.userId)){
@@ -139,9 +139,23 @@ export async function deleteNotifications(req,res,session,payload){
         await user.save();
     }
 
-    console.log('after deleteeeeeeeeeeeeeeeeee',user)
+    
     return user;
   } catch (error) {
     console.log(error);
   }
+}
+
+export async function updateSingleMessage(req,res,payload){
+  console.log('on updateSingleMessage',payload);
+  await dbConnect();
+  const message = await Message.findById(payload.messageId);
+
+  message.lastMessage.seen = true;
+  message.lastMessage.userId = payload.newMessage.senderId;
+
+  await message.save();
+
+  return message;
+
 }

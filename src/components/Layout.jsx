@@ -21,6 +21,7 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
   
    
     const[state,dispatch] = useMessage();
+    console.log('state on Layout',state);
     const[notifyState,dispatchNotify] = useContext(NotificationContext);
   
     const [sendingMessage,setSendindMessage] = useState({
@@ -69,16 +70,18 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
         }
       };
       
-      // const handleSeenUnSeen = (newMessage)=>{
-      //   if(!messageReceived){
-      //     dispatch(SingleMessageActions.GIVE_NOTIFICATION)
-      //   }
-      // }
+      const handleSeenUnSeen = (newMessage)=>{
+       
+        if(messageReceived){
+          dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY,{newMessage,messageId})
+        }
+      }
 
-    
+      
       socket.on("message received", handleMessageReceived);
       socket.on("notification received", handleNotificationReceived);
-      socket.on("seen unseen features",handleSeenUnSeen)
+      socket.on("seen unseen feature",handleSeenUnSeen)
+    
     
       return () => {
         socket.off("message received", handleMessageReceived);
@@ -111,6 +114,12 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
       })
 
       socket.emit("notification",{
+        senderId:session.id,
+        receiverId: user._id,
+        text:text,
+        id:state.message._id
+      })
+      socket.emit("seenUnseen",{
         senderId:session.id,
         receiverId: user._id,
         text:text,

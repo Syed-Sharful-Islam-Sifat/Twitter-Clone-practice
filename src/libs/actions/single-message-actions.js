@@ -35,7 +35,13 @@ const SingleMessageActions = {
     UPDATE_MESSAGE_HISTORY: async(payload,state,dispatch)=>{
 
       console.log('payload on UPDATE_MESSAGE_HISTORY',payload);
-      const res = await fetch('api/messages/')
+      const res = await fetch(`api/messages/${payload.messageId}`,{
+        method: 'PATCH',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload)
+      })
       if(payload.messageId!==payload.newMessage.id)return{
         ...state
       }
@@ -55,7 +61,7 @@ const SingleMessageActions = {
         }
       }
     },
-    
+
     GET_SINGLE_MESSAGE:async(payload,state,dispatch)=>{
       console.log('payload on GET_SINGLE_MESSAGE action',payload)
       const res = await fetch(`/api/messages/${payload.messageId}`);

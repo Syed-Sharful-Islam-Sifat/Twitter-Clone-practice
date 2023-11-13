@@ -22,13 +22,27 @@ const SingleMessage = ({ state }) => {
     <div className={styles.messageContainer} ref={messageContainerRef}>
       {state.message.messages.map((singleMessage, i) => {
         return (
-          <div key={i} className={styles.textContainer}>
-            {singleMessage.senderId === session.id ? (
-                <p className={styles.textOwner}>{singleMessage.text}</p>    
-  
-            ) : (
-              <p className={styles.textOther}>{singleMessage.text}</p>
-            )}
+          <div className={styles.mainContainer}>
+            <div key={i} className={styles.textContainer}>
+              {singleMessage.senderId === session.id ? (
+                <p className={styles.textOwner}>{singleMessage.text}</p>
+              ) : (
+                <p className={styles.textOther}>{singleMessage.text}</p>
+              )}
+            </div>
+            {singleMessage.senderId===session.id&&i===state.message.messages.length-1?
+             (
+              <div className={styles.seenUnseen}>
+                 {state.lastMessage.seen===true&&state.lastMessage.userId===session.id?(
+                   <p>Seen</p>
+                 ):(
+                  <p>Sent</p>
+                 )
+                 
+                 }
+              </div>
+             ):null
+          }
           </div>
         );
       })}

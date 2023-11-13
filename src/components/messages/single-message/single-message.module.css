@@ -62,7 +62,10 @@
     background: #e0e0e0;
   }
 
-  .seenOrUnseen{
+  .seenUnseen{
+   
     color: rgba(128, 128, 128, 0.822);
     font-size: 0.9rem;
+    margin-left: 60%;
   }
+

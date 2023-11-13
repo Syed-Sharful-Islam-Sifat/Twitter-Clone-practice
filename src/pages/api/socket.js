@@ -41,6 +41,12 @@ const SocketHandler = async (req, res) => {
         io.to(newMessage.receiverId).emit("notification received",newMessage);
         console.log("notification on socket",newMessage);
       })
+
+      socket.on("seenUnseen",(newMessage)=>{
+        io.to(newMessage.senderId).emit("seen unseen feature",newMessage);
+        console.log('seen unseen on socket',newMessage)
+      })
+
      })
 
    
