@@ -85,7 +85,7 @@ export  async function sendNewMessage(req,res){
 
 }
 
-export  async function getSingleMessage(req,res){
+export  async function getSingleMessage(req,res,){
   try{
      await dbConnect();
     const {messageId} = req.query;
@@ -150,7 +150,7 @@ export async function updateSingleMessage(req,res,payload){
   console.log('on updateSingleMessage',payload);
   await dbConnect();
   const message = await Message.findById(payload.messageId);
-
+  console.log('message on updateSingleMessage',message)
   message.lastMessage.seen = true;
   message.lastMessage.userId = payload.newMessage.senderId;
 

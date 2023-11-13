@@ -58,7 +58,7 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
 
   
     useEffect(()=>{
-      let messageReceived = false;
+      let messageReceived = false,notificationReceived = false;
       const handleMessageReceived = (newMessage) => {
         messageReceived = true;
         dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY, { newMessage, messageId });
@@ -66,13 +66,14 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
     
       const handleNotificationReceived = (newMessage) => {
         if (!messageReceived) {
+          notificationReceived= true
           dispatchNotify(notificationActions.GIVE_NOTIFICATIONS, { senderId: newMessage.senderId, receiverId: newMessage.receiverId });
         }
       };
       
       const handleSeenUnSeen = (newMessage)=>{
-       
-        if(messageReceived){
+        console.log('messageReceived on handleSeenUnseen',messageReceived);
+        if(!notificationReceived){
           dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY,{newMessage,messageId})
         }
       }

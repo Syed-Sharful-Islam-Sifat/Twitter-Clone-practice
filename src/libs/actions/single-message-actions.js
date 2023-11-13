@@ -71,6 +71,21 @@ const SingleMessageActions = {
         ...state,
         message:data,
         lastMessage:{
+         seen:data.lastMessage.seen,
+         userId:data.lastMessage.userId
+        }
+      }
+    },
+
+    USER_SELECTED: async(payload,state,dispatch)=>{
+      console.log('payload on GET_SINGLE_MESSAGE action',payload)
+      const res = await fetch(`/api/messages/${payload.messageId}`);
+      const data = await res.json();
+      
+      return {
+        ...state,
+        message:data,
+        lastMessage:{
          seen:true,
          userId:data.lastMessage.userId
         }
