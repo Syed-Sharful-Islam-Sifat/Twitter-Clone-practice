@@ -13,7 +13,7 @@ const UserItem = ({ user }) => {
   useEffect(()=>{
    dispatchNotify(notificationActions.GET_NOTIFICATIONS,user._id)
   },[])
-  console.log("state on userItem", notifyState);
+
 
   return (
     <div className={styles.main_container}>

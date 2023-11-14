@@ -13,15 +13,16 @@ const SingleMessageActions = {
       })
       
       const data = await res.json();
+
      
-      
+      console.log('data on SEND_MESSAGE_ACTION',state,data);
       return{
         ...state,
         message:{
           ...state.message,
           messages:[
             ...state.message.messages,
-             data
+            data
           ],
         },
         lastMessage:{
@@ -34,7 +35,13 @@ const SingleMessageActions = {
 
     UPDATE_MESSAGE_HISTORY: async(payload,state,dispatch)=>{
 
-      console.log('payload on UPDATE_MESSAGE_HISTORY',payload);
+      // if(payload.session.id===payload.newMessage.senderId){
+      //   console.log('state on UPDATE_MESSAGE_HISTORY',state)
+      //   return{
+      //     ...state
+      //   }
+      // }
+      
       const res = await fetch(`api/messages/${payload.messageId}`,{
         method: 'PATCH',
         headers: {
@@ -42,9 +49,11 @@ const SingleMessageActions = {
         },
         body: JSON.stringify(payload)
       })
-      if(payload.messageId!==payload.newMessage.id)return{
-        ...state
-      }
+      const data = await res.json();
+      console.log('data on UPDATE_MESSAGE_HISTORY',data)
+
+      const seen = payload.session.id===payload.receiverId?'true':'false'
+      console.log('seen payload.session.id and payload.receiverId',seen,payload.session.id,payload.receiverId)
 
       return{
         ...state,
@@ -56,7 +65,7 @@ const SingleMessageActions = {
           ]
         },
         lastMessage:{
-          seen:true,
+          seen:seen,
           userId:payload.newMessage.senderId
         }
       }
@@ -66,7 +75,7 @@ const SingleMessageActions = {
       console.log('payload on GET_SINGLE_MESSAGE action',payload)
       const res = await fetch(`/api/messages/${payload.messageId}`);
       const data = await res.json();
-      
+      console.log('data on GETSINGLEMESSAGE',data)
       return {
         ...state,
         message:data,
@@ -79,14 +88,21 @@ const SingleMessageActions = {
 
     USER_SELECTED: async(payload,state,dispatch)=>{
       console.log('payload on GET_SINGLE_MESSAGE action',payload)
-      const res = await fetch(`/api/messages/${payload.messageId}`);
+      const res = await fetch(`/api/messages/${payload.messageId}`,{
+        method:'PATCH',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload)
+      });
       const data = await res.json();
+      console.log('data on USER_SELECTED',data)
       
       return {
         ...state,
         message:data,
         lastMessage:{
-         seen:true,
+         seen:'true',
          userId:data.lastMessage.userId
         }
       }
@@ -101,10 +117,17 @@ const SingleMessageActions = {
           ...state.message,
         },
         lastMessage:{
-          seen:false,
+          seen:'false',
           user: payload.senderId
         }
       }
+    },
+
+    SET_SOCKET: async(payload,state,dispatch)=>{
+        return{
+          ...state,
+          socket:payload.socket
+        }
     }
 
     

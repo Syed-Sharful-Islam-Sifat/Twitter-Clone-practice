@@ -1,4 +1,4 @@
-import { getSingleMessage, sendNewMessage } from "@/libs/services/getMessageServices";
+import { getSingleMessage, sendNewMessage, updateSeenandunSeenMessages } from "@/libs/services/getMessageServices";
 import { updateSingleMessage } from "@/libs/services/getMessageServices";
 export default async function handler(req,res){
     
@@ -12,15 +12,20 @@ export default async function handler(req,res){
 
         if(req.method==='GET'){
             const message = await getSingleMessage(req,res);
-            console.log('get message on single message api',message)
+            console.log('on getsingle message')
             return res.status(200).json(message)
         }
 
         if(req.method==='PATCH'){
-            const {messageId,newMessage} = req.body;
+            const {messageId,newMessage,session,userSelected} = req.body;
             console.log('req.body on singlemessage update',req.body)
-             const data = await updateSingleMessage(req,res,{messageId,newMessage});
-             console.log('data on singlemessage update',data);
+            let data;
+              if(userSelected===false)
+              data = await updateSingleMessage(req,res,{messageId,newMessage,session});
+
+              else
+                data = await updateSeenandunSeenMessages(req,res,{messageId})
+           
              return res.status(200).json(data)
         }
 

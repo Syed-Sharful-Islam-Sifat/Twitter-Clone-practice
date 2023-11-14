@@ -14,8 +14,6 @@ const SidebarItem = ({href,label,Icon}) => {
   useEffect(()=>{
     dispatchNotify(notificationActions.GET_NOTIFICATIONS)
    },[])
-
-   console.log('state on sidebar',notifyState)
   
   const router = useRouter();
  

@@ -31,20 +31,20 @@ const SocketHandler = async (req, res) => {
         console.log(`user left room ${room}`);
       });
 
-      socket.on("new_message",(newMessage)=>{ 
-        io.to(newMessage.id).emit("message received",newMessage)
+      socket.on("new_message",(newMessage,messageId)=>{ 
+        io.to(newMessage.id).emit("message received",newMessage,messageId)
       
         console.log('newMessage and mainMessageId on new_message socket',newMessage)
       })
 
-      socket.on("notification",(newMessage)=>{
-        io.to(newMessage.receiverId).emit("notification received",newMessage);
+      socket.on("notification",(newMessage,messageId)=>{
+        io.to(newMessage.receiverId).emit("notification received",newMessage,messageId);
         console.log("notification on socket",newMessage);
       })
 
-      socket.on("seenUnseen",(newMessage)=>{
-        io.to(newMessage.senderId).emit("seen unseen feature",newMessage);
-        console.log('seen unseen on socket',newMessage)
+      socket.on("seenUnseen",(userId,messageId)=>{
+        console.log('seenUnseen',userId,messageId);
+        io.to(userId).emit("seen",userId,messageId)
       })
 
      })

@@ -89,7 +89,7 @@ export  async function getSingleMessage(req,res,){
   try{
      await dbConnect();
     const {messageId} = req.query;
-     console.log('req.body on getSingleMessage',req.query)
+    
       const message = await Message.findById(messageId);
       return message;
   }catch(error){
@@ -147,15 +147,27 @@ export async function deleteNotifications(req,res,session,payload){
 }
 
 export async function updateSingleMessage(req,res,payload){
-  console.log('on updateSingleMessage',payload);
+ // console.log('on updateSingleMessage',payload);
   await dbConnect();
   const message = await Message.findById(payload.messageId);
-  console.log('message on updateSingleMessage',message)
-  message.lastMessage.seen = true;
+
+  const seen = (payload.session.id===payload.newMessage.receiverId)?'true':'false'
+  message.lastMessage.seen = seen;
   message.lastMessage.userId = payload.newMessage.senderId;
 
   await message.save();
-
+ 
   return message;
 
+}
+
+export async function updateSeenandunSeenMessages(req,res,payload){
+  await dbConnect();
+
+  const message = await Message.findById(payload.messageId);
+  // console.log('message on updateSeenandUnseen',message);
+   message.lastMessage.seen = 'true';
+
+   await message.save();
+   return message;
 }

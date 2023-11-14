@@ -57,38 +57,34 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
     },[messageId,socket])
 
   
+
+  
     useEffect(()=>{
+      
       let messageReceived = false,notificationReceived = false;
-      const handleMessageReceived = (newMessage) => {
+      const handleMessageReceived = async(newMessage,messageId) => {
         messageReceived = true;
-        dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY, { newMessage, messageId });
+       await dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY, { newMessage, messageId ,session,userSelected:false});
       };
-    
-      const handleNotificationReceived = (newMessage) => {
+      
+      const handleNotificationReceived = async(newMessage,messageId) => {
         if (!messageReceived) {
           notificationReceived= true
-          dispatchNotify(notificationActions.GIVE_NOTIFICATIONS, { senderId: newMessage.senderId, receiverId: newMessage.receiverId });
+          await dispatchNotify(notificationActions.GIVE_NOTIFICATIONS, { senderId: newMessage.senderId, receiverId: newMessage.receiverId });
         }
       };
       
-      const handleSeenUnSeen = (newMessage)=>{
-        console.log('messageReceived on handleSeenUnseen',messageReceived);
-        if(!notificationReceived){
-          dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY,{newMessage,messageId})
-        }
-      }
-
+      
       
       socket.on("message received", handleMessageReceived);
       socket.on("notification received", handleNotificationReceived);
-      socket.on("seen unseen feature",handleSeenUnSeen)
-    
-    
+     
       return () => {
         socket.off("message received", handleMessageReceived);
         socket.off("notification received", handleNotificationReceived);
       };
     },[socket, dispatch, dispatchNotify, messageId])
+    
      
     const [text,setText] = useState('');
 
@@ -98,7 +94,7 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
      const handleClick = async()=>{
     
       setSend(true)
-    await  dispatch(messageActions.SEND_MESSAGE,{messageId,
+    await  dispatch(SingleMessageActions.SEND_MESSAGE,{messageId,
        senderId: session.id,
        receiverId: user._id,
        text:text
@@ -112,22 +108,19 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
         receiverId: user._id,
         text:text,
         id:state.message._id
-      })
+      },messageId)
 
       socket.emit("notification",{
         senderId:session.id,
         receiverId: user._id,
         text:text,
         id:state.message._id
-      })
-      socket.emit("seenUnseen",{
-        senderId:session.id,
-        receiverId: user._id,
-        text:text,
-        id:state.message._id
-      })
+      },messageId)
+    
 
+      
       setText('')
+
      }
 
    
@@ -152,7 +145,7 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
                   <SelectUser/>
                 ):(
                   <MessageLayout user={user} messageId={messageId} onChange={onTextChange} handleClick={handleClick} text={text}>
-                    <SingleMessage state={state}/>
+                    <SingleMessage/>
                   </MessageLayout>
                 )
               ):<Rightbar/>}

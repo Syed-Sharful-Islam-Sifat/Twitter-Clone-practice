@@ -8,6 +8,10 @@ import { useSession } from "next-auth/react";
 import messageActions from "@/libs/actions/message-action";
 import { NotificationContext } from "@/providers/notificationProvider";
 import notificationActions from "@/libs/actions/notificationActions";
+import SingleMessage from "@/components/messages/single-message/single-message";
+import SingleMessageActions from "@/libs/actions/single-message-actions";
+import { useSocket } from "@/providers/socketProvider";
+import { useMessage } from "@/providers/messageProvider";
 const Messages = () => {
 
   const [users, setUsers] = useState();
@@ -15,6 +19,8 @@ const Messages = () => {
   const [singleUser, setSingleUser] = useState();
   const[messageId,setMessageId] = useState('')
   const { data: session } = useSession();
+  const[user,SetUser] = useState();
+  const[stateMessage,dispatchMessage] = useMessage();
   const [state, dispatch] = useActionDispatcher({
     allMessages: [
        
@@ -23,14 +29,33 @@ const Messages = () => {
   })
 
   const[notifyState,dispatchNotify] = useContext(NotificationContext);
-
+  const socket = useSocket();
+  
   useEffect(() => {
     dispatch(messageActions.GET_MESSAGES);
     
   }, [messageId])
+
+  useEffect(()=>{
+    console.log('socket on useEffect',stateMessage)
+    if(socket){
+    socket.on("seen",(userId,messageId)=>{
+      console.log('seen message',messageId)
+       dispatchMessage(SingleMessageActions.GET_SINGLE_MESSAGE,messageId)
+    })
+
+    return () => {
+      socket.off('seen');
+    };
+  }
+  },[stateMessage.socket])
+
+  console.log('socket on messages.js',state)
  
   console.log('state on message.js',state.allMessages)
   const handleClick = async (user) => {
+
+    SetUser(user)
    
     const isPresent = state.allMessages.filter((message) =>
       (message.firstUserId === session.id && message.secondUserId === user._id) ||
@@ -47,6 +72,15 @@ const Messages = () => {
     setMessageId(isPresent[0]._id);
 
     dispatchNotify(notificationActions.DELETE_NOTIFICATIONS,{sessionId:session.id,userId:user._id})
+    dispatch(SingleMessageActions.USER_SELECTED,{newMessage:null,session,messageId: isPresent[0]._id,userSelected:true});
+    
+    dispatchMessage(SingleMessageActions.SET_SOCKET,{socket});
+    socket.emit("seenUnseen",{
+      userId:user._id,
+      messageId:isPresent[0]._id
+    })
+    
+    
   }
   useEffect(() => {
     fetchUsers();
