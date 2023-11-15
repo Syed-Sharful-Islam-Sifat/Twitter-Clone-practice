@@ -1,5 +1,4 @@
 import { Server } from "socket.io"
-
 const SocketHandler = async (req, res) => {
   let io;
   if (res.socket.server.io) {
@@ -14,7 +13,8 @@ const SocketHandler = async (req, res) => {
      io = new Server(res.socket.server);
      io.on('connection',socket=>{
       console.log('connected to socket io');
-
+      
+      
       socket.on("setup",(session)=>{
         socket.join(session.id);
         console.log(`A socket has been created for user ${session.id}`)
@@ -23,12 +23,13 @@ const SocketHandler = async (req, res) => {
       
       socket.on("join_chat",(room)=>{
           socket.join(room);
-          console.log(`user joined room ${room}`)
+         
+          
       })
 
       socket.on('leave_chat', (room) => {
         socket.leave(room);
-        console.log(`user left room ${room}`);
+
       });
 
       socket.on("new_message",(newMessage,messageId)=>{ 
@@ -38,6 +39,7 @@ const SocketHandler = async (req, res) => {
       })
 
       socket.on("notification",(newMessage,messageId)=>{
+        
         io.to(newMessage.receiverId).emit("notification received",newMessage,messageId);
         console.log("notification on socket",newMessage);
       })
@@ -48,6 +50,20 @@ const SocketHandler = async (req, res) => {
 
          console.log('on seenMessage',userId,messageId)
           io.to(userId).emit("seen message",userId,messageId)
+      })
+      socket.on("sameChat",(user)=>{
+
+         const {senderId,messageId} = user
+
+         console.log('on seenMessage',senderId,messageId)
+          io.to(senderId).emit("on same chat",senderId,messageId)
+      })
+
+      socket.on("message_seen",(userInfo)=>{
+        
+        const {firstUserId,secondUserId,messageId} = userInfo;
+        console.log('firstUserId  , secondUserId , messageId',firstUserId,secondUserId,messageId)
+        io.to(messageId).emit("sender message seen",secondUserId,messageId)
       })
 
      })

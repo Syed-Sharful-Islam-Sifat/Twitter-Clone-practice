@@ -47,6 +47,7 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
       socket.emit('join_chat',messageId)
     }
 
+   
     console.log('state on layout',state);
 
     return () => {
@@ -56,15 +57,32 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
     };
     },[messageId,socket])
 
+
+    useEffect(()=>{
+      if(state.lastMessage.seen==='true'&&send){
+      socket.emit('message_seen',{
+       firstUserId: session.id,
+       secondUserId:user._id,
+       messageId,
+    })
+    
+   setSend(false)
+  }
+    },[send])
+
   
 
   
     useEffect(()=>{
       
-      let messageReceived = false,notificationReceived = false;
-      const handleMessageReceived = async(newMessage,messageId) => {
+      let messageReceived = false,notificationReceived = false,receiverend = false;
+      const handleMessageReceived = async(newMessage,messageId,roomLength) => {
         messageReceived = true;
+        if(session.id===newMessage.receiverId){
+          receiverend = true;
+        }
        await dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY, { newMessage, messageId ,session,userSelected:false});
+        
       
       };
       
@@ -74,16 +92,24 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
           await dispatchNotify(notificationActions.GIVE_NOTIFICATIONS, { senderId: newMessage.senderId, receiverId: newMessage.receiverId });
         }
       };
+
+      const handleSeen = async(userId,messageId)=>{
+        console.log('handleSeen',messageId)
+       await dispatch(SingleMessageActions.GET_SINGLE_MESSAGE,{messageId})
+      }
       
      
       
       
       socket.on("message received", handleMessageReceived);
       socket.on("notification received", handleNotificationReceived);
+       socket.on("sender message seen",handleSeen)
       
       return () => {
         socket.off("message received", handleMessageReceived);
         socket.off("notification received", handleNotificationReceived);
+        socket.off("sender message seen",handleSeen)
+        
       };
     },[socket, dispatch, dispatchNotify, messageId])
     
@@ -119,6 +145,7 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
         id:state.message._id
       },messageId)
 
+    
       
       setText('')
 

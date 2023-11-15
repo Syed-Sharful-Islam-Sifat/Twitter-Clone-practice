@@ -19,6 +19,7 @@ export default async function handler(req,res){
         if(req.method==='PATCH'){
             const {messageId,newMessage,session,userSelected} = req.body;
             console.log('req.body on singlemessage update',req.body)
+
             let data;
               if(userSelected===false)
               data = await updateSingleMessage(req,res,{messageId,newMessage,session});
