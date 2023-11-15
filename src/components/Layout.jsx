@@ -65,6 +65,7 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
       const handleMessageReceived = async(newMessage,messageId) => {
         messageReceived = true;
        await dispatch(SingleMessageActions.UPDATE_MESSAGE_HISTORY, { newMessage, messageId ,session,userSelected:false});
+      
       };
       
       const handleNotificationReceived = async(newMessage,messageId) => {
@@ -74,11 +75,12 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
         }
       };
       
+     
       
       
       socket.on("message received", handleMessageReceived);
       socket.on("notification received", handleNotificationReceived);
-     
+      
       return () => {
         socket.off("message received", handleMessageReceived);
         socket.off("notification received", handleNotificationReceived);
@@ -116,7 +118,6 @@ const Layout = ({children, currentRoute, messageBox,user,messageId}) => {
         text:text,
         id:state.message._id
       },messageId)
-    
 
       
       setText('')

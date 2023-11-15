@@ -42,9 +42,12 @@ const SocketHandler = async (req, res) => {
         console.log("notification on socket",newMessage);
       })
 
-      socket.on("seenUnseen",(userId,messageId)=>{
-        console.log('seenUnseen',userId,messageId);
-        io.to(userId).emit("seen",userId,messageId)
+      socket.on("seenMessage",(user)=>{
+
+         const {userId,messageId} = user
+
+         console.log('on seenMessage',userId,messageId)
+          io.to(userId).emit("seen message",userId,messageId)
       })
 
      })

@@ -91,6 +91,7 @@ export  async function getSingleMessage(req,res,){
     const {messageId} = req.query;
     
       const message = await Message.findById(messageId);
+     console.log('res.socket.io',res.socket.io)
       return message;
   }catch(error){
     console.log('error on single message get service',error)

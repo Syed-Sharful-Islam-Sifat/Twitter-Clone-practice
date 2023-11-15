@@ -34,13 +34,6 @@ const SingleMessageActions = {
     },
 
     UPDATE_MESSAGE_HISTORY: async(payload,state,dispatch)=>{
-
-      // if(payload.session.id===payload.newMessage.senderId){
-      //   console.log('state on UPDATE_MESSAGE_HISTORY',state)
-      //   return{
-      //     ...state
-      //   }
-      // }
       
       const res = await fetch(`api/messages/${payload.messageId}`,{
         method: 'PATCH',

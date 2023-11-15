@@ -37,24 +37,24 @@ const Messages = () => {
   }, [messageId])
 
   useEffect(()=>{
-    console.log('socket on useEffect',stateMessage)
     if(socket){
-    socket.on("seen",(userId,messageId)=>{
+      console.log('socket on useEffect',stateMessage,socket)
+    socket.on("seen message",(userId,messageId)=>{
       console.log('seen message',messageId)
-       dispatchMessage(SingleMessageActions.GET_SINGLE_MESSAGE,messageId)
+       dispatchMessage(SingleMessageActions.GET_SINGLE_MESSAGE,{messageId})
     })
 
     return () => {
       socket.off('seen');
     };
   }
-  },[stateMessage.socket])
+  },[user,socket,dispatchMessage])
 
   console.log('socket on messages.js',state)
  
   console.log('state on message.js',state.allMessages)
   const handleClick = async (user) => {
-
+   
     SetUser(user)
    
     const isPresent = state.allMessages.filter((message) =>
@@ -74,8 +74,8 @@ const Messages = () => {
     dispatchNotify(notificationActions.DELETE_NOTIFICATIONS,{sessionId:session.id,userId:user._id})
     dispatch(SingleMessageActions.USER_SELECTED,{newMessage:null,session,messageId: isPresent[0]._id,userSelected:true});
     
-    dispatchMessage(SingleMessageActions.SET_SOCKET,{socket});
-    socket.emit("seenUnseen",{
+   
+    socket.emit("seenMessage",{
       userId:user._id,
       messageId:isPresent[0]._id
     })
