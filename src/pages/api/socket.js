@@ -49,22 +49,17 @@ const SocketHandler = async (req, res) => {
          const {userId,messageId} = user
 
          console.log('on seenMessage',userId,messageId)
-          io.to(userId).emit("seen message",userId,messageId)
+          io.to(messageId).emit("seen message",userId,messageId)
       })
-      socket.on("sameChat",(user)=>{
+      socket.on("messageSeen",(user)=>{
 
-         const {senderId,messageId} = user
-
-         console.log('on seenMessage',senderId,messageId)
-          io.to(senderId).emit("on same chat",senderId,messageId)
+         const {messageId} = user
+         console.log('messageSeen',messageId)
+         console.log('on seenMessage',messageId)
+          io.to(messageId).emit("message seen",messageId)
       })
 
-      socket.on("message_seen",(userInfo)=>{
-        
-        const {firstUserId,secondUserId,messageId} = userInfo;
-        console.log('firstUserId  , secondUserId , messageId',firstUserId,secondUserId,messageId)
-        io.to(messageId).emit("sender message seen",secondUserId,messageId)
-      })
+      
 
      })
 
