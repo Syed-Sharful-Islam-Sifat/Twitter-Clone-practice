@@ -33,8 +33,6 @@ const LoginModal = () => {
 
         if(data?.error)
         toast.error(data?.error)
-        else
-           toast.success('Successfully Logged in')
 
     }catch(err){
       console.log(err.message)

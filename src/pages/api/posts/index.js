@@ -89,10 +89,20 @@ export default async function handler(req, res) {
 
   
       const followedPosts = await Post.find({
-           userId: { $in: followingIds },
-           contentType: 'post'
+        $and: [
+          {
+            $or: [
+              { userId: { $in: followingIds }, contentType: 'post' },
+              { userId: { $nin: followingIds }, contentType: 'post' }
+            ]
+          },
+          { userId: { $ne: session.id } } 
+        ]
       })
-        .sort({ createdAt: -1 })
+        .sort({
+         
+          createdAt: -1
+        })
         .populate({
           path: 'userId',
           model: 'User'

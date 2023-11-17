@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import { Head } from "next/document";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Form from "@/components/Form";
 import PostFeed from "@/components/posts/PostFeed";
 import { BiSkipPrevious } from "react-icons/bi";
@@ -10,29 +10,50 @@ import Layout from "@/components/Layout";
 const Home = ({ownProfile,userId}) => {
   const [posts, setPosts] = useState([]);
 
+  const [loading,setLoading] = useState(false);
+  const [page,setPage] = useState(0);
+  const [lastPage,setLastPage] = useState(-1);
   useEffect(() => {
-    fetchData();
-    console.log("useEffect ran");
-  }, []);
+  fetchData(); 
+  console.log('useEffect run',page)
+  },[]);
+  
+  const handlePage = (e)=>{
+    e.stopPropagation();
+    setPage((prevPage)=>prevPage+1);
+  }
+  
 
-
+  
 
   const fetchData = async () => {
 
-    if(ownProfile){
-      const res = await fetch(`http://localhost:3000/api/users/posts/${userId}`);
+    try{
+      setLoading(true)
+      if(ownProfile){
+        console.log('page and limit',page)
+        const res = await fetch(`http://localhost:3000/api/users/posts/${userId}?page=${page}&limit=${3}`);
+        const data = await res.json();
+        console.log('data on Home',data)
+        
+        setLastPage(data?.posts?.length)
+        setPosts((prevPosts)=>[...prevPosts,...data?.posts]);
+      }
+  
+      else{
+      const res = await fetch(`http://localhost:3000/api/posts?page=${page}&limit=${3}`);
       const data = await res.json();
-    
-      setPosts(data.posts);
-    }
+      setLastPage(data?.followedposts?.length)
 
-    else{
-    const res = await fetch(`http://localhost:3000/api/posts`);
-    const data = await res.json();
-    setPosts(data.followedPosts);
-   
-   
+      //if(page===0)setPosts(data.followedPosts)
+      setPosts((prevPosts)=>[...prevPosts,...data?.followedPosts]);
+      }
+    }catch(error){
+       console.log('error on Home',error)
+    }finally{
+      setLoading(false)
     }
+    
   };
 
   const updatedPosts = ({ newPost, parentId, mainPostId }) => {
@@ -182,6 +203,13 @@ const Home = ({ownProfile,userId}) => {
         />
       </div>
     ))}
+    <div className="see-more" onClick={handlePage}>
+      {lastPage===0?(
+       <p>End</p>
+      ):(
+       <p>See more...</p>
+      )}
+    </div>
 </div>
 
 

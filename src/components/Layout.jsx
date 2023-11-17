@@ -16,29 +16,25 @@ const Layout = ({ children, currentRoute, messageBox, user, messageId }) => {
   const { data: session } = useSession();
   const [send, setSend] = useState(false);
   const socket = useSocket();
-
+  if(!socket)return <h2>Loading...</h2>
   const [state, dispatch] = useMessage();
   console.log("state on Layout", state);
   const [notifyState, dispatchNotify] = useContext(NotificationContext);
 
-  const [sendingMessage, setSendindMessage] = useState({
-    senderId: null,
-    receiverId: null,
-    text: null,
-  });
 
   useEffect(() => {
-    if (session && user)
+    if (session && user){
       dispatchNotify(notificationActions.DELETE_NOTIFICATIONS, {
         sessionId: session.id,
         userId: user._id,
       });
+    }
   }, []);
 
   useEffect(() => {
     if (messageId)
       dispatch(SingleMessageActions.GET_SINGLE_MESSAGE, { messageId });
-  }, [user]);
+  }, [user,messageId]);
 
   useEffect(() => {
     console.log("useEffect ran of Layout.jsx file", messageId);

@@ -8,7 +8,9 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
       await dbConnect();
       const { userId } = req.query;
-
+      const page = parseInt(req.query.page)||0;
+      const limit = parseInt(req.query.limit)|| 2;
+      console.log('page and limit',page,limit)
       // Find the posts where the user's ID is in the retweetIds array or the user is the author
       const posts = await Post.find({   
           contentType:'post',
@@ -16,6 +18,8 @@ export default async function handler(req, res) {
           
       })
           .sort({ createdAt: -1 })
+          .skip(page*limit)
+          .limit(limit)
           .populate({
               path: 'userId',
               model: 'User',
@@ -46,6 +50,8 @@ export default async function handler(req, res) {
             path: 'retweetId',
             model: 'User'
           }) ;
+
+          console.log('posts',posts)
 
       return res.status(200).json({ posts });
   }

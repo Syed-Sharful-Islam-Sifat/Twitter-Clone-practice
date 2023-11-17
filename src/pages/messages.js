@@ -83,13 +83,13 @@ const Messages = () => {
     dispatch(SingleMessageActions.USER_SELECTED, {
       newMessage: null,
       session,
-      messageId: isPresent[0]._id,
+      messageId: isPresent[0]?._id,
       userSelected: true,
     });
-
+   
     socket.emit("seenMessage", {
       userId: user._id,
-      messageId: isPresent[0]._id,
+      messageId: isPresent[0]?._id,
     });
   };
   useEffect(() => {

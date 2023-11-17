@@ -194,4 +194,18 @@ body{
   width: 50%;
   height: 50%;
 }
+.see-more{
+   color: rgba(255, 255, 255, 0.288) ;
+   font-weight: bold;
+   background-color: black;
+   padding: 15px;
+   display: flex;
+   justify-content: center;
+}
+
+.see-more:hover{
+  opacity: 0.8;
+  cursor: pointer;
+}
+
 
