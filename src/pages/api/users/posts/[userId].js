@@ -51,7 +51,7 @@ export default async function handler(req, res) {
             model: 'User'
           }) ;
 
-          console.log('posts',posts)
+          console.log('posts page and limiy',posts,page,limit)
 
       return res.status(200).json({ posts });
   }

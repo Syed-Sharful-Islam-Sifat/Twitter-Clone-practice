@@ -16,19 +16,19 @@ const Layout = ({ children, currentRoute, messageBox, user, messageId }) => {
   const { data: session } = useSession();
   const [send, setSend] = useState(false);
   const socket = useSocket();
-  if(!socket)return <h2>Loading...</h2>
+ 
   const [state, dispatch] = useMessage();
   console.log("state on Layout", state);
   const [notifyState, dispatchNotify] = useContext(NotificationContext);
 
 
   useEffect(() => {
-    if (session && user){
+    
       dispatchNotify(notificationActions.DELETE_NOTIFICATIONS, {
-        sessionId: session.id,
-        userId: user._id,
+        sessionId: session?.id,
+        userId: user?._id,
       });
-    }
+    
   }, []);
 
   useEffect(() => {
@@ -89,14 +89,14 @@ const Layout = ({ children, currentRoute, messageBox, user, messageId }) => {
         await dispatch(SingleMessageActions.GET_SINGLE_MESSAGE, { messageId });
     };
 
-    socket.on("message received", handleMessageReceived);
-    socket.on("notification received", handleNotificationReceived);
-    socket.on("message seen", handleSeen);
+    socket?.on("message received", handleMessageReceived);
+    socket?.on("notification received", handleNotificationReceived);
+    socket?.on("message seen", handleSeen);
 
     return () => {
-      socket.off("message received", handleMessageReceived);
-      socket.off("notification received", handleNotificationReceived);
-      socket.off("message seen", handleSeen);
+      socket?.off("message received", handleMessageReceived);
+      socket?.off("notification received", handleNotificationReceived);
+      socket?.off("message seen", handleSeen);
     };
   }, [socket, dispatch, dispatchNotify, messageId]);
 

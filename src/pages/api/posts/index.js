@@ -86,8 +86,8 @@ export default async function handler(req, res) {
       const user = await User.findById(session.id);
 
       const followingIds = user.followingIds;
-
-  
+      const page = parseInt(req.query.page)||0;
+      const limit = parseInt(req.query.limit)|| 2;
       const followedPosts = await Post.find({
         $and: [
           {
@@ -103,6 +103,8 @@ export default async function handler(req, res) {
          
           createdAt: -1
         })
+        .skip(page*limit)
+        .limit(limit)
         .populate({
           path: 'userId',
           model: 'User'
@@ -135,7 +137,7 @@ export default async function handler(req, res) {
          
         })
 
-       // console.log('followedPosts',followedPosts)
+        console.log('followedPosts',followedPosts.length)
   
       return res.status(200).json({followedPosts});
     }

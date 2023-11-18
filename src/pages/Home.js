@@ -16,7 +16,7 @@ const Home = ({ownProfile,userId}) => {
   useEffect(() => {
   fetchData(); 
   console.log('useEffect run',page)
-  },[]);
+  },[page]);
   
   const handlePage = (e)=>{
     e.stopPropagation();
@@ -37,16 +37,28 @@ const Home = ({ownProfile,userId}) => {
         console.log('data on Home',data)
         
         setLastPage(data?.posts?.length)
-        setPosts((prevPosts)=>[...prevPosts,...data?.posts]);
+        setPosts((prevPosts) => {
+          // Identify new posts that don't already exist in the current state
+          const newPosts = data?.posts.filter((newPost) => !prevPosts.some((post) => post._id === newPost._id));
+        
+          // Concatenate the new posts with the current state
+          return [...prevPosts, ...newPosts];
+        });
       }
   
       else{
       const res = await fetch(`http://localhost:3000/api/posts?page=${page}&limit=${3}`);
       const data = await res.json();
-      setLastPage(data?.followedposts?.length)
+      setLastPage(data?.followedPosts?.length)
 
       //if(page===0)setPosts(data.followedPosts)
-      setPosts((prevPosts)=>[...prevPosts,...data?.followedPosts]);
+      setPosts((prevPosts) => {
+        // Identify new posts that don't already exist in the current state
+        const newPosts = data?.followedPosts.filter((newPost) => !prevPosts.some((post) => post._id === newPost._id));
+      
+        // Concatenate the new posts with the current state
+        return [...prevPosts, ...newPosts];
+      });
       }
     }catch(error){
        console.log('error on Home',error)

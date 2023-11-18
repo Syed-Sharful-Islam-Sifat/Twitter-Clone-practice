@@ -11,22 +11,25 @@ const User = () => {
   const { userId } = router.query;
   const [user, setUser] = useState(null);
 
+  
   useEffect(() => {
     fetchUser();
   }, []);
-
+  
   const fetchUser = async () => {
     try {
       if (typeof userId !== "string") throw new Error("Invalid User");
       const res = await fetch(`/api/users/${userId}`);
-
+      
       const data = await res.json();
-
+      
       if (res.ok) setUser(data);
     } catch (error) {
       console.log(error);
     }
   };
+  if(!user)return <h2>Loading...</h2>
+
   return (
     <div>
       <Layout>
