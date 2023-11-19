@@ -1,62 +1,99 @@
-.profile_container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    justify-content: center;
-  }
-  
-  .file_input {
-    margin: 10px;
-  }
-  
-  .file_input input[type="file"] {
-    display: none;
-  }
-  
-  .file_input label {
-    display: block;
-    padding: 10px;
-   
-    background-color: #3498db;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-  }
-  .button_group{
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    justify-content: center;
-  }
-  .file_input label:hover {
-    background-color: #2980b9;
-  }
-  
-  .save_button , .cancel_button{
-    background-color: #2ecc71;
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+.main_container{
+  position: absolute;
+  background-color: rgb(38,38,38);
+  width: 600px;
+  height: 300px;
+  border-radius: 5px;
+}
 
+.cancel_modal{
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  border-radius: 50%;
+ 
+}
 
-  }
+.cancel_modal button{
+  border: none;
+  background-color: rgba(0, 0, 0, 0.205);
+  cursor: pointer;
+  color: white;
+  font-weight: 400;
+  border-radius: 50%;
+  padding: 10px;
+}
 
+.cancel_modal button:hover{
+  opacity: 0.8;
+}
 
-  
-  
-  .save_button :hover {
-    background-color: #27ae60;
-   
-  }
- .cancel_button{
-  background-color: red;
- }
+.image_container{
+  display: flex;
+  justify-content: center;
+  gap:2rem;
+}
 
- .cancel_button:hover{
-  background-color: rgba(255, 0, 0, 0.637);
- }
+.profile_image_container{
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 10px;
+  justify-content: center;
+  border-radius: 5px;
+}
+.profile_image{
+  width: 130px;
+  height: 100px;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+.cover_image_container{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 10px;
+  justify-content: center;
+  border-radius: 5px;
+}
+
+.cover_image{
+  width: 150px;
+  height: 100px;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+
+.cover_image_container label{
+  width: 100px;
+  align-self: center;
+  font-size: 1rem;
+}
+.profile_image_container label{
+  width: 100px;
+  align-self: center;
+  font-size: 1rem;
+}
+
+.image_container label {
+  display: inline-block;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.image_container [type="file"] {
+  display: none;
+}
+
+/* Additional style for the selected file name */
+.selectedFile {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #555;
+}

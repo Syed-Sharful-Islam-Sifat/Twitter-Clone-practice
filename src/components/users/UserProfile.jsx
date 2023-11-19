@@ -21,7 +21,7 @@ const UserProfile = ({ user }) => {
   return (
     <div>
       <div className="user-image">
-        {user?.coverPhoto && (
+         {user?.coverPhoto && (
           <Image
             src={`/images/${coverPhoto}`}
             alt="Cover Image"
