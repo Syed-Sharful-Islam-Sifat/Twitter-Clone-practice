@@ -15,6 +15,7 @@ import { useSession } from 'next-auth/react'
 import Home from '@/pages/index.js'
 import { SocketProvider } from '@/providers/socketProvider'
 import { MessageProvider } from '@/providers/messageProvider'
+import { ModalProvider } from '@/providers/modalProvider'
 const roboto = Roboto({
   subsets: ['latin'],
   weight: ['400', '700']
@@ -35,6 +36,7 @@ export default function App({ Component, pageProps }) {
 
 
     <SessionProvider session={pageProps.session}>
+      <ModalProvider>
       <SocketProvider>
         <MessageProvider>
           <NotificationProvider>
@@ -45,8 +47,7 @@ export default function App({ Component, pageProps }) {
         </MessageProvider>
 
       </SocketProvider>
-
-
+      </ModalProvider>
     </SessionProvider>
 
 

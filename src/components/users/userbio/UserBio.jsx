@@ -7,12 +7,14 @@ import Modal from "../../auth/Modal";
 import EditModal from "../EditModal";
 import { useRouter } from "next/router";
 import styles from '@/components/users/userbio/userbio.module.css'
+import { useModal } from "@/providers/modalProvider";
 const UserBio = ({ user  , handleCoverChange , handleProfileChange}) => {
   const { data: session } = useSession();
   const [isFollowing, setIsFollowing] = useState();
   const[followCount,setFollowCount]  = useState(user?.followingIds?.length);
   const [editOpen, setEditOpen] = useState(false);
   const[followers,setFollowers] = useState(0);
+ const[isOpen,setIsOpen] = useModal();
 
   const router = useRouter();
   useEffect(() => {
@@ -63,7 +65,8 @@ const UserBio = ({ user  , handleCoverChange , handleProfileChange}) => {
     return format(new Date(user.createdAt), "MMMM yyyy");
   };
   const handleEdit = ()=>{
-    setEditOpen(!editOpen)
+    setEditOpen(!editOpen);
+    setIsOpen(!isOpen)
   }
 
   return (

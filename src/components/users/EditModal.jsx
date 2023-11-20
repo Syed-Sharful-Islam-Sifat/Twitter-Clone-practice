@@ -60,117 +60,120 @@ const EditModal = ({
   };
 
   return (
-    <div className={styles.main_container}>
-      <div className={styles.cancel_modal}>
-        <button onClick={handleEdit}>X</button>
+    <div className={styles.modal}>
+      <div className={styles.main_container}>
+        <div className={styles.cancel_modal}>
+          <button onClick={handleEdit}>X</button>
+        </div>
+        <form onSubmit={onSubmit}>
+          <div className={styles.image_container}>
+            <div className={styles.profile_image_container}>
+              <div className={styles.profile_image}>
+                {profilefile ? (
+                  <div style={{ position: "relative" }}>
+                    <img
+                      src={URL.createObjectURL(profilefile)}
+                      alt="profile photo"
+                      style={{
+                        objectFit: "cover",
+                        width: "130px",
+                        height: "100px",
+                        borderRadius: "5px",
+                      }}
+                    />
+                    <div
+                      className={styles.profile_image_cancel}
+                      style={{
+                        position: "absolute",
+                        top: "0",
+                        right: "0",
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <button onClick={() => setProfilefile("")}>X</button>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+
+              <label htmlFor="profilePhoto" className={styles.fileInputLabel}>
+                {profilefile ? (
+                  <span className={styles.selectedFile}>
+                    {profilefile.name}
+                  </span>
+                ) : (
+                  "Choose Profile Photo"
+                )}
+                <input
+                  type="file"
+                  id="profilePhoto"
+                  accept="image/*"
+                  onChange={({ target }) => {
+                    if (target.files) {
+                      const file = target.files[0];
+                      console.log("file ", file);
+                      setProfilefile(file);
+                    }
+                  }}
+                />
+              </label>
+            </div>
+            <div className={styles.cover_image_container}>
+              <div className={styles.cover_image}>
+                {coverfile ? (
+                  <div style={{ position: "relative" }}>
+                    <img
+                      src={URL.createObjectURL(coverfile)}
+                      alt="cover photo"
+                      style={{
+                        objectFit: "cover",
+                        width: "150px",
+                        height: "100px",
+                        borderRadius: "5px",
+                      }}
+                    />
+
+                    <div
+                      className={styles.cover_image_cancel}
+                      style={{
+                        position: "absolute",
+                        top: "0",
+                        right: "0",
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <button onClick={() => setCoverfile("")}>X</button>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+
+              <label>
+                {coverfile ? coverfile.name : "Choose Cover Photo"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={({ target }) => {
+                    if (target.files) {
+                      const file = target.files[0];
+
+                      setCoverfile(file);
+                    }
+                  }}
+                />
+              </label>
+            </div>
+          </div>
+
+          <div className={styles.save_button}>
+            <button onClick={onSubmit}>Save</button>
+          </div>
+        </form>
       </div>
-      <form onSubmit={onSubmit}>
-        <div className={styles.image_container}>
-          <div className={styles.profile_image_container}>
-            <div className={styles.profile_image}>
-              {profilefile ? (
-                <div style={{ position: "relative" }}>
-                  <img
-                    src={URL.createObjectURL(profilefile)}
-                    alt="profile photo"
-                    style={{
-                      objectFit: "cover",
-                      width: "130px",
-                      height: "100px",
-                      borderRadius: "5px",
-                    }}
-                  />
-                  <div
-                    className={styles.profile_image_cancel}
-                    style={{
-                      position: "absolute",
-                      top: "0",
-                      right: "0",
-                      background: "transparent",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <button onClick={() => setProfilefile("")}>X</button>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-
-            <label htmlFor="profilePhoto" className={styles.fileInputLabel}>
-              {profilefile ? (
-                <span className={styles.selectedFile}>{profilefile.name}</span>
-              ) : (
-                "Choose Profile Photo"
-              )}
-              <input
-                type="file"
-                id="profilePhoto"
-                accept="image/*"
-                onChange={({ target }) => {
-                  if (target.files) {
-                    const file = target.files[0];
-                    console.log("file ", file);
-                    setProfilefile(file);
-                  }
-                }}
-              />
-            </label>
-          </div>
-          <div className={styles.cover_image_container}>
-            <div className={styles.cover_image}>
-              {coverfile ? (
-                <div>
-                  <img
-                    src={URL.createObjectURL(coverfile)}
-                    alt="profile photo"
-                    style={{
-                      objectFit: "cover",
-                      width: "150px",
-                      height: "100px",
-                      borderRadius: "5px",
-                    }}
-                  />
-
-                  <div
-                    className={styles.cover_image_cancel}
-                    style={{
-                      position: "absolute",
-                      top: "0",
-                      right: "0",
-                      background: "transparent",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <button onClick={() => setProfilefile("")}>X</button>
-                  </div>
-                </div>
-              ) : null}
-              
-            </div>
-
-            <label>
-              {coverfile ? coverfile.name : "Choose Cover Photo"}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={({ target }) => {
-                  if (target.files) {
-                    const file = target.files[0];
-
-                    setCoverfile(file);
-                  }
-                }}
-              />
-            </label>
-          </div>
-        </div>
-
-        <div className={styles.save_button}>
-          <button onClick={onSubmit}>Save</button>
-        </div>
-      </form>
     </div>
     // <div className={styles.profile_container}>
     //   <form onSubmit={onSubmit} className={styles.input_form}>

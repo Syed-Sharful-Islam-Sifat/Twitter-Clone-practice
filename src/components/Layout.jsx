@@ -12,10 +12,11 @@ import { useSocket } from "@/providers/socketProvider";
 import { NotificationContext } from "@/providers/notificationProvider";
 import notificationActions from "@/libs/actions/notificationActions";
 import { useMessage } from "@/providers/messageProvider";
+import { useModal } from "@/providers/modalProvider";
 const Layout = ({ children, currentRoute, messageBox, user, messageId }) => {
   const { data: session } = useSession();
   const [send, setSend] = useState(false);
-
+  const[isModal,setIsModal] = useModal();
   const socket = useSocket();
  
   const [state, dispatch] = useMessage();
@@ -148,7 +149,7 @@ const Layout = ({ children, currentRoute, messageBox, user, messageId }) => {
   return (
     <>
       {session ? (
-        <div className="mainscreen">
+        <div className={isModal?'modal':'mainScreen'}>
           <div className="grid-container">
             <div className="left-sidebar">
               <Sidebar />
