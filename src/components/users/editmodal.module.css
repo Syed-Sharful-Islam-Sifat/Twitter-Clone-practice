@@ -4,6 +4,7 @@
   width: 600px;
   height: 300px;
   border-radius: 5px;
+ 
 }
 
 .cancel_modal{
@@ -56,6 +57,7 @@
   padding: 10px;
   justify-content: center;
   border-radius: 5px;
+  display: flex;
 }
 
 .cover_image{
@@ -97,3 +99,48 @@
   font-size: 14px;
   color: #555;
 }
+
+.profile_image_cancel{  
+  display: flex;
+  justify-content: flex-end;
+  padding: 2px;
+}
+
+.profile_image_cancel button{
+  background-color: none;
+  font-size: 0.6rem;
+  cursor: pointer;
+}
+
+.cover_image_cancel{
+  display: flex;
+  justify-content: flex-end;
+  padding: 2px;
+}
+.cover_image_cancel button{
+  background-color: none;
+  font-size: 0.6rem;
+  cursor: pointer;
+}
+
+.save_button{
+  display: flex;
+  justify-content: flex-end;
+  width: 550px;
+}
+
+.save_button button{
+  background-color: #1d9bf0;
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-style: none;
+  cursor: pointer;
+}
+
+.save_button:hover{
+  opacity: 0.8;
+}
+
+

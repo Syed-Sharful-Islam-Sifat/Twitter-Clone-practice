@@ -15,6 +15,7 @@ import { useMessage } from "@/providers/messageProvider";
 const Layout = ({ children, currentRoute, messageBox, user, messageId }) => {
   const { data: session } = useSession();
   const [send, setSend] = useState(false);
+
   const socket = useSocket();
  
   const [state, dispatch] = useMessage();

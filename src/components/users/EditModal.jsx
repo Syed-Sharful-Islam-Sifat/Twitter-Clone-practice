@@ -8,8 +8,8 @@ const EditModal = ({
   handleProfileChange,
   handleEdit,
 }) => {
-  const [profilefile, setProfilefile] = useState();
-  const [coverfile, setCoverfile] = useState();
+  const [profilefile, setProfilefile] = useState("");
+  const [coverfile, setCoverfile] = useState("");
 
   const onSubmit = async (e) => {
     /// handle profile photo
@@ -54,28 +54,55 @@ const EditModal = ({
         console.log(data);
         handleCoverChange(data);
         handleProfileChange(data);
+        handleEdit();
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   return (
-
-
     <div className={styles.main_container}>
       <div className={styles.cancel_modal}>
         <button onClick={handleEdit}>X</button>
       </div>
       <form onSubmit={onSubmit}>
-
         <div className={styles.image_container}>
           <div className={styles.profile_image_container}>
             <div className={styles.profile_image}>
-              <Image />
-              <p>X</p>
+              {profilefile ? (
+                <div style={{ position: "relative" }}>
+                  <img
+                    src={URL.createObjectURL(profilefile)}
+                    alt="profile photo"
+                    style={{
+                      objectFit: "cover",
+                      width: "130px",
+                      height: "100px",
+                      borderRadius: "5px",
+                    }}
+                  />
+                  <div
+                    className={styles.profile_image_cancel}
+                    style={{
+                      position: "absolute",
+                      top: "0",
+                      right: "0",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <button onClick={() => setProfilefile("")}>X</button>
+                  </div>
+                </div>
+              ) : null}
             </div>
 
             <label htmlFor="profilePhoto" className={styles.fileInputLabel}>
-              {profilefile ? <span className={styles.selectedFile}>{profilefile.name}</span> : "Choose Profile Photo"}
+              {profilefile ? (
+                <span className={styles.selectedFile}>{profilefile.name}</span>
+              ) : (
+                "Choose Profile Photo"
+              )}
               <input
                 type="file"
                 id="profilePhoto"
@@ -83,6 +110,7 @@ const EditModal = ({
                 onChange={({ target }) => {
                   if (target.files) {
                     const file = target.files[0];
+                    console.log("file ", file);
                     setProfilefile(file);
                   }
                 }}
@@ -91,8 +119,35 @@ const EditModal = ({
           </div>
           <div className={styles.cover_image_container}>
             <div className={styles.cover_image}>
-              <Image />
-              <p>X</p>
+              {coverfile ? (
+                <div>
+                  <img
+                    src={URL.createObjectURL(coverfile)}
+                    alt="profile photo"
+                    style={{
+                      objectFit: "cover",
+                      width: "150px",
+                      height: "100px",
+                      borderRadius: "5px",
+                    }}
+                  />
+
+                  <div
+                    className={styles.cover_image_cancel}
+                    style={{
+                      position: "absolute",
+                      top: "0",
+                      right: "0",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <button onClick={() => setProfilefile("")}>X</button>
+                  </div>
+                </div>
+              ) : null}
+              
             </div>
 
             <label>
@@ -103,6 +158,7 @@ const EditModal = ({
                 onChange={({ target }) => {
                   if (target.files) {
                     const file = target.files[0];
+
                     setCoverfile(file);
                   }
                 }}
@@ -111,11 +167,10 @@ const EditModal = ({
           </div>
         </div>
 
-        <div className={styles.cancel_button}>
-          <button>Save</button>
+        <div className={styles.save_button}>
+          <button onClick={onSubmit}>Save</button>
         </div>
       </form>
-
     </div>
     // <div className={styles.profile_container}>
     //   <form onSubmit={onSubmit} className={styles.input_form}>
