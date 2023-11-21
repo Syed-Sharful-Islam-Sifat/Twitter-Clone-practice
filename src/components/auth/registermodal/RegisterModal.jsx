@@ -4,7 +4,7 @@ import { useState } from "react";
 import styles from "@/components/auth/registermodal/registermodal.module.css";
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
-const RegisterModal = () => {
+const RegisterModal = ({regisOpen,onClose}) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -40,11 +40,14 @@ const RegisterModal = () => {
     }
   };
   return (
-    <div>
+    <div className={styles.register}>
       <div>
         <Toaster />
       </div>
       <div className={styles.register_modal}>
+        <div className={styles.cancel_register}>
+          <button onClick={onClose}>X</button>
+        </div>
         <h2 className={styles.heading}>Create your account</h2>
 
         <form onSubmit={handleSubmit} className={styles.formContainer}>

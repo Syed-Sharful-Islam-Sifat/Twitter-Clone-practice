@@ -79,9 +79,6 @@ export default async function handler(req,res){
               post.commentIds.pull(reply._id);
               await Post.findByIdAndDelete(reply._id);
               await post.save();
-              
-            
-              
             }
 
             await post.commentIds.pull(deletePost._id);

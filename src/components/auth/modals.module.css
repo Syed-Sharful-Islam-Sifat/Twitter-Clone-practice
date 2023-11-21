@@ -1,15 +1,19 @@
 .modalOverlay{
+    position: absolute;
     width: 100%;
     background-color: black;
     color: white;
     height:10%;
-   
+    display: flex;
+    align-self: center;
+    justify-self: center;
+    
 }
 
 .modal{
     display: flex;
     justify-content: flex-end;
-
+    
 }
 
 .modal button{

@@ -11,6 +11,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { signOut } from "next-auth/react";
 import GithubLogin from "@/components/auth/githubsignin/login";
 import { AiOutlineTwitter } from "react-icons/ai";
+import { RiTwitterXFill } from "react-icons/ri";
 export default function Home() {
   console.log("Home page");
   const [regisOpen, setRegisOpen] = useState(false);
@@ -18,7 +19,7 @@ export default function Home() {
   const router = useRouter();
   const { data: session } = useSession();
 
-  console.log('session on index page',session)
+  console.log("session on index page", session);
 
   if (session) {
     if (router.pathname === "/") {
@@ -28,53 +29,69 @@ export default function Home() {
 
   return (
     <>
-     
       <div className="auth">
-        <div className="tweet-icon-container">
-          <AiOutlineTwitter className="tweet-icon" />
+        <div className="icon-main-container">
+          <div className="tweet-icon-conatainer">
+            <div>
+              <RiTwitterXFill className="tweet" />
+            </div>
+          </div>
         </div>
 
         <div className="auth-second-part">
-           
-           <h1 className="invitation-heading">Join us today</h1>
-            <button
-              onClick={() => setRegisOpen(true)}
-              disabled={regisOpen || logisOpen}
-              className="register-btn"
-            >
-              Create an account
-            </button>
-          {regisOpen?(
-            <div className="auth-reg">
-            <Modal isOpen={regisOpen} onClose={() => setRegisOpen(false)}>
-              <RegisterModal />
-            </Modal>
+          <div className="happening-now-container">
+            <h1>Happening now</h1>
           </div>
-          ):null
-        }
-          
 
-         {!regisOpen? (
-          <>
-          
+          <div className="inviation-heading">
+            <h1 className>Join today</h1>
+          </div>
           <button
-            onClick={() => setLogisOpen(true)}
-            disabled={logisOpen || regisOpen}
-            className="sign-in-btn"
+            onClick={() => setRegisOpen(true)}
+            disabled={regisOpen || logisOpen}
+            className="register-btn"
           >
-            Sign In
+            Create an account
           </button>
-          
-          <div className="auth-login">
-          <Modal isOpen={logisOpen} onClose={() => setLogisOpen(false)}>
-            <LoginModal />
-          </Modal>
-        </div>
-          </>
-         ): null} 
-          {!regisOpen&&!logisOpen?(
-            <GithubLogin />
-          ):null}
+          {regisOpen ? (
+            <div className="auth-reg">
+              <RegisterModal
+                isOpen={regisOpen}
+                onClose={() => setRegisOpen(false)}
+              />
+            </div>
+          ) : null}
+
+          {!regisOpen ? (
+            <>
+              <button
+                onClick={() => setLogisOpen(true)}
+                disabled={logisOpen || regisOpen}
+                className="sign-in-btn"
+              >
+                Sign In
+              </button>
+              {logisOpen ? (
+                <div className="auth-login">
+                  <LoginModal
+                    isOpen={logisOpen}
+                    onClose={() => setLogisOpen(false)}
+                  />
+                </div>
+              ) : null}
+
+              <div className="or-container">
+                <div className="first-line"></div>
+
+                <span>
+                  <p className="or-p">or</p>
+                </span>
+
+                <div className="second-line"></div>
+              </div>
+            </>
+          ) : null}
+          {!regisOpen && !logisOpen ? <GithubLogin /> : null}
         </div>
       </div>
     </>

@@ -4,7 +4,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Toaster,toast } from "react-hot-toast";
 import styles from '@/components/auth/registermodal/registermodal.module.css'
-const LoginModal = () => {
+const LoginModal = ({isOpen,onClose}) => {
 
 
   const [email, setEmail] = useState("");
@@ -44,6 +44,9 @@ const LoginModal = () => {
 
     <div><Toaster/></div>
     <div className={styles.register_modal}>
+      <div className={styles.cancel_register}>
+        <button onClick={onClose}>X</button>
+      </div>
       <h1 className={styles.heading}>Sign in to X</h1> 
       <form onSubmit={handleSubmit} className={styles.formContainer}> 
         <div className={styles.formGroup}> 
