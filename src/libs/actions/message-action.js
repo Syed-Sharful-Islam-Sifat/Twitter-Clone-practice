@@ -1,9 +1,9 @@
 const messageActions = {
     GET_MESSAGES: async(payload,state,dispatch)=>{
         const res = await fetch('/api/messages');
-
+        
         const data = await res.json();
-      
+       
        return prev =>({...prev,allMessages:data})
     },
 

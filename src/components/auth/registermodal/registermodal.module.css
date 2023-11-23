@@ -38,6 +38,10 @@
     color: aliceblue;
   }
 
+  .signup_container{
+    display: flex;
+    justify-content: center;
+  }
 .signup{
     background-color: #1d9bf0;
     padding: 10px;
@@ -45,6 +49,12 @@
     font-size: 1rem;
     font-weight: bold;
     border-style: none;
+    width: 30%;
+    cursor: pointer;
+}
+
+.signup:hover{
+    opacity: 0.8;
 }
 
 .cancel_register{

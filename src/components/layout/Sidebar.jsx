@@ -7,6 +7,9 @@ import SidebarLogo from './SidebarLogo'
 import SidebarItem from './SidebarItem'
 import { signOut } from 'next-auth/react'
 import { useEffect } from 'react'
+import { AiOutlineSearch } from 'react-icons/ai'
+import { BiNotification } from 'react-icons/bi'
+import { RiNotification2Fill } from 'react-icons/ri'
 const Sidebar = () => {
 
   const items = [
@@ -23,7 +26,18 @@ const Sidebar = () => {
       label: 'Messages',
       href: '/messages',
       icon: AiOutlineInbox
-    }
+    },
+
+    {
+      label: 'Notifications',
+      href: '/notification',
+      icon: RiNotification2Fill
+    },
+   ,{
+      label: 'Explore',
+      href: '/explore',
+      icon: AiOutlineSearch
+    },
   ]
   return (
     <div className='left-side-content'>

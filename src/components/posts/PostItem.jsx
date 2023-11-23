@@ -204,13 +204,13 @@ const PostItem = ({
             <Image
               src={`/images/${post?.image}`}
               alt="tweet image"
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "cover" , borderRadius: "10px"}}
               width={
                 post.contentType === "post"
-                  ? 800
+                  ? 600
                   : post.contentType === "comment"
-                  ? 700
-                  : 600
+                  ? 500
+                  : 400
               }
               height={300}
             />

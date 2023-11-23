@@ -3,14 +3,13 @@ import { dbConnect } from "@/config/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import User from "@/models/users";
+import { createMessageRepo, deleteNotificationsRepo, getAllMessagesRepo, getNotificationsRepo, getSingleMessageRepo, updateNotificationsRepo, updateSeenandunSeenMessagesRepo, updateSingleMessageRepo } from "../repositories/messageRepositories";
 
 export  async function getAllMessages(req,res,session){
    
    try{
 
-     await dbConnect();
-
-     const allMessages = await Message.find();
+     const allMessages = await getAllMessagesRepo();
 
     return allMessages
 
@@ -23,11 +22,7 @@ export  async function createMessage(req,res){
    try{
       await dbConnect();
      const {firstUserId,secondUserId} = req.body;
-       const message = await Message.create({
-        firstUserId,
-        secondUserId
-       })
-
+       const message = await createMessageRepo(firstUserId,secondUserId);
        return message;
    }catch(error){
      console.log('error on message create service',error)
@@ -87,11 +82,8 @@ export  async function sendNewMessage(req,res){
 
 export  async function getSingleMessage(req,res,){
   try{
-     await dbConnect();
-    const {messageId} = req.query;
-    
-      const message = await Message.findById(messageId);
-    // console.log('res.socket.io',res.server.socket.io)
+      const {messageId} = req.query;
+      const message = await getSingleMessageRepo(messageId);
       return message;
   }catch(error){
     console.log('error on single message get service',error)
@@ -101,10 +93,7 @@ export  async function getSingleMessage(req,res,){
 export async function getNotifications(req,res,session){
 
   try {
-   
-    await dbConnect();
-    const user = await User.findById(session.id);
-   
+    const user = await getNotificationsRepo(session);
     return user;
   } catch (error) {
     console.log(error);
@@ -114,15 +103,7 @@ export async function getNotifications(req,res,session){
 export async function updateNotifications(req,res,session,payload){
 
   try {
-   
-    await dbConnect();
-    const user = await User.findById(payload.receiverId);
-   
-    if(!user.notifications.includes(payload.senderId)){
-        user.notifications.push(payload.senderId);
-        await user.save();
-    }
-  
+    const user = await updateNotificationsRepo(payload)
     return user;
   } catch (error) {
     console.log(error);
@@ -133,13 +114,7 @@ export async function deleteNotifications(req,res,session,payload){
 
   try {
    
-    await dbConnect();
-    const user = await User.findById(payload.sessionId);
-    if(user.notifications.includes(payload.userId)){
-        user.notifications.pull(payload.userId);
-        await user.save();
-    }
-
+    const user = await deleteNotificationsRepo(payload);
     
     return user;
   } catch (error) {
@@ -149,14 +124,8 @@ export async function deleteNotifications(req,res,session,payload){
 
 export async function updateSingleMessage(req,res,payload){
  // console.log('on updateSingleMessage',payload);
-  await dbConnect();
-  const message = await Message.findById(payload.messageId);
-
-  const seen = (payload.session.id===payload.newMessage.receiverId)?'true':'false'
-  message.lastMessage.seen = seen;
-  message.lastMessage.userId = payload.newMessage.senderId;
-
-  await message.save();
+  
+  const message = updateSingleMessageRepo(payload);
  
   return message;
 
@@ -165,10 +134,6 @@ export async function updateSingleMessage(req,res,payload){
 export async function updateSeenandunSeenMessages(req,res,payload){
   await dbConnect();
 
-  const message = await Message.findById(payload.messageId);
-  // console.log('message on updateSeenandUnseen',message);
-   message.lastMessage.seen = 'true';
-
-   await message.save();
-   return message;
+  const message = await updateSeenandunSeenMessagesRepo(payload);
+  return message;
 }
