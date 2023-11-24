@@ -2,6 +2,7 @@ import User from "@/models/users";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { dbConnect } from "@/config/db";
+import { getUserService, updateFollowingService, userFollowService } from "@/libs/services/userServices";
 
 export default async function handler(req,res){
 
@@ -9,35 +10,24 @@ export default async function handler(req,res){
        dbConnect();
       if(req.method==='GET'){
         const {userId} = req.query;
-        const session = await getServerSession(req,res,authOptions);
-       
-       
+        const session = await getServerSession(req,res,authOptions); 
 
-        const user = await User.findById(session.id);
-        const present = await user.followingIds.includes(userId);
+        const user = await getUserService(session.id);
+        const present = await userFollowService(user,userId);
       
         return res.status(200).json(present);
       }
 
       if(req.method==='PATCH'){
         dbConnect();
-        let following;
         const {userId} = req.query;
         const session =  await getServerSession(req,res,authOptions);
-        const user = await User.findById(session.id);
-        if(user.followingIds.includes(userId)){
-             following = false;
-            user.followingIds.pull(userId);
-        }
-        else{
-            following = true
-            user.followingIds.push(userId);
-            
-        }
+        let user = await getUserService(session.id);
 
-          await user.save();
-
-          return res.status(200).json({followCount:user.followingIds.length,hasfollowed:following})
+       const {updatedUser,updatedFollowing} = await updateFollowingService(user,userId);
+       user = updatedUser;
+       console.log('updatedFollowing and updatedUser',updatedFollowing,updatedUser);
+          return res.status(200).json({followCount:user.followingIds.length,hasfollowed:updatedFollowing})
       }
    }catch(error){
     console.log(error);

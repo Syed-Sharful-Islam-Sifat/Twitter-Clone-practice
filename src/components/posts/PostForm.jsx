@@ -176,7 +176,7 @@ const PostForm = ({
 
           console.log("postData on postForm", postData);
 
-          const response = await fetch("api/posts", {
+          const response = await fetch("http://localhost:3000/api/posts", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

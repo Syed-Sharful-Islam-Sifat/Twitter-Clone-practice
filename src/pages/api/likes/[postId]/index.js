@@ -3,6 +3,7 @@ import Post from "@/models/posts";
 import { dbConnect } from "@/config/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
+import { findPostServices, getLikeService, updateLikeService } from "@/libs/services/getPostServices";
 export default async function handler(req,res){
     try{
         
@@ -16,11 +17,8 @@ export default async function handler(req,res){
       
        if(typeof postId!=='string')throw new Error('No Post found');
         if(req.method==='GET'){
-          const post = await Post.findById(postId);
-         
-          if(post.likeIds.includes(id)){
-              hasLiked = 1;
-          }
+          const post = await findPostServices(postId);
+          hasLiked = await getLikeService(id,post)
           return res.status(200).json({likesCount:post.likeIds.length,hasLiked});
         }
     }catch(error){

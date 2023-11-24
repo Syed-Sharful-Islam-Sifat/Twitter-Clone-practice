@@ -3,6 +3,8 @@ import { authOptions } from "../auth/[...nextauth]";
 import { dbConnect } from "@/config/db";
 import Post from "@/models/posts";
 import User from "@/models/users";
+import {commentIncludeService, createPostService, findPostServices} from "@/libs/services/getPostServices";
+import { getUserService } from "@/libs/services/userServices";
 export default async function handler(req, res) {
   try {
     if (req.method === "POST") {
@@ -13,68 +15,11 @@ export default async function handler(req, res) {
       const { id } = session;
 
       const { parentId, name ,contentType, text , image ,retweetId} = req.body;
-      console.log('on posts api',req.body,parentId,name,contentType,text,image,retweetId);
-      const post = await Post.create({
-        userId: id,
-        name,
-        contentType,
-        text,
-        image,
-        parentId,
-        retweetId
-      });
-      let mainPostId;
-      if (contentType !== "post") {
-        const parentPost = await Post.findById(parentId);
-
-        await parentPost?.commentIds?.push(post?._id);
-        await parentPost.save();
-
-        if (contentType === "reply") {
-          const mainPost = await Post.findById({ _id: parentPost.parentId });
-          await mainPost.commentIds.push(post._id);
-          await mainPost.save();
-          mainPostId = mainPost._id;
-        }
-      }
-      const user = await User.findById(id);
-
-      await user?.posts?.push(post?._id);
-      await user.save();
-
-      const newPost = await Post.findById(post._id)
-        .sort({ createdAt: -1 })
-        .populate({
-          path: 'userId',
-          model: 'User'
-        })
-        .populate({
-          path:"commentIds",
-          model:"Post",
-          options:{sort:{createdAt:-1}},
-          populate: [
-            {
-              path: 'userId',
-              model: 'User'
-            },
-            {
-              path: 'commentIds',
-              model: 'Post',
-              options: { sort: { createdAt: -1 } },
-              populate: [
-                {
-                  path: 'userId',
-                  model: 'User'
-                }
-               
-              ]
-            }
-          ]
-
-        }).populate({
-          path: 'retweetId',
-          model: 'User',
-        })
+      //console.log('on posts api',req.body,parentId,name,contentType,text,image,retweetId);
+      const data = await createPostService( id , parentId, name ,contentType, text , image ,retweetId);
+     // console.log('data on createPostServices',data);
+      const {newPost,mainPostId} = data;
+    //  console.log('newPost,mainPostId,parentId',mainPostId,parentId,newPost);
       return res.status(200).json({ newPost, parentId, mainPostId });
     }
 
@@ -83,7 +28,7 @@ export default async function handler(req, res) {
 
       const session = await getServerSession(req, res, authOptions);
 
-      const user = await User.findById(session.id);
+      const user = await getUserService(session.id);
 
       const followingIds = user.followingIds;
       const page = parseInt(req.query.page)||0;

@@ -1,5 +1,5 @@
 import { dbConnect } from "@/config/db";
-import getPost from "@/libs/services/getPostServices";
+import { findPostServices } from "@/libs/services/getPostServices";
 import Post from "@/models/posts";
 export default async function handler(req,res){
   
@@ -108,25 +108,9 @@ export default async function handler(req,res){
 
         if(req.method==='GET'){
            
-          const{ postId }= req.query;
-
-           const post = await getPost(req,res,postId);
-
+           const{ postId }= req.query;
+           const post = await findPostServices(postId);
            return res.status(200).json(post);
-
-          // const postId = req.query.postId;
-          // console.log('post',postId)
-          // dbConnect();
-
-          // const comments = await Post.find({parentId:postId});
-          // const commentsWithReplies = []
-          // for(const comment of comments){
-          //   const replies = await Post.find({parentId:comment._id}).sort({createdAt:-1})
-          //   comment.replies = replies;
-          //   commentsWithReplies.push(comment);
-          // }
-          // return res.status(200).json(commentsWithReplies );
-          
         }
 
         if(req.method==='POST'){
