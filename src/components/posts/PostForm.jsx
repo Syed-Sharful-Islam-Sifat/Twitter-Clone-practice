@@ -142,6 +142,7 @@ const PostForm = ({
             "imageFiles--------------------->",
             imageFiles.tweetPhoto
           );
+          console.log('data on PostForm',data)
           makeEditFalse();
           handleEdit(data,data.contentType);
         }

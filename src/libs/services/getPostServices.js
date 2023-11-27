@@ -91,7 +91,8 @@ export async function updatePostServices(post, text, image) {
   dbConnect();
   post.text = text;
   post.image = image;
-  post.save();
+  await post.save();
+  console.log('updated post on updatePostServices',post);
   return post;
 }
 export async function getUpdatedPostServices(id) {
