@@ -114,7 +114,7 @@ const Home = ({ownProfile,userId}) => {
   };
 
   const handleEdit = (updatedPost, type) => {
-    
+    console.log('handleEdit post',updatedPost,type)
    
     setPosts((prevPosts) =>
       prevPosts.map((post) => {

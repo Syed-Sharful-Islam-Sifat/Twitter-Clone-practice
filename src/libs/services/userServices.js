@@ -1,5 +1,5 @@
 import { dbConnect } from "@/config/db";
-import { getFollowerServiceRepo, getFollowersRepo, getFollowingRepo, getNotFollowingRepo, getUserRepo } from "../repositories/userRepositories";
+import { createUserRepo, findUserByEmailRepo, getAllUsersRepo, getFollowerServiceRepo, getFollowersRepo, getFollowingRepo, getNotFollowingRepo, getUserRepo, userProfileUpdateRepo } from "../repositories/userRepositories";
 import User from "@/models/users";
 export async function getUserService(id) {
   const user = await getUserRepo(id);
@@ -45,5 +45,24 @@ export async function getNotFollowingService(mainUser,session){
 
     return usersNotFollowing;
 }
+export async function findUserByEmailService(email){
+    const userExists = findUserByEmailRepo(email);
+
+    return userExists
+}
+export async function createUserService(name,email,hash){
+    const user = await createUserRepo(name,email,hash);
+    return user;
+}
+export async function userProfileUpdateService(userId,profileImage,coverPhoto){
+  const user = await userProfileUpdateRepo(userId,profileImage,coverPhoto);
+    return user;
+}
+export async function getAllUsersService(session){
+  const users = await getAllUsersRepo(session);
+    return users;
+}
+
+
 
 

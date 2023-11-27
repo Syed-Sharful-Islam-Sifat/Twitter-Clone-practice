@@ -4,6 +4,7 @@ import { useState } from "react";
 import styles from "@/components/auth/registermodal/registermodal.module.css";
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
+import registerApi from "@/libs/actions/sign-up-actions";
 const RegisterModal = ({ regisOpen, onClose }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -21,22 +22,16 @@ const RegisterModal = ({ regisOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
+      const response = await registerApi(formData);
       const data = await response.json();
-
+      console.log('response status',response.status)
       if (response.ok) {
         toast.success(data?.message);
       }
       console.log(data);
     } catch (err) {
-      console.log(err);
+      toast.error(data?.message)
+      console.log('data error message',data);
     }
   };
   return (

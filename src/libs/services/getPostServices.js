@@ -5,7 +5,9 @@ import {
   deletePostRepo,
   deleteReplyRepo,
   findPostRepo,
+  followedPostsRepo,
   getUpdatedPostRepo,
+  getUserPostsRepo,
   newPostRepo,
 } from "../repositories/postRepositories";
 import { getUserService } from "./userServices";
@@ -111,5 +113,19 @@ export async function deletePostServices(id) {
  console.log('deletePost',deletedPost);
  return deletedPost;
 }
+export async function followedPostsServices(session,page,limit,followingIds) {
+ const followedPosts = await followedPostsRepo(session,page,limit,followingIds);
+ return followedPosts;
+}
+
+export async function getAllUsersService(session){
+  const users = await getAllUsersRepo(session);
+    return users;
+}
+export async function getUserPostsService(user,page,limit){
+  const posts = await getUserPostsRepo(user,page,limit);
+    return posts;
+}
+
 
 

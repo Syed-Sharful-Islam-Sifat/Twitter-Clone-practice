@@ -12,6 +12,7 @@ import {
 } from "react-icons/ai";
 import { useEffect } from "react";
 import PostForm from "./PostForm";
+import {likeACtions, deletePostACtions, getLikeDataActions } from "@/libs/actions/postsAction";
 const PostFeed = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
   const router = useRouter();
   const [likes, setLikes] = useState(0);
@@ -38,7 +39,7 @@ const PostFeed = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/likes/${postId}`);
+      const res = await getLikeDataActions()
       const data = await res.json();
 
       setLikes(data.likesCount);
@@ -58,16 +59,8 @@ const PostFeed = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
 
   const userLiked = async (e) => {
     e.stopPropagation();
-    const res = await fetch("http://localhost:3000/api/likes", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id, postId }),
-    });
-
+    const res = await likeACtions(id,postId);
     const data = await res.json();
-  
     setLikes(data?.likesCount);
     setHasLiked(data?.hasLiked);
   };
@@ -111,12 +104,7 @@ const PostFeed = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
   };
   const onDelete = async () => {
     try {
-      const res = await fetch(`api/posts/${postId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await deletePostACtions()
 
       const data = await res.json();
       handleDelete(data);

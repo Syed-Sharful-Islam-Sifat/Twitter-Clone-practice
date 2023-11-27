@@ -26,7 +26,7 @@ const UserProfile = ({ user }) => {
             src={`/images/${coverPhoto}`}
             alt="Cover Image"
             style={{ objectFit: "cover" }}
-            width={850}
+            width={550}
             height={176}
         
           />

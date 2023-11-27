@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
 import User from "@/models/users";
 import Post from "@/models/posts";
+import { getUserPostsService } from "@/libs/services/getPostServices";
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -12,44 +13,7 @@ export default async function handler(req, res) {
       const limit = parseInt(req.query.limit)|| 2;
       console.log('page and limit',page,limit)
       // Find the posts where the user's ID is in the retweetIds array or the user is the author
-      const posts = await Post.find({   
-          contentType:'post',
-          userId: userId 
-          
-      })
-          .sort({ createdAt: -1 })
-          .skip(page*limit)
-          .limit(limit)
-          .populate({
-              path: 'userId',
-              model: 'User',
-          })
-          .populate({
-              path: 'commentIds',
-              model: 'Post',
-              options: { sort: { createdAt: -1 } },
-              populate: [
-                  {
-                      path: 'userId',
-                      model: 'User',
-                  },
-                  {
-                      path: 'commentIds',
-                      model: 'Post',
-                      options: { sort: { createdAt: -1 } },
-                      populate: [
-                          {
-                              path: 'userId',
-                              model: 'User',
-                          },
-                          // Add more population as needed for deeper nesting
-                      ],
-                  },
-              ],
-          }).populate({
-            path: 'retweetId',
-            model: 'User'
-          }) ;
+      const posts = await getUserPostsService(userId,page,limit);
 
           console.log('posts page and limiy',posts,page,limit)
 

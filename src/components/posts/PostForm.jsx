@@ -4,6 +4,7 @@ import Button from "../button/Button";
 import { useSession } from "next-auth/react";
 import PostImage from "./PostImage";
 import { Toaster , toast } from "react-hot-toast";
+import { getUserAction } from "@/libs/actions/userActions";
 const PostForm = ({
   placeholder,
   postText,
@@ -64,8 +65,7 @@ const PostForm = ({
   }, []);
 
   const fetchUser = async () => {
-    const res = await fetch(`/api/users/${session.id}`);
-
+    const res = await getUserAction(session)
     const data = await res.json();
     setUser(data);
     console.log("fetchUser", user);
@@ -120,7 +120,7 @@ const PostForm = ({
           method: "POST",
           body: formData,
         });
-
+       
         if (res.ok) {
           const imageFiles = await res.json();
           const updatedData = {
@@ -134,7 +134,7 @@ const PostForm = ({
             },
 
            
-            body: JSON.stringify({...postData,image:imageFile||imageFiles.tweetPhoto}),
+            body: JSON.stringify({...postData,image:imageFiles.tweetPhoto||imageFile}),
           });
 
           const data = await response.json();

@@ -16,6 +16,7 @@ export default async function handler(req, res) {
       const { text, image } = req.body;
       let post = await findPostServices(postId);
       post = updatePostServices(post, text, image);
+      console.log('post , text , image',post,text,image);
       const updatedPost = await getUpdatedPostServices(postId);
       return res.status(200).json(updatedPost);
     }

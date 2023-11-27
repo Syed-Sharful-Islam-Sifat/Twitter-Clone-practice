@@ -3,7 +3,7 @@ import { authOptions } from "../auth/[...nextauth]";
 import { dbConnect } from "@/config/db";
 import Post from "@/models/posts";
 import User from "@/models/users";
-import {commentIncludeService, createPostService, findPostServices} from "@/libs/services/getPostServices";
+import {commentIncludeService, createPostService, findPostServices, followedPostsServices} from "@/libs/services/getPostServices";
 import { getUserService } from "@/libs/services/userServices";
 export default async function handler(req, res) {
   try {
@@ -33,57 +33,8 @@ export default async function handler(req, res) {
       const followingIds = user.followingIds;
       const page = parseInt(req.query.page)||0;
       const limit = parseInt(req.query.limit)|| 2;
-      const followedPosts = await Post.find({
-        $and: [
-          {
-            $or: [
-              { userId: { $in: followingIds }, contentType: 'post' },
-              { userId: { $nin: followingIds }, contentType: 'post' }
-            ]
-          },
-          { userId: { $ne: session.id } } 
-        ]
-      })
-        .sort({
-         
-          createdAt: -1
-        })
-        .skip(page*limit)
-        .limit(limit)
-        .populate({
-          path: 'userId',
-          model: 'User'
-        })
-        .populate({
-          path: "commentIds",
-          model: "Post",
-          options: { sort: { createdAt: -1 } },
-          populate: [
-            {
-              path: 'userId',
-              model: 'User'
-            },
-            {
-              path: 'commentIds',
-              model: 'Post',
-              options: { sort: { createdAt: -1 } },
-              populate: [
-                {
-                  path: 'userId',
-                  model: 'User'
-                }
-                // Add more population as needed for deeper nesting
-              ]
-            }
-          ]
-        }).populate({
-          path: 'retweetId',
-          model:'User',
-         
-        })
-
+      const followedPosts = await followedPostsServices(session,page,limit,followingIds);
         console.log('followedPosts',followedPosts.length)
-  
       return res.status(200).json({followedPosts});
     }
   } catch (error) {

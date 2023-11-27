@@ -2,6 +2,7 @@ import User from "@/models/users";
 import bcrypt from "bcrypt"
 import { dbConnect } from "@/config/db";
 import { sendEmail } from "@/libs/services/mailService";
+import { createUserService, findUserByEmailService } from "@/libs/services/userServices";
 
 export default async function handler(req, res) {
   
@@ -17,9 +18,9 @@ export default async function handler(req, res) {
               return res.status(400).json({message:'Please fill all the required fields'})
             }
     
-            const userExists = await User.findOne({email});
+            const userExists = await findUserByEmailService(email);
     
-            console.log(userExists);
+            console.log('userExists',userExists);
     
             if(userExists){
                 return res.status(400).json({message:'Use a different email , User already exists'})
@@ -28,11 +29,9 @@ export default async function handler(req, res) {
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(password,salt);
     
-            const user = await User.create({
-                name,
-                email,
-                password: hash
-            })
+            const user = await createUserService(name,email,hash);
+
+            console.log('user created',user)
     
     
             await sendEmail(
