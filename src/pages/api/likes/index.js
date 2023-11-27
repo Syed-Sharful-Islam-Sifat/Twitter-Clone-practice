@@ -7,7 +7,7 @@ import {
 } from "@/libs/services/getPostServices";
 export default async function handler(req, res) {
   try {
-    dbConnect();
+   
     if (req.method === "PATCH") {
       const { id, postId } = req.body;
 

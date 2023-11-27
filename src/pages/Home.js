@@ -202,7 +202,7 @@ const Home = ({ownProfile,userId}) => {
   {!ownProfile ? <Header label="Home" /> : null}
   {!ownProfile ? <Form placeholder="What Is Happening?!" updatedPosts={updatedPosts} /> : null}
   {posts
-    ?.filter((post) => post.contentType === "post")
+    ?.filter((post) => post?.contentType === "post")
     .map((post) => (
       <div key={post?._id}>
         <PostItem
