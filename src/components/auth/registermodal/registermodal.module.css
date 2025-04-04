@@ -1,48 +1,75 @@
+.register {
+    z-index: 1003;
+    width: 100%;
+    height: 100%;
+}
 
-.register_modal{
-    
+.register_modal {
+
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    width: 40%;
     padding: 30px;
-    border: 1px solid gray;
+    border-radius: 20px;
     z-index: 1002;
     align-self: center;
     justify-self: center;
-    position: absolute;
-    left: 40%;
-    top:30%;
-    background-color: black;
+    background-color: #ffffff;
+    /* Make background transparent */
+    border: 1px solid gray;
+    /* Add a subtle white border with transparency */
+    width: 100%;
+    height: 100%;
 
-   
+
 }
 
-.formContainer{
+.formContainer {
 
     display: flex;
     flex-direction: column;
-    gap:20px;
+    gap: 20px;
     justify-content: center;
-    overflow: hidden;
+
 
 }
 
-.inputField {
-    width: 100%;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    background-color: black;
-    border-style: 3px snow;
-    color: aliceblue;
-  }
+.loader{
+    position:absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%,-50%);
+}
 
-  .signup_container{
+.formGroup {
+    width: 100%;
+}
+
+.inputField {
+    width: 95%;
+    padding: 16px 0px 16px 8px;
+    border: 1px solid #333639;
+    border-radius: 4px;
+    background-color: transparent;
+    font-size: 17px;
+    color: #000000;
+    transition: all 0.2s ease;
+}
+
+.inputField:focus {
+    outline: none;
+    border: 2px solid #1d9bf0;
+    /* Twitter's sky blue */
+}
+
+
+.signupContainer {
     display: flex;
     justify-content: center;
-  }
-.signup{
+    position: relative;
+}
+
+.signup {
     background-color: #1d9bf0;
     padding: 10px;
     border-radius: 20px;
@@ -53,23 +80,23 @@
     cursor: pointer;
 }
 
-.signup:hover{
+.signup:hover {
     opacity: 0.8;
 }
 
-.cancel_register{
+.cancel_register {
     display: flex;
     justify-content: flex-end;
 }
 
-.cancel_register button{
-    background:none;
+.cancel_register button {
+    background: none;
     border-style: none;
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
 }
 
-.cancel_register button:hover{
+.cancel_register button:hover {
     opacity: 0.8;
 }

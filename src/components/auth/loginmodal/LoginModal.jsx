@@ -4,12 +4,15 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Toaster, toast } from "react-hot-toast";
 import styles from "@/components/auth/registermodal/registermodal.module.css";
+import SubmitButton from "@/components/common/submit-button/SubmitButton";
+import { useGlobal } from "@/providers/GlobalProvider";
+import Loader from "@/components/common/loader/Loader";
 const LoginModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pressed, setPressed] = useState(false);
   const { data: session } = useSession();
-
+  const [isLoading, setIsLoading] = useGlobal();
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
@@ -20,6 +23,7 @@ const LoginModal = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const data = await signIn("credentials", {
         email,
         password,
@@ -31,6 +35,7 @@ const LoginModal = ({ isOpen, onClose }) => {
     } catch (err) {
       console.log(err.message);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -67,10 +72,9 @@ const LoginModal = ({ isOpen, onClose }) => {
             />
           </div>
 
-          <div className={styles.signup_container}>
-            <button type="submit" className={styles.signup}>
-              Login
-            </button>
+          <div className={styles.signupContainer}>
+            <SubmitButton text="Login" />
+            {isLoading && <div className={styles.loader}><Loader /></div>}
           </div>
         </form>
       </div>

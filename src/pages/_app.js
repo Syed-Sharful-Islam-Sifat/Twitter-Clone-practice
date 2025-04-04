@@ -20,7 +20,7 @@ const roboto = Roboto({
   subsets: ['latin'],
   weight: ['400', '700']
 })
-
+import { GlobalProvider } from '@/providers/GlobalProvider'
 import { useRouter } from 'next/router'
 import Verification from './verification'
 import { NotificationProvider } from '@/providers/notificationProvider'
@@ -36,18 +36,20 @@ export default function App({ Component, pageProps }) {
 
 
     <SessionProvider session={pageProps.session}>
-      <ModalProvider>
-      <SocketProvider>
-        <MessageProvider>
-          <NotificationProvider>
-          <main className={roboto.className} key={router.asPath}>
-            <Component {...pageProps} />
-          </main>
-          </NotificationProvider>
-        </MessageProvider>
+      <GlobalProvider>
+        <ModalProvider>
+          <SocketProvider>
+            <MessageProvider>
+              <NotificationProvider>
+                <main className={roboto.className} key={router.asPath}>
+                  <Component {...pageProps} />
+                </main>
+              </NotificationProvider>
+            </MessageProvider>
 
-      </SocketProvider>
-      </ModalProvider>
+          </SocketProvider>
+        </ModalProvider>
+      </GlobalProvider>
     </SessionProvider>
 
 

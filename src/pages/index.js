@@ -28,8 +28,9 @@ export default function Home() {
   }
 
   return (
-    <>
-      <div className="auth">
+    <div className="main-container">
+          {(regisOpen || logisOpen) && <div className="modal-overlay"></div>}
+      <div className={`auth ${(regisOpen || logisOpen) ? 'blur-background' : ''}`}>
         <div className="icon-main-container">
           <div className="tweet-icon-conatainer">
             <div>
@@ -53,14 +54,7 @@ export default function Home() {
           >
             Create an account
           </button>
-          {regisOpen ? (
-            <div className="auth-reg">
-              <RegisterModal
-                isOpen={regisOpen}
-                onClose={() => setRegisOpen(false)}
-              />
-            </div>
-          ) : null}
+
 
           {!regisOpen ? (
             <>
@@ -71,14 +65,6 @@ export default function Home() {
               >
                 Sign In
               </button>
-              {logisOpen ? (
-                <div className="auth-login">
-                  <LoginModal
-                    isOpen={logisOpen}
-                    onClose={() => setLogisOpen(false)}
-                  />
-                </div>
-              ) : null}
 
               <div className="or-container">
                 <div className="first-line"></div>
@@ -93,7 +79,23 @@ export default function Home() {
           ) : null}
           {!regisOpen && !logisOpen ? <GithubLogin /> : null}
         </div>
+        {regisOpen ? (
+          <div className="modal-container">
+            <RegisterModal
+              isOpen={regisOpen}
+              onClose={() => setRegisOpen(false)}
+            />
+          </div>
+        ) : null}
+        {logisOpen ? (
+          <div className="modal-container">
+            <LoginModal
+              isOpen={logisOpen}
+              onClose={() => setLogisOpen(false)}
+            />
+          </div>
+        ) : null}
       </div>
-    </>
+    </div>
   );
 }

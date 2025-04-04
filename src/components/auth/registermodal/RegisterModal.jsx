@@ -5,7 +5,12 @@ import styles from "@/components/auth/registermodal/registermodal.module.css";
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
 import registerApi from "@/libs/actions/sign-up-actions";
+import SubmitButton from "@/components/common/submit-button/SubmitButton";
+import { useGlobal } from "@/providers/GlobalProvider";
+import Loader from "@/components/common/loader/Loader";
+
 const RegisterModal = ({ regisOpen, onClose }) => {
+  const [isLoading, setIsLoading] = useGlobal();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,18 +27,21 @@ const RegisterModal = ({ regisOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await registerApi(formData);
       const data = await response.json();
-      console.log('response status',response.status)
+      console.log('response status', response.status)
       if (response.ok) {
         toast.success(data?.message);
       }
       console.log(data);
     } catch (err) {
       toast.error(data?.message)
-      console.log('data error message',data);
+      console.log('data error message', data);
     }
+    setIsLoading(false);
   };
+  console.log({ isLoading })
   return (
     <div className={styles.register}>
       <div>
@@ -79,10 +87,10 @@ const RegisterModal = ({ regisOpen, onClose }) => {
               className={styles.inputField}
             />
           </div>
-          <div className={styles.signup_container}>
-            <button type="submit" className={styles.signup}>
-              Sign Up
-            </button>
+          <div className={styles.signupContainer}>
+            <SubmitButton text="Sign Up" />
+            {isLoading && <div className={styles.loader}><Loader /></div>}
+           
           </div>
         </form>
       </div>
