@@ -1,7 +1,7 @@
 import '@/styles/globals.css'
 import '@/components/layout.css'
 import '@/components/layout/sidebar.css'
-import '@/components/layout/rightbar.css'
+
 import '@/components/header.css'
 import '@/components/Form.css'
 import '@/components/Avatar.css'

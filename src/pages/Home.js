@@ -49,12 +49,12 @@ const Home = ({ownProfile,userId}) => {
       else{
       const res = await fetch(`http://localhost:3000/api/posts?page=${page}&limit=${3}`);
       const data = await res.json();
-      setLastPage(data?.followedPosts?.length)
+      setLastPage(data?.allPosts?.length)
 
       //if(page===0)setPosts(data.followedPosts)
       setPosts((prevPosts) => {
         // Identify new posts that don't already exist in the current state
-        const newPosts = data?.followedPosts.filter((newPost) => !prevPosts.some((post) => post._id === newPost._id));
+        const newPosts = data?.allPosts?.filter((newPost) => !prevPosts.some((post) => post._id === newPost._id));
       
         // Concatenate the new posts with the current state
         return [...prevPosts, ...newPosts];

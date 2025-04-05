@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -10,197 +10,196 @@ import {
   AiOutlineEdit,
   AiOutlineDelete,
 } from "react-icons/ai";
-import { useEffect } from "react";
-import PostForm from "./PostForm";
-import {likeACtions, deletePostACtions, getLikeDataActions } from "@/libs/actions/postsAction";
-const PostFeed = ({ post, handleEdit, updatedPosts, handleDelete, type }) => {
-  const router = useRouter();
-  const [likes, setLikes] = useState(0);
-  const [hasLiked, setHasLiked] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [comment, setComment] = useState(false);
-  const [reply, setReply] = useState(false);
-  const [commentReply, setCommentReply] = useState(false);
-  const [count, setCount] = useState(0);
-  const [postComments, setPostComments] = useState([]);
+import PostForm from "./post-form/PostForm";
+import { likeACtions, deletePostACtions, getLikeDataActions } from "@/libs/actions/postsAction";
+import { toast } from "react-hot-toast";
+import styles from "./PostFeed.module.css";
 
-  const postId = post?._id;
+const PostFeed = ({ posts = [], onPostCreated }) => {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [localPosts, setLocalPosts] = useState([]);
+  const [editingPost, setEditingPost] = useState(null);
+  const [replyingTo, setReplyingTo] = useState(null);
+
+  // Fetch posts when component mounts
   useEffect(() => {
-    fetchData();
-   
-   
+    fetchPosts();
   }, []);
 
-  const verifyPost = () => {
-    post?.comments?.map((comment) => {
-
-    });
-  };
-
-  const fetchData = async () => {
+  const fetchPosts = async () => {
     try {
-      const res = await getLikeDataActions()
-      const data = await res.json();
+      const response = await fetch("/api/posts", {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts");
+      }
 
-      setLikes(data.likesCount);
-      setHasLiked(data.hasLiked);
+      const freshPosts = await response.json();
+      // Sort posts by createdAt in descending order (newest first)
+      const sortedPosts = freshPosts.allPosts.sort((a, b) => 
+        new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      setLocalPosts(sortedPosts);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching posts:", error);
+      toast.error("Failed to load posts");
     }
   };
 
-  const { data: session } = useSession();
-
-
-
-  const { id } = session;
-
-  const LikeIcons = hasLiked ? AiFillHeart : AiOutlineHeart;
-
-  const userLiked = async (e) => {
-    e.stopPropagation();
-    const res = await likeACtions(id,postId);
-    const data = await res.json();
-    setLikes(data?.likesCount);
-    setHasLiked(data?.hasLiked);
-  };
-
-  const handleComment = (e) => {
-    e.stopPropagation();
-    setComment(!comment);
-    setEdit(false);
-  };
-
-  const onEdit = (e) => {
-    e.stopPropagation();
-    setEdit(!edit);
-    setComment(false);
-  };
-
-  const makeEditFalse = () => {
-    setEdit(false);
-  };
-
-  const makeReplyFalse = () => {
-    setComment(false);
-  };
-
-  const handleEditFormClick = async (e) => {
-    e.stopPropagation();
-  };
-
-  useEffect(() => {
- 
-  }, [reply, commentReply]);
-
-  const handleReply = (e) => {
-    console.log(post?.contentType);
-    if (post?.contentType === "post") setReply(!reply);
-    if (post?.contentType === "comment") {
-      setCommentReply(!commentReply);
-      setReply(true);
-    }
-    e.stopPropagation();
-  };
-  const onDelete = async () => {
+  const handlePostSubmit = async (postData) => {
     try {
-      const res = await deletePostACtions()
+      const response = await fetch("/api/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+      });
 
-      const data = await res.json();
-      handleDelete(data);
-      console.log("deleted post", data);
+      if (!response.ok) {
+        throw new Error("Failed to create post");
+      }
+
+      const newPost = await response.json();
+      
+      // Fetch fresh posts to ensure we have the latest data
+      await fetchPosts();
+      
+      if (onPostCreated) {
+        onPostCreated(newPost);
+      }
+
+      toast.success("Post created successfully");
+      return newPost;
     } catch (error) {
-      console.error(error);
+      console.error("Error creating post:", error);
+      toast.error("Failed to create post");
+      throw error;
     }
   };
+
+  const handleEditSubmit = async (postData) => {
+    try {
+      const response = await fetch(`/api/posts/${editingPost._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update post");
+      }
+
+      const updatedPost = await response.json();
+      
+      // Fetch fresh posts to ensure we have the latest data
+      await fetchPosts();
+      
+      setEditingPost(null);
+      toast.success("Post updated successfully");
+    } catch (error) {
+      console.error("Error updating post:", error);
+      toast.error("Failed to update post");
+    }
+  };
+
+  const handleDelete = async (postId) => {
+    try {
+      const response = await fetch(`/api/posts/${postId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete post");
+      }
+
+      // Fetch fresh posts to ensure we have the latest data
+      await fetchPosts();
+      
+      toast.success("Post deleted successfully");
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      toast.error("Failed to delete post");
+    }
+  };
+
+  const handleLike = async (postId) => {
+    try {
+      const response = await fetch(`/api/posts/${postId}/like`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to like post");
+      }
+
+      const updatedPost = await response.json();
+      setLocalPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === updatedPost._id ? updatedPost : post
+        )
+      );
+    } catch (error) {
+      console.error("Error liking post:", error);
+      toast.error("Failed to like post");
+    }
+  };
+
   return (
-    <div className="post-container">
-      <div className={type}>
-        <Avatar />
-        <div>
-          <div className="user-profile">
-            <p className="name">{session?.user?.name}</p>
-            <span className="at-name">@{session?.user?.name}</span>
-            <span className="time">{post?.createdAt}</span>
-          </div>
+    <div className={styles.postFeed}>
+      {session && (
+        <div className={styles.postFormWrapper}>
+          <PostForm 
+            onSubmit={handlePostSubmit} 
+            onPostCreated={fetchPosts}
+          />
         </div>
+      )}
 
-        <div className="text">{post?.text}</div>
+      {editingPost && (
+        <div className={styles.editFormWrapper}>
+          <PostForm
+            initialText={editingPost.text}
+            initialImage={editingPost.image}
+            onSubmit={handleEditSubmit}
+            placeholder="Edit your post..."
+            onPostCreated={fetchPosts}
+          />
+        </div>
+      )}
 
-        <PostItem
-          post={post}
-          handleComment={handleComment}
-          handleReply={handleReply}
-          userLiked={userLiked}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          edit = {edit}
-          comment = {comment}
+      {replyingTo && (
+        <div className={styles.replyFormWrapper}>
+          <PostForm
+            onSubmit={handlePostSubmit}
+            isReply={true}
+            replyTo={replyingTo._id}
+            placeholder={`Reply to ${replyingTo.user.name}...`}
+            onPostCreated={fetchPosts}
+          />
+        </div>
+      )}
 
-        />
-
-        {edit ? (
-          <div className="post-container" onClick={handleEditFormClick}>
-            <PostForm
-              placeholder={"Edit Your Post"}
-              postText={post?.text}
-              label={"Save"}
-              type={"edit"}
-              contetType={post?.contentType}
-              postId={postId}
-              makeEditFalse={makeEditFalse}
-              makeReplyFalse={makeReplyFalse}
-              handleEdit={handleEdit}
-              updatedPosts={updatedPosts}
-            />
-          </div>
-        ) : null}
-
-        {comment ? (
-          <div className="post-container" onClick={handleEditFormClick}>
-            <PostForm
-              placeholder={`Reply to @${session?.user?.name}`}
-              postText={""}
-              label={"Reply"}
-              type={"post"}
-              contentType={post.contentType}
-              postId={postId}
-              makeEditFalse={makeEditFalse}
-              makeReplyFalse={makeReplyFalse}
-              handleEdit={handleEdit}
-              updatedPosts={updatedPosts}
-            />
-          </div>
-        ) : null}
+      <div className={styles.postsList}>
+        {localPosts.map((post) => (
+          <PostItem
+            key={post._id}
+            post={post}
+            onEdit={() => setEditingPost(post)}
+            onDelete={() => handleDelete(post._id)}
+            onLike={() => handleLike(post._id)}
+            onReply={() => setReplyingTo(post)}
+          />
+        ))}
       </div>
-      {reply &&
-        post?.comments?.map((comment) => {
-          return (
-            <div key={comment._id}>
-              <PostItem
-                post={comment}
-                handleComment={handleComment}
-                handleReply={handleReply}
-                userLiked={userLiked}
-                onEdit={onEdit}
-                onDelete={onDelete}
-              />
-              {commentReply &&
-                comment?.replies?.map((reply) => (
-                  <div key={reply._id}>
-                    <PostItem
-                      post={reply}
-                      handleComment={handleComment}
-                      handleReply={handleReply}
-                      userLiked={userLiked}
-                      onEdit={onEdit}
-                      onDelete={onDelete}
-                    />
-                  </div>
-                ))}
-            </div>
-          );
-        })}
     </div>
   );
 };

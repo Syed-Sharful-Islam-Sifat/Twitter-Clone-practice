@@ -1,0 +1,35 @@
+.postFeed {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.postFormWrapper {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
+}
+
+.editFormWrapper,
+.replyFormWrapper {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background-color: #f9fafb;
+}
+
+.postsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .postFeed {
+    padding: 0.5rem;
+  }
+} 

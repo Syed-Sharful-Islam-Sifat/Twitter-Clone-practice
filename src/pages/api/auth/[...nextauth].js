@@ -6,6 +6,7 @@ import User from "@/models/users";
 import GithubProvider from "next-auth/providers/github"
 
 export const authOptions = {
+    secret: process.env.NEXTAUTH_SECRET,
     providers:[
 
         GithubProvider({
@@ -15,7 +16,7 @@ export const authOptions = {
         CredentialsProvider({
             async authorize(credentials,req){
                 try{
-                    dbConnect();
+                    await dbConnect();
                     const{email,password} = credentials;
 
                     if(!email||!password)throw new Error('please fill all the required fields');
@@ -36,7 +37,7 @@ export const authOptions = {
                         throw new Error('Please verify your email first')
                     }
 
-                    return user
+                    return user;
                 }catch(err){
                     throw new Error(err)
                 }
@@ -88,7 +89,7 @@ export const authOptions = {
 
             
             
-           
+             console.log('user',user);
             let newUser = user;
             if(!user?.isVerified){
                await dbConnect();
@@ -99,6 +100,7 @@ export const authOptions = {
             try{
 
                 if(user){
+                    console.log('user',user);
                     return{
                         ...token,
                         id:newUser?._id,
@@ -130,9 +132,6 @@ export const authOptions = {
         strategy: "jwt"
     },
     
-    secret: process.env.NEXTAUTH_SECRET,
-   
-  
     // jwt:{
     //     secret: process.env.NEXTAUTH_JWT_SECRET
     // },

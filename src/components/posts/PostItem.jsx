@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { AiOutlineRetweet } from "react-icons/ai";
+import { AiOutlineRetweet, AiOutlineShareAlt } from "react-icons/ai";
 import Image from "next/image";
 import { retweet } from "@/libs/actions/retweetActions";
 import format from "date-fns/format";
@@ -13,8 +13,11 @@ import {
   AiOutlineEdit,
   AiOutlineDelete,
 } from "react-icons/ai";
-import { useEffect } from "react";
-import PostForm from "./PostForm";
+import { IoEllipsisHorizontal } from "react-icons/io5";
+import PostForm from "./post-form/PostForm";
+import styles from "./PostItem.module.css";
+import { toast } from "react-hot-toast";
+
 const PostItem = ({
   post,
   handleEdit,
@@ -36,12 +39,14 @@ const PostItem = ({
   const [user, setUser] = useState();
   const postId = post?._id;
   const { data: session } = useSession();
-  if (post.retweetId) {
  
-  }
+  const [retweetCount, setRetweetCount] = useState(post.retweets?.length || 0);
+  const [showMenu, setShowMenu] = useState(false);
+  
+  const isOwnPost = session?.user?.id === post.userId;
+
   useEffect(() => {
     fetchData();
-  
     verifyPost();
     fetchUser();
   }, []);
@@ -52,13 +57,12 @@ const PostItem = ({
     });
   };
 
- 
-
   const fetchUser = async () => {
     const res = await fetch(`/api/users/${session.id}`);
     const data = await res.json();
     setUser(data);
   };
+
   const fetchData = async () => {
     try {
       const res = await fetch(`http://localhost:3000/api/likes/${postId}`);
@@ -71,13 +75,17 @@ const PostItem = ({
     }
   };
 
-  const handleRetweet = async () => {
-    const data = await retweet(postId, session.user.name);
+  const handleRetweet = async (e) => {
+    e.stopPropagation();
+    if (!session) {
+      toast.error("Please sign in to retweet posts");
+      return;
+    }
+    setIsRetweeted(!isRetweeted);
+    setRetweetCount(prev => isRetweeted ? prev - 1 : prev + 1);
   };
 
-
-
-  const { id } = session;
+  const { id } = session.user;
 
   const LikeIcons = hasLiked ? AiFillHeart : AiOutlineHeart;
 
@@ -126,7 +134,7 @@ const PostItem = ({
       return null;
     }
 
-    return format(new Date(post.createdAt), "dd MMMM yyyy");
+    return format(new Date(post.createdAt), "MMM d, yyyy");
   };
 
   useEffect(() => {
@@ -143,6 +151,7 @@ const PostItem = ({
     e.stopPropagation();
     setCommentReply(!commentReply);
   };
+
   const onDelete = async () => {
     try {
       const res = await fetch(`http://localhost:3000/api/posts/${postId}`, {
@@ -159,10 +168,29 @@ const PostItem = ({
       console.error(error);
     }
   };
+
+  const handleLike = async (e) => {
+    e.stopPropagation();
+    if (!session) {
+      toast.error("Please sign in to like posts");
+      return;
+    }
+    userLiked(e);
+  };
+
+  const handleReply = (e) => {
+    e.stopPropagation();
+    if (!session) {
+      toast.error("Please sign in to reply to posts");
+      return;
+    }
+    handlePostReply(e);
+  };
+
   return (
-    <div className="post-container">
-      <div className={type}>
-        <div className="user-profile-container">
+    <article className={styles.postItem}>
+      <div className={styles.postHeader}>
+        <div className={styles.userInfo}>
           {ownProfile && post.retweetId ? (
             <div className="repost-p">
               <p>You reposted</p>
@@ -173,7 +201,7 @@ const PostItem = ({
             </div>
           ) : null}
 
-          <div className="avatar-bio">
+          <div className={styles.userDetails}>
             <Avatar
               user={post?.retweetId?post?.retweetId:post.userId}
               isLarge={false}
@@ -183,119 +211,133 @@ const PostItem = ({
                   : post?.userId?.profileImage
               }
             />
-            <div className="user-profile">
-              <p className="name">
+            <div className={styles.userDetails}>
+              <span className={styles.userName}>
                 { post.retweetId
                   ? post?.retweetId.name
                   : post.name}
-              </p>
-              <span className="at-name">
+              </span>
+              <span className={styles.userHandle}>
                 @{post.retweetId ? post?.retweetId.name : post.name}
               </span>
-              <p className="time">{createdAt()}</p>
+              <span className={styles.postDate}>· {createdAt()}</span>
             </div>
           </div>
         </div>
 
-        <div className="text">{post?.text}</div>
-
-        <div className="image">
-          {post?.image ? (
-            <Image
-              src={`/images/${post?.image}`}
-              alt="tweet image"
-              style={{ objectFit: "cover" , borderRadius: "10px"}}
-              width={
-                post.contentType === "post"
-                  ? 600
-                  : post.contentType === "comment"
-                  ? 500
-                  : 400
-              }
-              height={300}
-            />
-          ) : null}
+        <div className={styles.postMenu}>
+          <button 
+            className={styles.menuButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowMenu(!showMenu);
+            }}
+          >
+            <IoEllipsisHorizontal size={20} />
+          </button>
+          {showMenu && (
+            <div className={styles.menu}>
+              {isOwnPost ? (
+                <>
+                  <button onClick={onEdit}>Edit post</button>
+                  <button onClick={onDelete}>Delete post</button>
+                </>
+              ) : (
+                <button>Report post</button>
+              )}
+            </div>
+          )}
         </div>
-
-        <div className="icons">
-          {post?.contentType !== "reply" ? (
-            <div className="comment" onClick={handleComment}>
-              <AiOutlineMessage size={20} className={edit ? "" : "disabled"} />
-              <div
-                className="commentsId"
-                onClick={
-                  post?.contentType === "post"
-                    ? handlePostComment
-                    : handlePostReply
-                }
-              >
-                <p>{post?.commentIds?.length}</p>
-              </div>
-            </div>
-          ) : null}
-
-          <div className="like" onClick={userLiked}>
-            <LikeIcons size={20} color={hasLiked ? "deeppink" : ""} />
-            <p>{likes}</p>
-          </div>
-
-          {session.id === post.userId._id &&!post.retweetId? (
-            <div className="edit" onClick={onEdit}>
-              <AiOutlineEdit size={20} className={comment ? "" : "disabled"} />
-            </div>
-          ) : null}
-
-          {session.id === post.userId._id ?(
-            <div className="delete" onClick={onDelete}>
-              <AiOutlineDelete size={20} />
-            </div>
-          ) : null}
-          {session.id !== post.userId._id ? (
-            <div className="re-tweet" onClick={handleRetweet}>
-              <AiOutlineRetweet
-                size={20}
-                className={!ownProfile&&post.retweetId===session.id ? "retweet" : ""}
-              />
-            </div>
-          ) : null}
-        </div>
-
-        {edit ? (
-          <div className="post-container" onClick={handleEditFormClick}>
-            <PostForm
-              placeholder={"Edit Your Post"}
-              postText={post?.text}
-              label={"Save"}
-              type={"edit"}
-              name={post?.name}
-              contetType={post?.contentType}
-              postId={postId}
-              makeEditFalse={makeEditFalse}
-              makeReplyFalse={makeReplyFalse}
-              handleEdit={handleEdit}
-              updatedPosts={updatedPosts}
-              imageFile={post?.image}
-            />
-          </div>
-        ) : null}
-
-        {comment ? (
-          <div className="post-container" onClick={handleEditFormClick}>
-            <PostForm
-              placeholder={`Reply to @${post?.name}`}
-              postText={""}
-              label={"Reply"}
-              type={"post"}
-              contentType={post.contentType}
-              postId={postId}
-              makeEditFalse={makeEditFalse}
-              makeReplyFalse={makeReplyFalse}
-              handleEdit={handleEdit}
-              updatedPosts={updatedPosts}
-            />
-          </div>
-        ) : null}
       </div>
+
+      <div className={styles.postContent}>
+        <p className={styles.postText}>{post?.text}</p>
+
+        {post?.image && (
+          <div className={styles.postImage}>
+            <img
+              src={post.image}
+              alt="Post image"
+              className={styles.image}
+            />
+          </div>
+        )}
+      </div>
+
+      <div className={styles.postActions}>
+        {post?.contentType !== "reply" ? (
+          <button 
+            className={styles.actionButton}
+            onClick={handleReply}
+            title="Reply"
+          >
+            <AiOutlineMessage size={20} />
+            <span>{post?.commentIds?.length || 0}</span>
+          </button>
+        ) : null}
+
+        <button 
+          className={`${styles.actionButton} ${isRetweeted ? styles.retweeted : ''}`}
+          onClick={handleRetweet}
+          title="Retweet"
+        >
+          <AiOutlineRetweet size={20} />
+          <span>{retweetCount}</span>
+        </button>
+
+        <button 
+          className={`${styles.actionButton} ${hasLiked ? styles.liked : ''}`}
+          onClick={handleLike}
+          title="Like"
+        >
+          {hasLiked ? <AiFillHeart size={20} /> : <AiOutlineHeart size={20} />}
+          <span>{likes}</span>
+        </button>
+
+        <button 
+          className={styles.actionButton}
+          title="Share"
+        >
+          <AiOutlineShareAlt size={20} />
+        </button>
+      </div>
+
+      {edit ? (
+        <div className="post-container" onClick={handleEditFormClick}>
+          <PostForm
+            placeholder={"Edit Your Post"}
+            postText={post?.text}
+            label={"Save"}
+            type={"edit"}
+            name={post?.name}
+            contetType={post?.contentType}
+            postId={postId}
+            makeEditFalse={makeEditFalse}
+            makeReplyFalse={makeReplyFalse}
+            handleEdit={handleEdit}
+            updatedPosts={updatedPosts}
+            imageFile={post?.image}
+          />
+        </div>
+      ) : null}
+
+      {comment ? (
+        <div className="post-container" onClick={handleEditFormClick}>
+          <PostForm
+            placeholder={`Reply to @${post?.name}`}
+            postText={""}
+            label={"Reply"}
+            type={"post"}
+            contentType={post.contentType}
+            postId={postId}
+            makeEditFalse={makeEditFalse}
+            makeReplyFalse={makeReplyFalse}
+            handleEdit={handleEdit}
+            updatedPosts={updatedPosts}
+          />
+        </div>
+      ) : null}
+
       {reply &&
         post?.commentIds?.map((comment) => {
           console.log("reply", post, comment.userId);
@@ -326,7 +368,7 @@ const PostItem = ({
             </div>
           );
         })}
-    </div>
+    </article>
   );
 };
 

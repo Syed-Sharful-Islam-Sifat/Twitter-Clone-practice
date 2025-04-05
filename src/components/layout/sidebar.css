@@ -33,6 +33,7 @@
   cursor: pointer;
   gap:20px;
   justify-content: center;
+  color: #000000;
 }
 
 .item-paragraph{

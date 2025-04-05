@@ -112,6 +112,44 @@ export async function deletePostRepo(id){
   const deletedPost = await Post.findByIdAndDelete(id);
   return deletedPost;
 }
+
+export async function getAllPostsRepo(){
+  await dbConnect();
+  const posts = await Post.find({})
+    .sort({ createdAt: -1 })
+    .populate({
+      path: 'userId',
+      model: 'User'
+    })
+    .populate({
+      path: "commentIds",
+      model: "Post",
+      options: { sort: { createdAt: -1 } },
+      populate: [
+        {
+          path: 'userId',
+          model: 'User'
+        },
+        {
+          path: 'commentIds',
+          model: 'Post',
+          options: { sort: { createdAt: -1 } },
+          populate: [
+            {
+              path: 'userId',
+              model: 'User'
+            }
+          ]
+        }
+      ]
+    })
+    .populate({
+      path: 'retweetId',
+      model: 'User'
+    });
+  return posts;
+}
+
 export async function followedPostsRepo(session,page,limit,followingIds){
   dbConnect();
   const followedPosts = await Post.find({

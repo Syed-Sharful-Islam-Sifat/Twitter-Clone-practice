@@ -1,7 +1,15 @@
 .register {
     z-index: 1003;
     width: 100%;
+}
+
+.formBtnGroup {
+    display: flex;
+    gap: 30px;
+    flex-direction: column;
+    width: 100%;
     height: 100%;
+    
 }
 
 .register_modal {
@@ -15,11 +23,8 @@
     align-self: center;
     justify-self: center;
     background-color: #ffffff;
-    /* Make background transparent */
     border: 1px solid gray;
-    /* Add a subtle white border with transparency */
     width: 100%;
-    height: 100%;
 
 
 }
@@ -32,6 +37,13 @@
     justify-content: center;
 
 
+}
+
+.error {
+    color: #f4212e;
+    font-size: 13px;
+    margin-top: 4px;
+    display: block;
 }
 
 .loader{
@@ -62,6 +74,9 @@
     /* Twitter's sky blue */
 }
 
+.errorInput {
+    border-color: #f4212e !important; /* Twitter's error red color */
+}
 
 .signupContainer {
     display: flex;

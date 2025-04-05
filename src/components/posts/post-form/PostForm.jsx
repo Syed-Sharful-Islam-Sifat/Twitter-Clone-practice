@@ -1,23 +1,25 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import Avatar from "../Avatar";
-import PostImage from "./PostImage";
-import { AiOutlinePicture, AiOutlineGif, AiOutlineSmile, AiOutlineSchedule, AiOutlineLocationOn } from "react-icons/ai";
+import Avatar from "@/components/Avatar";
+import PostImage from "@/components/posts/postimage";
+import { AiOutlinePicture, AiOutlineGif, AiOutlineSmile, AiOutlineSchedule } from "react-icons/ai";
 import { Toaster, toast } from "react-hot-toast";
 import styles from "./PostForm.module.css";
 
 const PostForm = ({ 
   placeholder = "What's happening?", 
-  onSubmit: handleSubmit,
+  onSubmit,
   initialText = "",
   initialImage = null,
   isReply = false,
-  replyTo = null
+  replyTo = null,
+  onPostCreated,
+  isSubmitting = false
 }) => {
   const { data: session } = useSession();
   const [text, setText] = useState(initialText);
   const [imageBase64, setImageBase64] = useState(initialImage);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [localSubmitting, setLocalSubmitting] = useState(false);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -64,6 +66,17 @@ const PostForm = ({
     }
   };
 
+  const resetForm = () => {
+    setText('');
+    setImageBase64(null);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     
@@ -72,14 +85,24 @@ const PostForm = ({
       return;
     }
     
-    setIsSubmitting(true);
+    // Use the parent's isSubmitting state if provided, otherwise use local state
+    if (isSubmitting !== undefined) {
+      if (isSubmitting) return; // Don't submit if already submitting
+    } else {
+      setLocalSubmitting(true);
+    }
+    
+    // Store the current form data
+    const currentText = text;
+    const currentImage = imageBase64;
     
     try {
       // Create post data object
       const postData = {
-        text,
+        text: currentText,
+        contentType: isReply ? "reply" : "post",
         userId: session?.user?.id,
-        image: imageBase64, // Send base64 image directly
+        image: currentImage, // Send base64 image directly
       };
       
       if (isReply && replyTo) {
@@ -87,23 +110,71 @@ const PostForm = ({
       }
       
       // Call the provided onSubmit handler
-      await handleSubmit(postData);
-      
-      // Reset form
-      setText('');
-      setImageBase64(null);
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto';
+      if (onSubmit) {
+        try {
+          const newPost = await onSubmit(postData);
+          
+          // Reset the form only after successful submission
+          resetForm();
+          
+          // Call onPostCreated callback if provided
+          if (onPostCreated) {
+            // Call this in the background
+            onPostCreated().catch(err => console.error("Error refreshing posts:", err));
+          }
+          
+          return newPost;
+        } catch (error) {
+          console.error('Error in onSubmit handler:', error);
+          toast.error('Failed to create post. Please try again.');
+        }
+      } else {
+        // Default submission if no handler provided
+        const response = await fetch("/api/posts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to create post");
+        }
+
+        // Don't try to parse the response as JSON if it's empty
+        let data;
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        }
+        
+        // Reset the form only after successful submission
+        resetForm();
+        
+        // Call onPostCreated callback if provided
+        if (onPostCreated) {
+          // Call this in the background
+          onPostCreated().catch(err => console.error("Error refreshing posts:", err));
+        }
+        
+        toast.success(isReply ? 'Reply posted successfully' : 'Post created successfully');
+        
+        return data;
       }
-      
-      toast.success(isReply ? 'Reply posted successfully' : 'Post created successfully');
     } catch (error) {
       console.error('Error creating post:', error);
       toast.error('Failed to create post. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      // Only reset local submitting state if we're not using the parent's state
+      if (isSubmitting === undefined) {
+        setLocalSubmitting(false);
+      }
     }
   };
+
+  // Determine if the form is currently submitting
+  const isCurrentlySubmitting = isSubmitting !== undefined ? isSubmitting : localSubmitting;
 
   return (
     <>
@@ -126,6 +197,7 @@ const PostForm = ({
               value={text}
               onChange={handleTextChange}
               rows={1}
+              disabled={isCurrentlySubmitting}
             />
 
             {imageBase64 && (
@@ -147,28 +219,27 @@ const PostForm = ({
                     accept="image/*"
                     onChange={handleImageChange}
                     className={styles.fileInput}
+                    disabled={isCurrentlySubmitting}
                   />
                 </label>
-                <button className={styles.mediaButton} title="Add GIF">
+                <button className={styles.mediaButton} title="Add GIF" disabled={isCurrentlySubmitting}>
                   <AiOutlineGif />
                 </button>
-                <button className={styles.mediaButton} title="Add emoji">
+                <button className={styles.mediaButton} title="Add emoji" disabled={isCurrentlySubmitting}>
                   <AiOutlineSmile />
                 </button>
-                <button className={styles.mediaButton} title="Schedule post">
+                <button className={styles.mediaButton} title="Schedule post" disabled={isCurrentlySubmitting}>
                   <AiOutlineSchedule />
                 </button>
-                <button className={styles.mediaButton} title="Add location">
-                  <AiOutlineLocationOn />
-                </button>
+              
               </div>
 
               <button
                 className={`${styles.postButton} ${(!text.trim() && !imageBase64) ? styles.disabled : ''}`}
                 onClick={handleFormSubmit}
-                disabled={(!text.trim() && !imageBase64) || isSubmitting}
+                disabled={(!text.trim() && !imageBase64) || isCurrentlySubmitting}
               >
-                {isSubmitting ? 'Posting...' : isReply ? 'Reply' : 'Post'}
+                {isCurrentlySubmitting ? 'Posting...' : isReply ? 'Reply' : 'Post'}
               </button>
             </div>
           </div>

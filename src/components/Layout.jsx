@@ -1,11 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import Sidebar from "./layout/Sidebar";
 import { useSession } from "next-auth/react";
-import Rightbar from "./layout/Rightbar";
-import MessageLayout from "./messages/message-container/messageLayout";
-import SelectUser from "./messages/selectuser/selectuser";
-import SingleMessage from "./messages/single-message/single-message";
-import messageActions from "@/libs/actions/single-message-actions";
 import { useSingleMessageActionDispatcher } from "@/hooks/use-singlemessage-dispatcher";
 import SingleMessageActions from "@/libs/actions/single-message-actions";
 import { useSocket } from "@/providers/socketProvider";
@@ -13,30 +7,35 @@ import { NotificationContext } from "@/providers/notificationProvider";
 import notificationActions from "@/libs/actions/notificationActions";
 import { useMessage } from "@/providers/messageProvider";
 import { useModal } from "@/providers/modalProvider";
+import LeftBar from "./layout/leftbar/LeftBar";
+import RightBar from "./layout/rightbar/RightBar";
+import MainFeed from "./layout/mainfeed/MainFeed";
+import styles from "./layout.module.css";
+
 const Layout = ({ children, currentRoute, messageBox, user, messageId }) => {
   const { data: session } = useSession();
   const [send, setSend] = useState(false);
-  const[isModal,setIsModal] = useModal();
+  const [isModal, setIsModal] = useModal();
   const socket = useSocket();
- 
+
   const [state, dispatch] = useMessage();
   console.log("state on Layout", state);
   const [notifyState, dispatchNotify] = useContext(NotificationContext);
 
 
   useEffect(() => {
-    
-      dispatchNotify(notificationActions.DELETE_NOTIFICATIONS, {
-        sessionId: session?.id,
-        userId: user?._id,
-      });
-    
+
+    dispatchNotify(notificationActions.DELETE_NOTIFICATIONS, {
+      sessionId: session?.id,
+      userId: user?._id,
+    });
+
   }, []);
 
   useEffect(() => {
     if (messageId)
       dispatch(SingleMessageActions.GET_SINGLE_MESSAGE, { messageId });
-  }, [user,messageId]);
+  }, [user, messageId]);
 
   useEffect(() => {
     console.log("useEffect ran of Layout.jsx file", messageId);
@@ -147,46 +146,17 @@ const Layout = ({ children, currentRoute, messageBox, user, messageId }) => {
   };
 
   return (
-    <>
-      {session ? (
-        <div className={isModal?'modal':'mainScreen'}>
-          <div className="grid-container">
-            <div className="left-sidebar">
-              <Sidebar />
-            </div>
-            <div className="main-content">{children}</div>
-
-            <div className={user ? "" : "right-sidebar"}>
-              <div
-                className={
-                  currentRoute === "Messages" && !messageBox
-                    ? "right-sidebar-content-message"
-                    : "right-sidebar-content"
-                }
-              >
-                {currentRoute === "Messages" ? (
-                  !messageBox ? (
-                    <SelectUser />
-                  ) : (
-                    <MessageLayout
-                      user={user}
-                      messageId={messageId}
-                      onChange={onTextChange}
-                      handleClick={handleClick}
-                      text={text}
-                    >
-                      <SingleMessage />
-                    </MessageLayout>
-                  )
-                ) : (
-                  <Rightbar />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-    </>
+    <div className={styles.gridContainer}>
+      <div className={styles.leftSidebar}>
+        <LeftBar />
+      </div>
+      <div className={styles.mainContent}>
+        {messageBox ? children : <MainFeed />}
+      </div>
+      <div className={styles.rightSidebar}>
+        <RightBar />
+      </div>
+    </div>
   );
 };
 

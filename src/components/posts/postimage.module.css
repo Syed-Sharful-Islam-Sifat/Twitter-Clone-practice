@@ -1,36 +1,63 @@
-.file_input {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+.imagePreviewContainer {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: rgb(247, 249, 249);
+  margin: 12px 0;
+  max-height: 400px;
+}
 
-  .file_input label {
-    background-color: #007bff; /* Background color for the label */
-    color: #fff; /* Text color for the label */
-    padding: 10px 15px; /* Padding for the label */
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-  }
+.imagePreview {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
+  display: block;
+}
 
-  .file_input label:hover {
-    background-color: #0056b3; /* Change the background color on hover */
+.removeImageButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  z-index: 1;
+  padding: 0;
+}
+
+.removeImageButton:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.removeImageButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 500px) {
+  .imagePreviewContainer {
+    margin: 8px 0;
   }
   
-  .cancel_button {
-    margin-top: 10px; /* Adjust the spacing between the input and the button */
-    background-color: #ff0000; /* Background color for the cancel button */
-    color: #fff; /* Text color for the cancel button */
-    padding: 10px 15px; /* Padding for the cancel button */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .cancel_button:hover {
-    background-color: #d60000; /* Change the background color on hover */
+  .removeImageButton {
+    width: 28px;
+    height: 28px;
+    top: 6px;
+    right: 6px;
   }
 
- .file_input input[type="file"] {
-    display: none; /* Hide the default file input */
+  .removeImageButton svg {
+    width: 18px;
+    height: 18px;
   }
+} 

@@ -1,0 +1,100 @@
+.mainFeed {
+  flex: 1;
+  min-height: 100vh;
+  border-left: 1px solid rgb(239, 243, 244);
+  background-color: rgb(255, 255, 255);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  padding: 16px;
+  border-bottom: 1px solid rgb(239, 243, 244);
+}
+
+.header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgb(15, 20, 25);
+  margin-bottom: 16px;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid rgb(239, 243, 244);
+}
+
+.tab {
+  flex: 1;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgb(83, 100, 113);
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.tab:hover {
+  color: rgb(15, 20, 25);
+  background-color: rgba(15, 20, 25, 0.1);
+}
+
+.tab.active {
+  color: rgb(15, 20, 25);
+  font-weight: 700;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: rgb(29, 155, 240);
+  border-radius: 9999px;
+}
+
+.postFormContainer {
+  padding: 16px;
+  border-bottom: 1px solid rgb(239, 243, 244);
+}
+
+.postsContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.loading, .noPosts {
+  padding: 32px 16px;
+  text-align: center;
+  color: rgb(83, 100, 113);
+  font-size: 15px;
+}
+
+@media (max-width: 1265px) {
+  .mainFeed {
+    border-right: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .header {
+    padding: 12px;
+  }
+
+  .tab {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .postFormContainer {
+    padding: 12px;
+  }
+} 
